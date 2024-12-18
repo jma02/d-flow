@@ -113,4 +113,4 @@ if __name__ == '__main__':
             image.save(f'samples/{epoch}.png')
             image.save(f'samples/ema_{epoch}.png')
     
-    make_checkpoint(f'ckp{step}.tar', step, epoch, model, optim, ema_model)
+    make_checkpoint(f'ckp_{step}.tar', step, epoch, model, optim, ema_model)

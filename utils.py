@@ -60,13 +60,14 @@ def make_checkpoint(path, step, epoch, model, optim=None, ema_model=None):
     torch.save(checkpoint, path)
 
 
-def load_checkpoint(path, model, optim=None, ema_model=None):
+def load_checkpoint(path, model=None, optim=None, ema_model=None):
     checkpoint = torch.load(path, weights_only=True)
     step = int(checkpoint['step'])
     epoch = int(checkpoint['epoch'])
 
-    model.load_state_dict(checkpoint['model_state_dict'])
-    model.eval()
+    if model is not None:
+        model.load_state_dict(checkpoint['model_state_dict'])
+        model.eval()
 
     if optim is not None:
         optim.load_state_dict(checkpoint['optim_state_dict'])
@@ -74,7 +75,5 @@ def load_checkpoint(path, model, optim=None, ema_model=None):
     if ema_model is not None:
         ema_model.load_state_dict(checkpoint['ema_model_state_dict'])
         ema_model.eval()
-    
-    model.eval()
 
     return step, epoch, model, optim, ema_model    
