@@ -28,10 +28,14 @@ class Upsample(nn.Module):
         x = self.up(x)
         return self.conv(x)
 
-# TODO: more heads
+
 class AttentionBlock(nn.Module):
-    def __init__(self, in_channels, groups=32):
+    def __init__(self, in_channels, num_heads=4, groups=32):
         super().__init__()
+        self.num_heads = num_heads
+        self.head_dim = in_channels // num_heads
+        assert in_channels % num_heads == 0, "in_channels must be divisible by num_heads"
+
         self.norm = nn.GroupNorm(num_groups=groups, num_channels=in_channels)
 
         self.Q = nn.Conv2d(in_channels, in_channels, 1)
@@ -43,12 +47,18 @@ class AttentionBlock(nn.Module):
     def forward(self, x):
         h = self.norm(x)
 
-        q = rearrange(self.Q(h), 'b c h w -> b (h w) c')
-        k = rearrange(self.K(h), 'b c h w -> b (h w) c')
-        v = rearrange(self.V(h), 'b c h w -> b (h w) c')
+        b, c, h_size, w_size = x.shape
+        q = rearrange(self.Q(h), 'b (head_dim num_heads) h w -> b num_heads (h w) head_dim', 
+                      head_dim=self.head_dim, num_heads=self.num_heads)
+        k = rearrange(self.K(h), 'b (head_dim num_heads) h w -> b num_heads (h w) head_dim', 
+                      head_dim=self.head_dim, num_heads=self.num_heads)
+        v = rearrange(self.V(h), 'b (head_dim num_heads) h w -> b num_heads (h w) head_dim', 
+                      head_dim=self.head_dim, num_heads=self.num_heads)
 
         out = F.scaled_dot_product_attention(q, k, v)
-        out = rearrange(out, 'b (h w) c -> b c h w', **parse_shape(x, 'b c h w'))
+
+        out = rearrange(out, 'b num_heads (h w) head_dim -> b (head_dim num_heads) h w', 
+                        head_dim=self.head_dim, num_heads=self.num_heads, h=h_size, w=w_size)
 
         return (x + self.proj(out)) / np.sqrt(2.0)
 
