@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     device = 'cuda'
 
-    model = Unet(dropout=0.0).to(device)
+    model = Unet(ch=256, att_channels=[0, 1, 1, 0], dropout=0.0).to(device)
     model = torch.compile(model)
 
     ema_model = torch.optim.swa_utils.AveragedModel(
@@ -70,6 +70,14 @@ if __name__ == '__main__':
 
     optim = torch.optim.Adam(model.parameters(), lr=config['lr'])
     train_loader, _ = get_loaders(config)
+
+    torch.set_float32_matmul_precision('high')
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    torch.backends.cuda.enable_flash_sdp(True)
+    torch.backends.cuda.enable_mem_efficient_sdp(True)
+    torch.backends.cuda.enable_math_sdp(True)
 
     step = 0
     for epoch in range(1, config['epochs'] + 1):
