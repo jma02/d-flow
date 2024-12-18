@@ -11,7 +11,8 @@
       url={https://arxiv.org/abs/2210.02747}, 
 }
 ```
-```bibtext
+
+```bibtex
 @misc{lipman2024flowmatchingguidecode,
       title={Flow Matching Guide and Code}, 
       author={Yaron Lipman and Marton Havasi and Peter Holderrieth and Neta Shaul and Matt Le and Brian Karrer and Ricky T. Q. Chen and David Lopez-Paz and Heli Ben-Hamu and Itai Gat},
