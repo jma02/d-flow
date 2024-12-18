@@ -45,7 +45,7 @@ if __name__ == '__main__':
     os.makedirs('samples', exist_ok=True)
 
     config = {
-        'sigma_min': 1e-2, # Arbitrary value, all implementations I've seen set it to 0, despite what the paper says.
+        'sigma_min': 1e-2,
         'min_lr': 1e-8,
         'max_lr': 5e-4,
         'warmup_steps': 45000,
@@ -59,6 +59,7 @@ if __name__ == '__main__':
     device = 'cuda'
 
     model = Unet(dropout=0.0).to(device)
+    model = torch.compile(model)
 
     ema_model = torch.optim.swa_utils.AveragedModel(
         model, multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.9999)
@@ -98,8 +99,12 @@ if __name__ == '__main__':
         ema_model.eval()
         with torch.no_grad():
             print(f'Generating samples at epoch {epoch}')
-            gen_x = sample_images(ema_model, (64, 3, 32, 32), num_steps=100)
+            shape = (64, 3, 32, 32)
+            gen_x = sample_images(ema_model, shape, num_steps=5)
             gen_x = gen_x[-1]
+
+            assert gen_x.shape == shape
+
             image = make_im_grid(gen_x, (8, 8))
             image.save(f'samples/{epoch}.png')
     

@@ -18,9 +18,8 @@ class OptimalTransportFlow:
         return x1 - (1 - self.sigma_min) * x0
 
 
-# TODO: fix this
 @torch.inference_mode()
-def sample_images(model: nn.Module, shape: tuple = (64, 3, 32, 32), num_steps: int = 100, device = 'cuda'):
+def sample_images(model: nn.Module, shape: tuple = (64, 3, 32, 32), num_steps: int = 5, device = 'cuda'):
     model.eval()
 
     x0 = torch.randn(shape, device=device)
@@ -29,9 +28,9 @@ def sample_images(model: nn.Module, shape: tuple = (64, 3, 32, 32), num_steps: i
     samples = odeint(
         func = lambda t, x: model(x, t.repeat(shape[0])),
         t = timesteps,
-        y0 = x0.flatten(1),
+        y0 = x0,
         method = 'dopri5',
-        atol = 1e-4,
-        rtol = 1e-4,
+        atol = 1e-5,
+        rtol = 1e-5,
     )
     return samples
