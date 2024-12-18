@@ -100,12 +100,17 @@ if __name__ == '__main__':
         with torch.no_grad():
             print(f'Generating samples at epoch {epoch}')
             shape = (64, 3, 32, 32)
-            gen_x = sample_images(ema_model, shape, num_steps=5)
-            gen_x = gen_x[-1]
 
+            gen_x = sample_images(model, shape, num_steps=5)
+            gen_x_ema = sample_images(ema_model, shape, num_steps=5)
+            gen_x = gen_x[-1]
+            gen_x_ema = gen_x_ema[-1]
+            
             assert gen_x.shape == shape
 
             image = make_im_grid(gen_x, (8, 8))
+            image = make_im_grid(gen_x_ema, (8, 8))
             image.save(f'samples/{epoch}.png')
+            image.save(f'samples/ema_{epoch}.png')
     
     make_checkpoint(f'ckp{step}.tar', step, epoch, model, optim, ema_model)
