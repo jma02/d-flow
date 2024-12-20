@@ -9,8 +9,17 @@ from unet import Unet
 from flow import OptimalTransportFlow, sample_images
 from utils import *
 
+
 torch.manual_seed(159753)
 np.random.seed(159753)
+
+torch.set_float32_matmul_precision('high')
+torch.backends.cudnn.benchmark = True
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
+torch.backends.cuda.enable_flash_sdp(True)
+torch.backends.cuda.enable_mem_efficient_sdp(True)
+torch.backends.cuda.enable_math_sdp(True)
 
 
 def get_loss_fn(model: Unet, flow: OptimalTransportFlow):
@@ -65,20 +74,10 @@ if __name__ == '__main__':
         model, multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.9999)
     )
     flow = OptimalTransportFlow(config['sigma_min'])
-
     loss_fn = get_loss_fn(model, flow)
-
+    
     optim = torch.optim.Adam(model.parameters(), lr=config['lr'])
     train_loader, _ = get_loaders(config)
-
-    torch.set_float32_matmul_precision('high')
-    torch.backends.cudnn.benchmark = True
-    torch.backends.cuda.matmul.allow_tf32 = True
-    torch.backends.cudnn.allow_tf32 = True
-    torch.backends.cuda.enable_flash_sdp(True)
-    torch.backends.cuda.enable_mem_efficient_sdp(True)
-    torch.backends.cuda.enable_math_sdp(True)
-
     scaler = torch.amp.GradScaler()
 
     ckpt = None
@@ -118,11 +117,10 @@ if __name__ == '__main__':
                 for g in optim.param_groups:
                     lr = get_lr(config, step)
                     g['lr'] = lr
-            
 
                 if (step + 1) % config['log_freq'] == 0:
                     true_loss = loss.item() * accumulation_steps
-                    print(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr}')
+                    print(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr:.3e}')
 
                 step += 1
         
