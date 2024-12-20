@@ -44,7 +44,7 @@ def get_loaders(config):
     return train_loader, test_loader
 
 
-def make_checkpoint(path, step, epoch, model, optim=None, ema_model=None):
+def make_checkpoint(path, step, epoch, model, optim=None, scaler=None, ema_model=None):
     checkpoint = {
         'epoch': int(epoch),
         'step': int(step),
@@ -53,27 +53,34 @@ def make_checkpoint(path, step, epoch, model, optim=None, ema_model=None):
 
     if optim is not None:
         checkpoint['optim_state_dict'] = optim.state_dict()
-    
+
     if ema_model is not None:
         checkpoint['ema_model_state_dict'] = ema_model.state_dict()
+
+    if scaler is not None:
+        checkpoint['scaler_state_dict'] = scaler.state_dict()
 
     torch.save(checkpoint, path)
 
 
-def load_checkpoint(path, model=None, optim=None, ema_model=None):
+def load_checkpoint(path, model, optim=None, scaler=None, ema_model=None):
     checkpoint = torch.load(path, weights_only=True)
     step = int(checkpoint['step'])
     epoch = int(checkpoint['epoch'])
 
-    if model is not None:
-        model.load_state_dict(checkpoint['model_state_dict'])
-        model.eval()
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.eval()
 
     if optim is not None:
         optim.load_state_dict(checkpoint['optim_state_dict'])
-    
+
     if ema_model is not None:
         ema_model.load_state_dict(checkpoint['ema_model_state_dict'])
         ema_model.eval()
 
-    return step, epoch, model, optim, ema_model    
+    if scaler is not None:
+        scaler.load_state_dict(checkpoint['scaler_state_dict'])
+
+    model.eval()
+
+    return step, epoch, model, optim, scaler, ema_model  

@@ -79,29 +79,52 @@ if __name__ == '__main__':
     torch.backends.cuda.enable_mem_efficient_sdp(True)
     torch.backends.cuda.enable_math_sdp(True)
 
-    step = 0
-    for epoch in range(1, config['epochs'] + 1):
+    scaler = torch.amp.GradScaler()
+
+    ckpt = None
+    if ckpt is not None:
+        step, curr_epoch, model, optim, scaler, ema_model = load_checkpoint(ckpt, model, optim, scaler, ema_model)
+        print(f'Loaded checkpoint [step {step} ({curr_epoch})]')
+    else:
+        step = 0
+        curr_epoch = 0
+
+    accumulation_steps = 2
+
+    for epoch in range(curr_epoch, config['epochs'] + 1):
         model.train()
         ema_model.train()
-        for x, _ in train_loader:
+
+        for i, (x, _) in enumerate(train_loader):
             x = x.to(device)
 
-            optim.zero_grad(set_to_none=True)
-            loss = loss_fn(x)
-            loss.backward()
-
-            for g in optim.param_groups:
-                lr = get_lr(config, step)
-                g['lr'] = lr
-            grad = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            if i % accumulation_steps == 0:
+                optim.zero_grad(set_to_none=True)
             
-            optim.step()
-            ema_model.update_parameters(model)
+            with torch.amp.autocast(device_type=device):
+                loss = loss_fn(x) / accumulation_steps
 
-            if (step + 1) % config['log_freq'] == 0:
-                print(f'Step: {step} ({epoch}) | Loss: {loss.item():.5f} | Grad: {grad.item():.5f} | Lr: {lr}')
+            scaler.scale(loss).backward()
 
-            step += 1
+            if (i + 1) % accumulation_steps == 0 or (i + 1) == len(train_loader):
+                scaler.unscale_(optim)
+                grad = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+                scaler.step(optim)
+                scaler.update()
+
+                ema_model.update_parameters(model)
+
+                for g in optim.param_groups:
+                    lr = get_lr(config, step)
+                    g['lr'] = lr
+            
+
+                if (step + 1) % config['log_freq'] == 0:
+                    true_loss = loss.item() * accumulation_steps
+                    print(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr}')
+
+                step += 1
         
         model.eval()
         ema_model.eval()
@@ -109,8 +132,8 @@ if __name__ == '__main__':
             print(f'Generating samples at epoch {epoch}')
             shape = (64, 3, 32, 32)
 
-            gen_x = sample_images(model, shape, num_steps=5)
-            gen_x_ema = sample_images(ema_model, shape, num_steps=5)
+            gen_x = sample_images(model, shape, num_steps=2)
+            gen_x_ema = sample_images(ema_model, shape, num_steps=2)
             gen_x = gen_x[-1]
             gen_x_ema = gen_x_ema[-1]
             
@@ -121,4 +144,4 @@ if __name__ == '__main__':
             image.save(f'samples/{epoch}.png')
             image.save(f'samples/ema_{epoch}.png')
     
-    make_checkpoint(f'ckp_{step}.tar', step, epoch, model, optim, ema_model)
+    make_checkpoint(f'ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model)
