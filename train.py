@@ -76,7 +76,7 @@ if __name__ == '__main__':
     flow = OptimalTransportFlow(config['sigma_min'])
     loss_fn = get_loss_fn(model, flow)
     
-    optim = torch.optim.Adam(model.parameters(), lr=config['lr'])
+    optim = torch.optim.Adam(model.parameters(), lr=config['min_lr'])
     train_loader, _ = get_loaders(config)
     scaler = torch.amp.GradScaler()
 
