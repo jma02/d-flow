@@ -45,11 +45,11 @@ A helpful reference for my theoretical understanding was the paper [Flow Matchin
       url={https://arxiv.org/abs/2412.06264}, 
 }
 ```
-```bibtext
+```bibtex
 @misc{torchdiffeq,
-	author={Chen, Ricky T. Q.},
-	title={torchdiffeq},
-	year={2018},
-	url={https://github.com/rtqichen/torchdiffeq},
+      author={Chen, Ricky T. Q.},
+      title={torchdiffeq},
+      year={2018},
+      url={https://github.com/rtqichen/torchdiffeq},
 }
 ```
