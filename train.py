@@ -58,7 +58,7 @@ if __name__ == '__main__':
         'min_lr': 1e-8,
         'max_lr': 5e-4,
         'warmup_steps': 45000,
-        'epochs': 1000,
+        'epochs': 2000,
         'max_steps': 400000,
         'batch_size': 128,
         'log_freq': 100,
