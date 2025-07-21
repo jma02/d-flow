@@ -1,0 +1,12 @@
+Train set shape: torch.Size([16000, 1, 80, 80])
+Validation set shape: torch.Size([2000, 1, 80, 80])
+Test set shape: torch.Size([2000, 1, 80, 80])
+Epochs:   0%|                                                                                                                                            | 0/201 [00:26<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 116, in <module>
+    scaler.unscale_(optim)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/amp/grad_scaler.py", line 342, in unscale_
+    optimizer_state["found_inf_per_device"] = self._unscale_grads_(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/amp/grad_scaler.py", line 263, in _unscale_grads_
+    if (not allow_fp16) and param.grad.dtype == torch.float16:
+KeyboardInterrupt

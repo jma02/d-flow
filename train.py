@@ -1,7 +1,9 @@
 import os
 import numpy as np
+from tqdm import tqdm
 
 import torch
+import wandb
 from torch import Tensor
 from torch.nn import MSELoss
 
@@ -52,23 +54,25 @@ def get_lr(config, step):
 
 if __name__ == '__main__':
     os.makedirs('samples', exist_ok=True)
-
+    # initialize wandb
     config = {
         'sigma_min': 1e-2,
         'min_lr': 1e-8,
         'max_lr': 5e-4,
         'warmup_steps': 45000,
-        'epochs': 2000,
+        'epochs': 50,
         'max_steps': 400000,
-        'batch_size': 128,
+        'batch_size': 64,
         'log_freq': 100,
-        'num_workers': 3,
+        'num_workers': 2,
     }
 
+    wandb.init(project="dflow", config=config)
     device = 'cuda'
 
-    model = Unet(ch=256, att_channels=[0, 1, 1, 0], dropout=0.0).to(device)
-    model = torch.compile(model)
+    model = Unet().to(device)
+    # Wait until our gpus get python development headers
+    # model = torch.compile(model)
 
     ema_model = torch.optim.swa_utils.AveragedModel(
         model, multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.9999)
@@ -90,11 +94,14 @@ if __name__ == '__main__':
 
     accumulation_steps = 2
 
-    for epoch in range(curr_epoch, config['epochs'] + 1):
+    for epoch in tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs"):
         model.train()
         ema_model.train()
+        
+        epoch_loss = 0
+        num_batches = 0
 
-        for i, (x, _) in enumerate(train_loader):
+        for i, (x,) in tqdm(enumerate(train_loader), desc=f"Epoch {epoch}", leave=False):
             x = x.to(device)
 
             if i % accumulation_steps == 0:
@@ -118,17 +125,35 @@ if __name__ == '__main__':
                     lr = get_lr(config, step)
                     g['lr'] = lr
 
+                true_loss = loss.item() * accumulation_steps
                 if (step + 1) % config['log_freq'] == 0:
-                    true_loss = loss.item() * accumulation_steps
                     print(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr:.3e}')
+                    
+                    # Log training metrics to wandb
+                    wandb.log({
+                        "loss": true_loss,
+                        "grad_norm": grad.item(),
+                        "learning_rate": lr,
+                        "step": step,
+                        "epoch": epoch
+                    })
 
+                epoch_loss += true_loss
+                num_batches += 1
                 step += 1
+        
+        # Log epoch metrics
+        avg_epoch_loss = epoch_loss / num_batches
+        wandb.log({
+            "epoch_loss": avg_epoch_loss,
+            "epoch": epoch
+        })
         
         model.eval()
         ema_model.eval()
         with torch.no_grad():
             print(f'Generating samples at epoch {epoch}')
-            shape = (64, 3, 32, 32)
+            shape = (4, 1, 64, 64)
 
             gen_x = sample_images(model, shape, num_steps=2)
             gen_x_ema = sample_images(ema_model, shape, num_steps=2)
@@ -137,9 +162,18 @@ if __name__ == '__main__':
             
             assert gen_x.shape == shape
 
-            image = make_im_grid(gen_x, (8, 8))
-            image = make_im_grid(gen_x_ema, (8, 8))
+            image = make_im_grid(gen_x, (2,2))
+            ema_image = make_im_grid(gen_x_ema, (2, 2))
             image.save(f'samples/{epoch}.png')
-            image.save(f'samples/ema_{epoch}.png')
+            ema_image.save(f'samples/ema_{epoch}.png')
+
+            # Log sample images to wandb
+            wandb.log({
+                "samples": wandb.Image(image),
+                "epoch": epoch,
+                "ema_samples": wandb.Image(ema_image),
+            })
     
     make_checkpoint(f'ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model)
+    
+    wandb.finish()

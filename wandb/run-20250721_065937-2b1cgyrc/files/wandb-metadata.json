@@ -1,0 +1,47 @@
+{
+  "os":  "Linux-5.14.0-570.18.1.el9_6.x86_64-x86_64-with-glibc2.34",
+  "python":  "CPython 3.9.21",
+  "startedAt":  "2025-07-21T10:59:37.902521Z",
+  "program":  "/home/johnma/d-flow/train.py",
+  "codePath":  "train.py",
+  "codePathLocal":  "train.py",
+  "git":  {
+    "remote":  "https://github.com/jma02/d-flow",
+    "commit":  "c27baa183001ef137e75a506162a20605196a42c"
+  },
+  "email":  "ma.jonathan02@gmail.com",
+  "root":  "/home/johnma/d-flow",
+  "host":  "kechen-ml.math.udel.edu",
+  "executable":  "/home/johnma/d-flow/venv/bin/python",
+  "cpu_count":  32,
+  "cpu_count_logical":  64,
+  "gpu":  "NVIDIA RTX 6000 Ada Generation",
+  "gpu_count":  2,
+  "disk":  {
+    "/":  {
+      "total":  "75094818816",
+      "used":  "30707200000"
+    }
+  },
+  "memory":  {
+    "total":  "540193247232"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA RTX 6000 Ada Generation",
+      "memoryTotal":  "51527024640",
+      "cudaCores":  18176,
+      "architecture":  "Ada",
+      "uuid":  "GPU-c44b86bf-148d-aa7e-32ec-77d4f2f7ce71"
+    },
+    {
+      "name":  "NVIDIA RTX 6000 Ada Generation",
+      "memoryTotal":  "51527024640",
+      "cudaCores":  18176,
+      "architecture":  "Ada",
+      "uuid":  "GPU-df1365ae-00a9-6ee4-b3f9-f600faea48a4"
+    }
+  ],
+  "cudaVersion":  "12.9",
+  "writerId":  "o8i9brgcw5macpcxx877f7le2ho61je4"
+}

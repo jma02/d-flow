@@ -1,0 +1,28 @@
+Train set shape: torch.Size([16000, 1, 100, 100])
+Validation set shape: torch.Size([2000, 1, 100, 100])
+Test set shape: torch.Size([2000, 1, 100, 100])
+Epochs:   0%|                                                                                                                                           | 0/2001 [00:01<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 111, in <module>
+    loss = loss_fn(x) / accumulation_steps
+  File "/home/johnma/d-flow/train.py", line 33, in loss_fn
+    pred_vel = model(xt, t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/unet/default.py", line 66, in forward
+    h = self.down[i][0](h, emb)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/unet/modules.py", line 125, in forward
+    return self.attn(h)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/unet/modules.py", line 58, in forward
+    out = F.scaled_dot_product_attention(q, k, v)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 11.92 GiB. GPU 0 has a total capacity of 47.37 GiB of which 6.40 GiB is free. Including non-PyTorch memory, this process has 40.96 GiB memory in use. Of the allocated memory 40.42 GiB is allocated by PyTorch, and 39.91 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

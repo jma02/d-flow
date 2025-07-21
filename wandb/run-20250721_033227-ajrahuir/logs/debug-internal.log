@@ -1,0 +1,6 @@
+{"time":"2025-07-21T03:32:27.442588023-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-21T03:32:27.620582441-04:00","level":"INFO","msg":"stream: created new stream","id":"ajrahuir"}
+{"time":"2025-07-21T03:32:27.620635781-04:00","level":"INFO","msg":"stream: started","id":"ajrahuir"}
+{"time":"2025-07-21T03:32:27.62068138-04:00","level":"INFO","msg":"sender: started","stream_id":"ajrahuir"}
+{"time":"2025-07-21T03:32:27.620680759-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"ajrahuir"}
+{"time":"2025-07-21T03:32:27.62072795-04:00","level":"INFO","msg":"handler: started","stream_id":"ajrahuir"}

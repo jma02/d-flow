@@ -1,0 +1,12 @@
+{"time":"2025-07-21T02:29:04.821294902-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-21T02:29:05.000867364-04:00","level":"INFO","msg":"stream: created new stream","id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:05.000921796-04:00","level":"INFO","msg":"stream: started","id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:05.00093786-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:05.00093818-04:00","level":"INFO","msg":"handler: started","stream_id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:05.000946853-04:00","level":"INFO","msg":"sender: started","stream_id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:08.502691938-04:00","level":"INFO","msg":"stream: closing","id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:08.858739618-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-07-21T02:29:08.971595574-04:00","level":"INFO","msg":"handler: closed","stream_id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:08.97162615-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:08.971641974-04:00","level":"INFO","msg":"sender: closed","stream_id":"6mlcfilm"}
+{"time":"2025-07-21T02:29:08.971787843-04:00","level":"INFO","msg":"stream: closed","id":"6mlcfilm"}

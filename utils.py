@@ -1,39 +1,76 @@
 import numpy as np
-
+import wandb
 import torch
 from torchvision import datasets
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, TensorDataset
 import torchvision.transforms.v2 as v2
+import cmocean
 
 from einops import rearrange
 
 
-unloader = v2.Compose([v2.Lambda(lambda t: (t + 1) * 0.5),
-                       v2.Lambda(lambda t: t.permute(0, 2, 3, 1)),
-                       v2.Lambda(lambda t: t * 255.)])
+# unloader = v2.Compose([v2.Lambda(lambda t: (t + 1) * 0.5),
+#                        v2.Lambda(lambda t: t.permute(0, 2, 3, 1)),
+#                        v2.Lambda(lambda t: t * 255.)])
 
+
+unloader = v2.Compose([v2.Lambda(lambda t: (t + 1) * 0.5),
+                        v2.Lambda(lambda t: t.permute(0, 2, 3, 1))])
 
 def make_im_grid(x0: torch.Tensor, xy: tuple=(1, 10)):
     x, y = xy
     im = unloader(x0.cpu())
     B, C, H, W = x0.shape
-    im = rearrange(im, '(x y) h w c -> (x h) (y w) c', x=B//x, y=B//y).numpy().astype(np.uint8)
+    
+    im = im.numpy() 
+    
+    # Apply cmocean ice colormap to single channel images
+    if C == 1:
+        # Remove channel dimension for single channel
+        im = im.squeeze(-1)  # Shape: (B, H, W)
+        # Apply colormap to each image
+        cmap = cmocean.cm.ice
+        im_colored = np.zeros((B, H, W, 3))
+        for i in range(B):
+            im_colored[i] = cmap(im[i])[:, :, :3]  # Remove alpha channel
+        im = (im_colored * 255).astype(np.uint8)
+    else:
+        im = (im * 255).astype(np.uint8)
+    
+    # Create grid
+    im = rearrange(im, '(x y) h w c -> (x h) (y w) c', x=B//x, y=B//y)
     im = v2.ToPILImage()(im)
     return im
 
 
 def get_loaders(config):
-    train_transform = v2.Compose([v2.ToImage(),
-                                  v2.RandomHorizontalFlip(),
-                                  v2.ToDtype(torch.float32, scale=True),
-                                  v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
+    # train_transform = v2.Compose([v2.ToImage(),
+    #                               v2.RandomHorizontalFlip(),
+    #                               v2.ToDtype(torch.float32, scale=True),
+    #                               v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
 
-    test_transform = v2.Compose([v2.ToImage(),
-                                 v2.ToDtype(torch.float32, scale=True),
-                                 v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
+    # test_transform = v2.Compose([v2.ToImage(),
+    #                              v2.ToDtype(torch.float32, scale=True),
+    #                              v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
 
-    train = datasets.CIFAR10('data/', download=True, train=True, transform=train_transform)
-    test = datasets.CIFAR10('data/', download=True, train=False, transform=test_transform)
+    dataset = torch.load('data/dataset.pt')
+    print(f"Train set shape: {dataset['train'].shape}")
+    print(f"Validation set shape: {dataset['val'].shape}")
+    print(f"Test set shape: {dataset['test'].shape}")
+
+    train_min = dataset['train'].min()
+    train_max = dataset['train'].max()
+    # val_min = dataset['val'].min()
+    # val_max = dataset['val'].max()
+
+    dataset_train = dataset['train']
+    dataset_val = dataset['val']
+
+    dataset_train = 2.0 * (dataset_train - train_min) / (train_max - train_min) - 1.0
+    dataset_val = 2.0 * (dataset_val - train_min) / (train_max - train_min) - 1.0
+
+    train = TensorDataset(dataset_train.detach().clone())
+    test = TensorDataset(dataset_val.detach().clone())
 
     bs = config['batch_size']
     j = config['num_workers']

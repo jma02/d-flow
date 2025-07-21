@@ -1,0 +1,66 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   0%|                                                                                                                                                            | 0/2001 [00:14<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 110, in <module>
+    loss = loss_fn(x) / accumulation_steps
+  File "/home/johnma/d-flow/train.py", line 33, in loss_fn
+    pred_vel = model(xt, t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 663, in _fn
+    raise e.remove_dynamo_frames() from None  # see TORCHDYNAMO_VERBOSE=1
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 760, in _compile_fx_inner
+    raise InductorError(e, currentframe()).with_traceback(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 745, in _compile_fx_inner
+    mb_compiled_graph = fx_codegen_and_compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1295, in fx_codegen_and_compile
+    return scheme.codegen_and_compile(gm, example_inputs, inputs_to_check, graph_kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1197, in codegen_and_compile
+    compiled_fn = graph.compile_to_module().call
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/graph.py", line 2083, in compile_to_module
+    return self._compile_to_module()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/graph.py", line 2091, in _compile_to_module
+    self.codegen_with_cpp_wrapper() if self.cpp_wrapper else self.codegen()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/graph.py", line 2002, in codegen
+    self.scheduler.codegen()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/scheduler.py", line 4135, in codegen
+    else self._codegen(self.nodes)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/scheduler.py", line 4264, in _codegen
+    self.get_backend(device).codegen_node(node)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/codegen/cuda_combined_scheduling.py", line 104, in codegen_node
+    return self._triton_scheduling.codegen_node(node)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/codegen/simd.py", line 1320, in codegen_node
+    return self.codegen_node_schedule(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/codegen/simd.py", line 1365, in codegen_node_schedule
+    src_code = kernel.codegen_kernel()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/codegen/triton.py", line 3603, in codegen_kernel
+    **self.inductor_meta_common(),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/codegen/triton.py", line 3427, in inductor_meta_common
+    "backend_hash": torch.utils._triton.triton_hash_with_backend(),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_triton.py", line 111, in triton_hash_with_backend
+    backend = triton_backend()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_triton.py", line 103, in triton_backend
+    target = driver.active.get_current_target()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/runtime/driver.py", line 23, in __getattr__
+    self._initialize_obj()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/runtime/driver.py", line 20, in _initialize_obj
+    self._obj = self._init_fn()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/runtime/driver.py", line 9, in _create_driver
+    return actives[0]()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/backends/nvidia/driver.py", line 535, in __init__
+    self.utils = CudaUtils()  # TODO: make static
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/backends/nvidia/driver.py", line 89, in __init__
+    mod = compile_module_from_src(Path(os.path.join(dirname, "driver.c")).read_text(), "cuda_utils")
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/backends/nvidia/driver.py", line 66, in compile_module_from_src
+    so = _build(name, src_path, tmpdir, library_dirs(), include_dir, libraries)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/triton/runtime/build.py", line 36, in _build
+    subprocess.check_call(cc_cmd, stdout=subprocess.DEVNULL)
+  File "/usr/lib64/python3.9/subprocess.py", line 373, in check_call
+    raise CalledProcessError(retcode, cmd)
+torch._inductor.exc.InductorError: CalledProcessError: Command '['/usr/bin/gcc', '/tmp/tmpn4djox0n/main.c', '-O3', '-shared', '-fPIC', '-Wno-psabi', '-o', '/tmp/tmpn4djox0n/cuda_utils.cpython-39-x86_64-linux-gnu.so', '-lcuda', '-L/home/johnma/d-flow/venv/lib/python3.9/site-packages/triton/backends/nvidia/lib', '-L/lib64', '-I/home/johnma/d-flow/venv/lib/python3.9/site-packages/triton/backends/nvidia/include', '-I/tmp/tmpn4djox0n', '-I/usr/include/python3.9']' returned non-zero exit status 1.
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"

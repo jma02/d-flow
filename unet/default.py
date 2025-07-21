@@ -34,7 +34,7 @@ class Unet(nn.Module):
 
         self.temb_dim = self.ch * 4
         
-        self.input_proj = nn.Conv2d(3, self.ch, 3, 1, 1)
+        self.input_proj = nn.Conv2d(1, self.ch, 3, 1, 1)
 
         self.time_proj = nn.Sequential(nn.Linear(self.ch, self.temb_dim),
                                        nn.SiLU(),
@@ -48,7 +48,7 @@ class Unet(nn.Module):
         
         self.final = nn.Sequential(nn.GroupNorm(num_groups=groups, num_channels=2*self.ch),
                                    nn.SiLU(),
-                                   nn.Conv2d(2*self.ch, 3, 3, 1, 1))
+                                   nn.Conv2d(2*self.ch, 1, 3, 1, 1))
     
 
 

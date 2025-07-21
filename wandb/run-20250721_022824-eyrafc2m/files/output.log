@@ -1,0 +1,8 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   0%|                                                                                                                                                            | 0/2001 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 103, in <module>
+    for i, (x,) in tqdm(enumerate(train_loader, desc=f"Epoch {epoch}", leave=False)):
+TypeError: enumerate() takes at most 2 arguments (3 given)

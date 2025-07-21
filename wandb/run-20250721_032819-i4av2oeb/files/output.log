@@ -1,0 +1,34 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|          | 0/2001 [02:18<?, ?it/s]
+Traceback (most recent call last):
+Step: 99 (0) | Loss: 0.62702 | Grad: 9.43806 | Lr: 1.110e-06
+Generating samples at epoch 0
+  File "/home/johnma/d-flow/train.py", line 158, in <module>
+    gen_x = sample_images(model, shape, num_steps=2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/johnma/d-flow/flow.py", line 30, in sample_images
+    samples = odeint(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/odeint.py", line 80, in odeint
+    solution = solver.integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/solvers.py", line 32, in integrate
+    self._before_integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/rk_common.py", line 213, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/misc.py", line 197, in forward
+    return self.base_func(t, y)
+  File "/home/johnma/d-flow/flow.py", line 31, in <lambda>
+    func = lambda t, x: model(x, t.repeat(shape[0])),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/unet/default.py", line 79, in forward
+    h = self.up[i][0](torch.cat((h, down_path.pop()), dim=1), emb)
+RuntimeError: Sizes of tensors must match except in dimension 1. Expected size 26 but got size 25 for tensor number 1 in the list.

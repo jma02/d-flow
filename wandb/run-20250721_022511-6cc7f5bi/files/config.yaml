@@ -1,0 +1,74 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            7g7ifve2je7n0kj9p5gvxugbcqpdh90w:
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 32
+                cpu_count_logical: 64
+                cudaVersion: "12.9"
+                disk:
+                    /:
+                        total: "75094818816"
+                        used: "30706245632"
+                email: ma.jonathan02@gmail.com
+                executable: /home/johnma/d-flow/venv/bin/python
+                git:
+                    commit: c27baa183001ef137e75a506162a20605196a42c
+                    remote: https://github.com/jma02/d-flow
+                gpu: NVIDIA RTX 6000 Ada Generation
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 18176
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX 6000 Ada Generation
+                      uuid: GPU-c44b86bf-148d-aa7e-32ec-77d4f2f7ce71
+                    - architecture: Ada
+                      cudaCores: 18176
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX 6000 Ada Generation
+                      uuid: GPU-df1365ae-00a9-6ee4-b3f9-f600faea48a4
+                host: kechen-ml.math.udel.edu
+                memory:
+                    total: "540193247232"
+                os: Linux-5.14.0-570.18.1.el9_6.x86_64-x86_64-with-glibc2.34
+                program: /home/johnma/d-flow/train.py
+                python: CPython 3.9.21
+                root: /home/johnma/d-flow
+                startedAt: "2025-07-21T06:25:11.491363Z"
+                writerId: 7g7ifve2je7n0kj9p5gvxugbcqpdh90w
+        m: []
+        python_version: 3.9.21
+        t:
+            "1":
+                - 1
+                - 41
+            "2":
+                - 1
+                - 41
+            "3":
+                - 16
+            "4": 3.9.21
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": linux-x86_64
+batch_size:
+    value: 128
+epochs:
+    value: 2000
+log_freq:
+    value: 100
+max_lr:
+    value: 0.0005
+max_steps:
+    value: 400000
+min_lr:
+    value: 1e-08
+num_workers:
+    value: 3
+sigma_min:
+    value: 0.01
+warmup_steps:
+    value: 45000

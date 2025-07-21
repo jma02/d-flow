@@ -1,0 +1,16 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   0%|                                                                                                                                            | 0/201 [00:10<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 122, in <module>
+    ema_model.update_parameters(model)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/optim/swa_utils.py", line 259, in update_parameters
+    for p_averaged, p_model in zip(self_param, model_param):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2642, in parameters
+    for _name, param in self.named_parameters(recurse=recurse):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2675, in named_parameters
+    yield from gen
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2612, in _named_members
+    for k, v in members:
+KeyboardInterrupt

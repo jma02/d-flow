@@ -8,14 +8,14 @@ class OptimalTransportFlow:
         super().__init__()
         self.sigma_min = sigma_min
 
-    @torch.compile
+    #@torch.compile
     def step(self, t: Tensor, x0: Tensor, x1: Tensor) -> Tensor:
         t = t[:, None, None, None]
         mu = t * x1
         sigma = 1 - (1 - self.sigma_min) * t
         return sigma * x0 + mu
 
-    @torch.compile
+    #@torch.compile
     def target(self, t: Tensor, x0: Tensor, x1: Tensor) -> Tensor:
         return x1 - (1 - self.sigma_min) * x0
 

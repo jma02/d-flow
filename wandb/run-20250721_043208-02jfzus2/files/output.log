@@ -1,0 +1,14 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   0%|                                                                                                                                            | 0/201 [00:32<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 119, in <module>
+    scaler.step(optim)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/amp/grad_scaler.py", line 461, in step
+    retval = self._maybe_opt_step(optimizer, optimizer_state, *args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/amp/grad_scaler.py", line 355, in _maybe_opt_step
+    if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/amp/grad_scaler.py", line 355, in <genexpr>
+    if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):
+KeyboardInterrupt

@@ -1,0 +1,18 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   0%|                                                                                                                                                            | 0/2001 [01:28<?, ?it/s]
+Traceback (most recent call last):
+Step: 99 (0) | Loss: 0.62087 | Grad: 11.18002 | Lr: 1.110e-06
+Step: 199 (0) | Loss: 0.07274 | Grad: 3.60755 | Lr: 2.221e-06
+Step: 299 (0) | Loss: 0.07474 | Grad: 3.05751 | Lr: 3.332e-06
+Step: 399 (0) | Loss: 0.11478 | Grad: 5.66447 | Lr: 4.443e-06
+  File "/home/johnma/d-flow/train.py", line 113, in <module>
+    scaler.scale(loss).backward()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_tensor.py", line 648, in backward
+    torch.autograd.backward(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/autograd/__init__.py", line 353, in backward
+    _engine_run_backward(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/autograd/graph.py", line 824, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt

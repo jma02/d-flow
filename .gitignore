@@ -1,0 +1,9 @@
+venv
+
+data/*
+!data/utils/        
+
+unet.pt
+ema_sd.pt
+
+ckp*

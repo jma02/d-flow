@@ -1,0 +1,4 @@
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/johnma/d-flow/train.py", line 78, in <module>
+[rank1]:     torch.cuda.set_device(local_rank)
+[rank1]: NameError: name 'local_rank' is not defined

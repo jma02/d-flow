@@ -1,0 +1,12 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|                                                                                                                                            | 0/151 [00:35<?, ?it/s]
+Traceback (most recent call last):
+Step: 99 (0) | Loss: 1.81973 | Grad: 12.10879 | Lr: 1.110e-06
+Generating samples at epoch 0
+  File "/home/johnma/d-flow/train.py", line 166, in <module>
+    image = make_im_grid(gen_x, (2,2))
+  File "/home/johnma/d-flow/utils.py", line 31, in make_im_grid
+    cmap = cmocean.cm.ice
+NameError: name 'cmocean' is not defined
