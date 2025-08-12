@@ -1,0 +1,92 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   0%|          | 0/126 [00:26<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 111, in <module>
+    loss = loss_fn(x) / accumulation_steps
+  File "/home/johnma/d-flow/train.py", line 33, in loss_fn
+    pred_vel = model(xt, t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/unet/default.py", line 55, in forward
+    def forward(self, x: torch.Tensor, t: torch.Tensor, labels = None):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 1209, in forward
+    return compiled_fn(full_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 315, in runtime_wrapper
+    all_outs = call_func_at_runtime_with_args(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/utils.py", line 100, in g
+    return f(*args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/autograd/function.py", line 575, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 1937, in forward
+    fw_outs = call_func_at_runtime_with_args(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 495, in wrapper
+    return compiled_fn(runtime_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 689, in inner_fn
+    outs = compiled_fn(args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/output_code.py", line 460, in __call__
+    return self.current_callable(inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/utils.py", line 2404, in run
+    return model(new_inputs)
+  File "/tmp/torchinductor_johnma/xq/cxqj2hcizune6prhqzg25kpqe4vhmmmt4mha7zgxwkwbqlwoq422.py", line 7920, in call
+    buf657 = empty_strided_cuda((256, 4096, 4096), (16777216, 4096, 1), torch.float32)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 47.37 GiB of which 881.69 MiB is free. Including non-PyTorch memory, this process has 46.50 GiB memory in use. Of the allocated memory 45.88 GiB is allocated by PyTorch, and 121.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 111, in <module>
+    loss = loss_fn(x) / accumulation_steps
+  File "/home/johnma/d-flow/train.py", line 33, in loss_fn
+    pred_vel = model(xt, t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/unet/default.py", line 55, in forward
+    def forward(self, x: torch.Tensor, t: torch.Tensor, labels = None):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 1209, in forward
+    return compiled_fn(full_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 315, in runtime_wrapper
+    all_outs = call_func_at_runtime_with_args(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/utils.py", line 100, in g
+    return f(*args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/autograd/function.py", line 575, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 1937, in forward
+    fw_outs = call_func_at_runtime_with_args(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 495, in wrapper
+    return compiled_fn(runtime_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 689, in inner_fn
+    outs = compiled_fn(args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/output_code.py", line 460, in __call__
+    return self.current_callable(inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/utils.py", line 2404, in run
+    return model(new_inputs)
+  File "/tmp/torchinductor_johnma/xq/cxqj2hcizune6prhqzg25kpqe4vhmmmt4mha7zgxwkwbqlwoq422.py", line 7920, in call
+    buf657 = empty_strided_cuda((256, 4096, 4096), (16777216, 4096, 1), torch.float32)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 47.37 GiB of which 881.69 MiB is free. Including non-PyTorch memory, this process has 46.50 GiB memory in use. Of the allocated memory 45.88 GiB is allocated by PyTorch, and 121.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

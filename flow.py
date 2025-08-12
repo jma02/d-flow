@@ -8,14 +8,14 @@ class OptimalTransportFlow:
         super().__init__()
         self.sigma_min = sigma_min
 
-    #@torch.compile
+    @torch.compile
     def step(self, t: Tensor, x0: Tensor, x1: Tensor) -> Tensor:
         t = t[:, None, None, None]
         mu = t * x1
         sigma = 1 - (1 - self.sigma_min) * t
         return sigma * x0 + mu
 
-    #@torch.compile
+    @torch.compile
     def target(self, t: Tensor, x0: Tensor, x1: Tensor) -> Tensor:
         return x1 - (1 - self.sigma_min) * x0
 
@@ -28,7 +28,7 @@ def sample_images(model: nn.Module, shape: tuple = (64, 3, 32, 32), num_steps: i
     timesteps = torch.linspace(0.0, 1.0, num_steps, device=device)
 
     samples = odeint(
-        func = lambda t, x: model(x, t.repeat(shape[0])),
+        func = lambda t, x: model(x, t.expand(x.shape[0])),
         t = timesteps,
         y0 = x0,
         method = 'dopri5',

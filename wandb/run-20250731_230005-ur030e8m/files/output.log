@@ -1,0 +1,8 @@
+Train set shape: torch.Size([16000, 1, 32, 32])
+Validation set shape: torch.Size([2000, 1, 32, 32])
+Test set shape: torch.Size([2000, 1, 32, 32])
+Loaded checkpoint [step 3906 (125)]
+Epochs: 100%|██████████| 1/1 [00:21<00:00, 21.03s/it]
+                                  
+Generating samples at epoch 125
+Checkpoint saved at step 3937, epoch 125

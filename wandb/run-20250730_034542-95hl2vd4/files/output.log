@@ -1,0 +1,5 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|          | 0/126 [00:00<?, ?it/s]
+Epoch 0: 186it [00:41,  6.93it/s]

@@ -1,0 +1,20 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   1%|          | 1/126 [01:14<2:34:16, 74.05s/it]
+Traceback (most recent call last):
+Step: 99 (0) | Loss: 1.26963 | Grad: 17.41235 | Lr: 1.110e-06
+Step: 199 (0) | Loss: 0.61775 | Grad: 4.85328 | Lr: 2.221e-06
+Step: 299 (0) | Loss: 0.25981 | Grad: 1.02474 | Lr: 3.332e-06
+Step: 399 (0) | Loss: 0.21615 | Grad: 1.07905 | Lr: 4.443e-06
+Step: 499 (0) | Loss: 0.17935 | Grad: 1.15289 | Lr: 5.554e-06
+Generating samples at epoch 0
+Checkpoint saved at step 500, epoch 0
+Step: 599 (1) | Loss: 0.21240 | Grad: 1.54090 | Lr: 6.665e-06
+  File "/home/johnma/d-flow/train.py", line 111, in <module>
+    x = x.to(device)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 111, in <module>
+    x = x.to(device)
+KeyboardInterrupt

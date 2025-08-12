@@ -1,0 +1,391 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|          | 0/126 [00:53<?, ?it/s]
+Traceback (most recent call last):
+Step: 99 (0) | Loss: 1.26963 | Grad: 17.41233 | Lr: 1.110e-06
+Step: 199 (0) | Loss: 0.61775 | Grad: 4.85339 | Lr: 2.221e-06
+Step: 299 (0) | Loss: 0.25981 | Grad: 1.02414 | Lr: 3.332e-06
+Step: 399 (0) | Loss: 0.21611 | Grad: 1.07502 | Lr: 4.443e-06
+Step: 499 (0) | Loss: 0.17934 | Grad: 1.19532 | Lr: 5.554e-06
+Generating samples at epoch 0
+  File "/home/johnma/d-flow/train.py", line 164, in <module>
+    gen_x = sample_images(model, shape, num_steps=2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/johnma/d-flow/flow.py", line 30, in sample_images
+    samples = odeint(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/odeint.py", line 80, in odeint
+    solution = solver.integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/solvers.py", line 32, in integrate
+    self._before_integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/rk_common.py", line 213, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/misc.py", line 197, in forward
+    return self.base_func(t, y)
+  File "/home/johnma/d-flow/flow.py", line 31, in <lambda>
+    func = lambda t, x: model(x, t.expand(x.shape[0])),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1432, in __call__
+    return self._torchdynamo_orig_callable(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1213, in __call__
+    result = self._inner_convert(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 598, in __call__
+    return _compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1059, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_utils_internal.py", line 97, in wrapper_function
+    return function(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 761, in compile_inner
+    return _compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 797, in _compile_inner
+    out_code = transform_code_object(code, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/bytecode_transformation.py", line 1422, in transform_code_object
+    transformations(instructions, code_options)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 257, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 715, in transform
+    tracer.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3498, in run
+    super().run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 819, in wrapper
+    return inner_fn(self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 2166, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1170, in call_function
+    self.push(fn.call_function(self, args, kwargs))  # type: ignore[arg-type]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/lazy.py", line 201, in realize_and_forward
+    return getattr(self.realize(), name)(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/nn_module.py", line 952, in call_function
+    return variables.UserFunctionVariable(fn, source=source).call_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 414, in call_function
+    return super().call_function(tx, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 184, in call_function
+    return tx.inline_user_function_return(self, [*self.self_args(), *args], kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1187, in inline_user_function_return
+    return InliningInstructionTranslator.inline_call(self, fn, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3724, in inline_call
+    return tracer.inline_call_()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3903, in inline_call_
+    self.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 819, in wrapper
+    return inner_fn(self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 2166, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1170, in call_function
+    self.push(fn.call_function(self, args, kwargs))  # type: ignore[arg-type]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/nn_module.py", line 952, in call_function
+    return variables.UserFunctionVariable(fn, source=source).call_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 414, in call_function
+    return super().call_function(tx, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 184, in call_function
+    return tx.inline_user_function_return(self, [*self.self_args(), *args], kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1187, in inline_user_function_return
+    return InliningInstructionTranslator.inline_call(self, fn, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3724, in inline_call
+    return tracer.inline_call_()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3903, in inline_call_
+    self.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 819, in wrapper
+    return inner_fn(self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 2166, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1170, in call_function
+    self.push(fn.call_function(self, args, kwargs))  # type: ignore[arg-type]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/torch.py", line 1181, in call_function
+    tensor_variable = wrap_fx_proxy(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/builder.py", line 2302, in wrap_fx_proxy
+    return wrap_fx_proxy_cls(target_cls=TensorVariable, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/builder.py", line 2368, in wrap_fx_proxy_cls
+    return _wrap_fx_proxy(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/builder.py", line 2464, in _wrap_fx_proxy
+    example_value = get_fake_value(proxy.node, tx, allow_non_graph_fake=True)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3229, in get_fake_value
+    raise TorchRuntimeError(str(e)).with_traceback(e.__traceback__) from None
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3127, in get_fake_value
+    ret_val = wrap_fake_exception(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 2641, in wrap_fake_exception
+    return fn()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3128, in <lambda>
+    lambda: run_node(tx.output, node, args, kwargs, nnmodule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3325, in run_node
+    raise RuntimeError(make_error_message(e)).with_traceback(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3284, in run_node
+    return node.target(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_stats.py", line 27, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1282, in __torch_dispatch__
+    return self.dispatch(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1823, in dispatch
+    return self._cached_dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1384, in _cached_dispatch_impl
+    output = self._dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2338, in _dispatch_impl
+    r = func.decompose(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_ops.py", line 799, in decompose
+    return self._op_dk(dk, *args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_stats.py", line 27, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1282, in __torch_dispatch__
+    return self.dispatch(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1823, in dispatch
+    return self._cached_dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1384, in _cached_dispatch_impl
+    output = self._dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2333, in _dispatch_impl
+    decomposition_table[func](*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_prims_common/wrappers.py", line 308, in _fn
+    result = fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_decomp/decompositions.py", line 84, in inner
+    r = f(*tree_map(increase_prec, args), **tree_map(increase_prec, kwargs))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_decomp/decompositions.py", line 1451, in addmm
+    out = alpha * torch.mm(mat1, mat2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_stats.py", line 27, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1282, in __torch_dispatch__
+    return self.dispatch(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1823, in dispatch
+    return self._cached_dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1384, in _cached_dispatch_impl
+    output = self._dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2435, in _dispatch_impl
+    self.wrap_meta_outputs_with_default_device_logic(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2562, in wrap_meta_outputs_with_default_device_logic
+    return tree_map(wrap, r)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_pytree.py", line 1145, in tree_map
+    return treespec.unflatten(map(func, *flat_args))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_pytree.py", line 982, in unflatten
+    leaves = list(leaves)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2540, in wrap
+    ) = FakeTensor._find_common_device(func, flat_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 896, in _find_common_device
+    merge_devices(arg)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 891, in merge_devices
+    raise RuntimeError(
+torch._dynamo.exc.TorchRuntimeError: Dynamo failed to run FX node with fake tensors: call_function <built-in function linear>(*(FakeTensor(..., device='cuda:0', size=(1, 128)), Parameter(FakeTensor(..., device='cuda:1', size=(512, 128), requires_grad=True)), Parameter(FakeTensor(..., device='cuda:1', size=(512,), requires_grad=True))), **{}): got RuntimeError('Unhandled FakeTensor Device Propagation for aten.mm.default, found two different devices cuda:0, cuda:1')
+
+from user code:
+   File "/home/johnma/d-flow/unet/default.py", line 59, in forward
+    emb = self.time_proj(temb)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 240, in forward
+    input = module(input)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 164, in <module>
+    gen_x = sample_images(model, shape, num_steps=2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/johnma/d-flow/flow.py", line 30, in sample_images
+    samples = odeint(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/odeint.py", line 80, in odeint
+    solution = solver.integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/solvers.py", line 32, in integrate
+    self._before_integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/rk_common.py", line 213, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/misc.py", line 197, in forward
+    return self.base_func(t, y)
+  File "/home/johnma/d-flow/flow.py", line 31, in <lambda>
+    func = lambda t, x: model(x, t.expand(x.shape[0])),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1432, in __call__
+    return self._torchdynamo_orig_callable(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1213, in __call__
+    result = self._inner_convert(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 598, in __call__
+    return _compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1059, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_utils_internal.py", line 97, in wrapper_function
+    return function(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 761, in compile_inner
+    return _compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 797, in _compile_inner
+    out_code = transform_code_object(code, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/bytecode_transformation.py", line 1422, in transform_code_object
+    transformations(instructions, code_options)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 257, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 715, in transform
+    tracer.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3498, in run
+    super().run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 819, in wrapper
+    return inner_fn(self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 2166, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1170, in call_function
+    self.push(fn.call_function(self, args, kwargs))  # type: ignore[arg-type]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/lazy.py", line 201, in realize_and_forward
+    return getattr(self.realize(), name)(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/nn_module.py", line 952, in call_function
+    return variables.UserFunctionVariable(fn, source=source).call_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 414, in call_function
+    return super().call_function(tx, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 184, in call_function
+    return tx.inline_user_function_return(self, [*self.self_args(), *args], kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1187, in inline_user_function_return
+    return InliningInstructionTranslator.inline_call(self, fn, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3724, in inline_call
+    return tracer.inline_call_()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3903, in inline_call_
+    self.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 819, in wrapper
+    return inner_fn(self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 2166, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1170, in call_function
+    self.push(fn.call_function(self, args, kwargs))  # type: ignore[arg-type]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/nn_module.py", line 952, in call_function
+    return variables.UserFunctionVariable(fn, source=source).call_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 414, in call_function
+    return super().call_function(tx, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py", line 184, in call_function
+    return tx.inline_user_function_return(self, [*self.self_args(), *args], kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1187, in inline_user_function_return
+    return InliningInstructionTranslator.inline_call(self, fn, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3724, in inline_call
+    return tracer.inline_call_()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3903, in inline_call_
+    self.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 819, in wrapper
+    return inner_fn(self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 2166, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1170, in call_function
+    self.push(fn.call_function(self, args, kwargs))  # type: ignore[arg-type]
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/torch.py", line 1181, in call_function
+    tensor_variable = wrap_fx_proxy(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/builder.py", line 2302, in wrap_fx_proxy
+    return wrap_fx_proxy_cls(target_cls=TensorVariable, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/builder.py", line 2368, in wrap_fx_proxy_cls
+    return _wrap_fx_proxy(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/builder.py", line 2464, in _wrap_fx_proxy
+    example_value = get_fake_value(proxy.node, tx, allow_non_graph_fake=True)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3229, in get_fake_value
+    raise TorchRuntimeError(str(e)).with_traceback(e.__traceback__) from None
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3127, in get_fake_value
+    ret_val = wrap_fake_exception(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 2641, in wrap_fake_exception
+    return fn()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3128, in <lambda>
+    lambda: run_node(tx.output, node, args, kwargs, nnmodule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3325, in run_node
+    raise RuntimeError(make_error_message(e)).with_traceback(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/utils.py", line 3284, in run_node
+    return node.target(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_stats.py", line 27, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1282, in __torch_dispatch__
+    return self.dispatch(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1823, in dispatch
+    return self._cached_dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1384, in _cached_dispatch_impl
+    output = self._dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2338, in _dispatch_impl
+    r = func.decompose(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_ops.py", line 799, in decompose
+    return self._op_dk(dk, *args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_stats.py", line 27, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1282, in __torch_dispatch__
+    return self.dispatch(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1823, in dispatch
+    return self._cached_dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1384, in _cached_dispatch_impl
+    output = self._dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2333, in _dispatch_impl
+    decomposition_table[func](*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_prims_common/wrappers.py", line 308, in _fn
+    result = fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_decomp/decompositions.py", line 84, in inner
+    r = f(*tree_map(increase_prec, args), **tree_map(increase_prec, kwargs))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_decomp/decompositions.py", line 1451, in addmm
+    out = alpha * torch.mm(mat1, mat2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_stats.py", line 27, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1282, in __torch_dispatch__
+    return self.dispatch(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1823, in dispatch
+    return self._cached_dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 1384, in _cached_dispatch_impl
+    output = self._dispatch_impl(func, types, args, kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2435, in _dispatch_impl
+    self.wrap_meta_outputs_with_default_device_logic(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2562, in wrap_meta_outputs_with_default_device_logic
+    return tree_map(wrap, r)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_pytree.py", line 1145, in tree_map
+    return treespec.unflatten(map(func, *flat_args))
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_pytree.py", line 982, in unflatten
+    leaves = list(leaves)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 2540, in wrap
+    ) = FakeTensor._find_common_device(func, flat_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 896, in _find_common_device
+    merge_devices(arg)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_subclasses/fake_tensor.py", line 891, in merge_devices
+    raise RuntimeError(
+torch._dynamo.exc.TorchRuntimeError: Dynamo failed to run FX node with fake tensors: call_function <built-in function linear>(*(FakeTensor(..., device='cuda:0', size=(1, 128)), Parameter(FakeTensor(..., device='cuda:1', size=(512, 128), requires_grad=True)), Parameter(FakeTensor(..., device='cuda:1', size=(512,), requires_grad=True))), **{}): got RuntimeError('Unhandled FakeTensor Device Propagation for aten.mm.default, found two different devices cuda:0, cuda:1')
+
+from user code:
+   File "/home/johnma/d-flow/unet/default.py", line 59, in forward
+    emb = self.time_proj(temb)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 240, in forward
+    input = module(input)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"

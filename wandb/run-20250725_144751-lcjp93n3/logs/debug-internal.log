@@ -1,0 +1,6 @@
+{"time":"2025-07-25T14:47:51.597443928-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-25T14:47:51.776291365-04:00","level":"INFO","msg":"stream: created new stream","id":"lcjp93n3"}
+{"time":"2025-07-25T14:47:51.776336062-04:00","level":"INFO","msg":"stream: started","id":"lcjp93n3"}
+{"time":"2025-07-25T14:47:51.776355221-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"lcjp93n3"}
+{"time":"2025-07-25T14:47:51.776386718-04:00","level":"INFO","msg":"handler: started","stream_id":"lcjp93n3"}
+{"time":"2025-07-25T14:47:51.776621432-04:00","level":"INFO","msg":"sender: started","stream_id":"lcjp93n3"}

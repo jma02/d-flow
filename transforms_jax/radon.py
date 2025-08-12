@@ -42,6 +42,8 @@ def radon_transform(image, N=50):
   oversamp = 1.25
   width = 4
   image = pad_image(image)
+  
+  
   diameter = image.shape[-1]
   expanded_diameter = expand_diameter(diameter, K)
   r = get_r_coords(diameter, expanded_diameter)

@@ -1,0 +1,71 @@
+Using 2 GPUs!
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|              W0730 02:42:41.016836 3240646 venv/lib/python3.9/site-packages/torch/_logging/_internal.py:1130] [1/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/variables/functions.py:1263: UserWarning: Dynamo does not know how to trace the builtin `_thread.get_ident.` This function is either a Python builtin (e.g. _warnings.warn) or a third-party C/C++ Python extension (perhaps created with pybind).
+If it is a Python builtin, please file an issue on GitHub so the PyTorch team can add support for it and see the next case for a workaround.
+If it is a third-party C/C++ Python extension, please either wrap it into a PyTorch-understood custom operator (see https://pytorch.org/tutorials/advanced/custom_ops_landing_page.html for more details) or, if it is traceable, use `torch.compiler.allow_in_graph`.
+  torch._dynamo.utils.warn_once(explanation + "\n" + "\n".join(hints))
+Epochs:   0%|                                                                                                                        | 0/126 [02:22<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 117, in <module>
+    loss = loss_fn(x) / accumulation_steps
+  File "/home/johnma/d-flow/train.py", line 33, in loss_fn
+    pred_vel = model(xt, t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/external_utils.py", line 70, in inner
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 194, in forward
+    outputs = self.parallel_apply(replicas, inputs, module_kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 213, in parallel_apply
+    return parallel_apply(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/parallel/parallel_apply.py", line 119, in parallel_apply
+    thread.join()
+  File "/usr/lib64/python3.9/threading.py", line 1060, in join
+    self._wait_for_tstate_lock()
+  File "/usr/lib64/python3.9/threading.py", line 1080, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 117, in <module>
+    loss = loss_fn(x) / accumulation_steps
+  File "/home/johnma/d-flow/train.py", line 33, in loss_fn
+    pred_vel = model(xt, t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/external_utils.py", line 70, in inner
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 194, in forward
+    outputs = self.parallel_apply(replicas, inputs, module_kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 213, in parallel_apply
+    return parallel_apply(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/parallel/parallel_apply.py", line 119, in parallel_apply
+    thread.join()
+  File "/usr/lib64/python3.9/threading.py", line 1060, in join
+    self._wait_for_tstate_lock()
+  File "/usr/lib64/python3.9/threading.py", line 1080, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+KeyboardInterrupt
+Exception ignored in: <module 'threading' from '/usr/lib64/python3.9/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/threading.py", line 1477, in _shutdown
+    lock.acquire()
+KeyboardInterrupt:

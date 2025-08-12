@@ -1,0 +1,28 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|                                                                                                        | 0/126 [00:56<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 128, in <module>
+    ema_model.update_parameters(model)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/optim/swa_utils.py", line 304, in update_parameters
+    for b_swa, b_model in zip(self.module.buffers(), model.buffers()):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2697, in buffers
+    for _, buf in self.named_buffers(recurse=recurse):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2729, in named_buffers
+    yield from gen
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2618, in _named_members
+    yield name, v
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 128, in <module>
+    ema_model.update_parameters(model)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/optim/swa_utils.py", line 304, in update_parameters
+    for b_swa, b_model in zip(self.module.buffers(), model.buffers()):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2697, in buffers
+    for _, buf in self.named_buffers(recurse=recurse):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2729, in named_buffers
+    yield from gen
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 2618, in _named_members
+    yield name, v
+KeyboardInterrupt

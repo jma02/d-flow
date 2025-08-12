@@ -1,0 +1,18 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   5%|▍         | 6/126 [04:19<1:19:06, 39.55s/it]
+Epoch 6: 30it [00:04,  6.79it/s] 
+Step: 99 (0) | Loss: 1.30987 | Grad: 17.24083 | Lr: 1.110e-06
+Generating samples at epoch 0
+Step: 199 (1) | Loss: 0.62917 | Grad: 4.87055 | Lr: 2.221e-06
+Generating samples at epoch 1
+Step: 299 (2) | Loss: 0.26505 | Grad: 0.77115 | Lr: 3.332e-06
+Generating samples at epoch 2
+Step: 399 (3) | Loss: 0.21112 | Grad: 1.19132 | Lr: 4.443e-06
+Step: 499 (3) | Loss: 0.18660 | Grad: 1.63557 | Lr: 5.554e-06
+Generating samples at epoch 3
+Step: 599 (4) | Loss: 0.15339 | Grad: 0.78078 | Lr: 6.665e-06
+Generating samples at epoch 4
+Step: 699 (5) | Loss: 0.14273 | Grad: 1.61671 | Lr: 7.777e-06
+Generating samples at epoch 5

@@ -10,7 +10,7 @@ from torch.nn import MSELoss
 from unet import Unet
 from flow import OptimalTransportFlow, sample_images
 from utils import *
-
+import argparse
 
 torch.manual_seed(159753)
 np.random.seed(159753)
@@ -53,26 +53,46 @@ def get_lr(config, step):
 
 
 if __name__ == '__main__':
-    os.makedirs('samples', exist_ok=True)
     # initialize wandb
+
+    # command line arguments
+    parser = argparse.ArgumentParser(description="Train a diffusion model with optimal transport flow.")
+    parser.add_argument('--device', type=str, default='cuda:0', help='Device to use for training')
+    parser.add_argument('--ckpt', type=str, default=None, help='Path to a checkpoint to resume training from')
+    parser.add_argument('--ckpt-path', type=str, default="checkpoints", help='Path to save checkpoints')
+    parser.add_argument('--samples-path', type=str, default="samples", help='Path to save generated samples')
+
+    parser.add_argument('--image-size', type=int, default=64, help='Size of the input images')
+    parser.add_argument('--batch-size', type=int, default=16, help='Batch size for training')
+    parser.add_argument('--num-epochs', type=int, default=125, help='Number of training epochs')
+
+    args = parser.parse_args()
+    os.makedirs(args.samples_path, exist_ok=True)
     config = {
         'sigma_min': 1e-2,
         'min_lr': 1e-8,
         'max_lr': 5e-4,
         'warmup_steps': 45000,
-        'epochs': 50,
+        'epochs': args.num_epochs,
         'max_steps': 400000,
-        'batch_size': 64,
-        'log_freq': 100,
-        'num_workers': 2,
+        'batch_size': args.batch_size,
+        'log_freq': 1000, # sparsely log since we are training offline
+        'num_workers': 32,
+        'image_size': args.image_size,
     }
 
     wandb.init(project="dflow", config=config)
-    device = 'cuda'
+    device = args.device
 
-    model = Unet().to(device)
-    # Wait until our gpus get python development headers
-    # model = torch.compile(model)
+    model = Unet(ch=32).to(device)
+    # if torch.cuda.device_count() > 1:
+    #     print(f"Using {torch.cuda.device_count()} GPUs!")
+    #     model = torch.nn.DataParallel(model)
+    #     # Scale batch size and workers
+    #     config['batch_size'] = config['batch_size'] * torch.cuda.device_count()
+    #     config['num_workers'] = config['num_workers'] * torch.cuda.device_count()
+
+    model = torch.compile(model)
 
     ema_model = torch.optim.swa_utils.AveragedModel(
         model, multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.9999)
@@ -84,7 +104,7 @@ if __name__ == '__main__':
     train_loader, _ = get_loaders(config)
     scaler = torch.amp.GradScaler()
 
-    ckpt = None
+    ckpt = args.ckpt
     if ckpt is not None:
         step, curr_epoch, model, optim, scaler, ema_model = load_checkpoint(ckpt, model, optim, scaler, ema_model)
         print(f'Loaded checkpoint [step {step} ({curr_epoch})]')
@@ -153,19 +173,19 @@ if __name__ == '__main__':
         ema_model.eval()
         with torch.no_grad():
             print(f'Generating samples at epoch {epoch}')
-            shape = (4, 1, 64, 64)
+            shape = (1, 1, args.image_size, args.image_size)
 
-            gen_x = sample_images(model, shape, num_steps=2)
-            gen_x_ema = sample_images(ema_model, shape, num_steps=2)
+            gen_x = sample_images(model, shape, num_steps=2, device=device)
+            gen_x_ema = sample_images(ema_model, shape, num_steps=2, device=device)
             gen_x = gen_x[-1]
             gen_x_ema = gen_x_ema[-1]
             
             assert gen_x.shape == shape
 
-            image = make_im_grid(gen_x, (2,2))
-            ema_image = make_im_grid(gen_x_ema, (2, 2))
-            image.save(f'samples/{epoch}.png')
-            ema_image.save(f'samples/ema_{epoch}.png')
+            image = make_im_grid(gen_x, (1,1))
+            ema_image = make_im_grid(gen_x_ema, (1, 1))
+            image.save(f'{args.samples_path}/{epoch}.png')
+            ema_image.save(f'{args.samples_path}/ema_{epoch}.png')
 
             # Log sample images to wandb
             wandb.log({
@@ -174,6 +194,8 @@ if __name__ == '__main__':
                 "ema_samples": wandb.Image(ema_image),
             })
     
-    make_checkpoint(f'ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model)
+        if epoch % 10 == 0 or epoch == config['epochs']:
+            make_checkpoint(f'{args.ckpt_path}/ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model)
+            print(f"Checkpoint saved at step {step}, epoch {epoch}")
     
     wandb.finish()

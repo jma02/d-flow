@@ -1,0 +1,6 @@
+{"time":"2025-07-30T03:12:36.107887247-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-30T03:12:36.295639806-04:00","level":"INFO","msg":"stream: created new stream","id":"cxtgy2a4"}
+{"time":"2025-07-30T03:12:36.295687939-04:00","level":"INFO","msg":"stream: started","id":"cxtgy2a4"}
+{"time":"2025-07-30T03:12:36.295725135-04:00","level":"INFO","msg":"sender: started","stream_id":"cxtgy2a4"}
+{"time":"2025-07-30T03:12:36.295706747-04:00","level":"INFO","msg":"handler: started","stream_id":"cxtgy2a4"}
+{"time":"2025-07-30T03:12:36.295773558-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"cxtgy2a4"}

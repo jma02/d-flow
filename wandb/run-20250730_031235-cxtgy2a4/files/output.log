@@ -1,0 +1,32 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   3%|▎         | 4/126 [21:32<10:42:27, 315.96s/it]
+Epoch 4: 452it [02:12,  3.12it/s] 
+Step: 99 (0) | Loss: 1.19894 | Grad: 18.42125 | Lr: 1.110e-06
+Step: 199 (0) | Loss: 0.52497 | Grad: 4.80159 | Lr: 2.221e-06
+Step: 299 (0) | Loss: 0.22505 | Grad: 4.30170 | Lr: 3.332e-06
+Step: 399 (0) | Loss: 0.17099 | Grad: 2.44721 | Lr: 4.443e-06
+Step: 499 (0) | Loss: 0.14364 | Grad: 1.81160 | Lr: 5.554e-06
+Generating samples at epoch 0
+Checkpoint saved at step 500, epoch 0
+Step: 599 (1) | Loss: 0.13647 | Grad: 2.25330 | Lr: 6.665e-06
+Step: 699 (1) | Loss: 0.08158 | Grad: 1.11228 | Lr: 7.777e-06
+Step: 799 (1) | Loss: 0.09982 | Grad: 1.87520 | Lr: 8.888e-06
+Step: 899 (1) | Loss: 0.06593 | Grad: 0.47960 | Lr: 9.999e-06
+Step: 999 (1) | Loss: 0.06547 | Grad: 2.16312 | Lr: 1.111e-05
+Generating samples at epoch 1
+Step: 1099 (2) | Loss: 0.05638 | Grad: 1.23814 | Lr: 1.222e-05
+Step: 1199 (2) | Loss: 0.06871 | Grad: 1.27868 | Lr: 1.333e-05
+Step: 1299 (2) | Loss: 0.05889 | Grad: 2.12361 | Lr: 1.444e-05
+Step: 1399 (2) | Loss: 0.10344 | Grad: 1.09898 | Lr: 1.555e-05
+Step: 1499 (2) | Loss: 0.06468 | Grad: 1.59560 | Lr: 1.667e-05
+Generating samples at epoch 2
+Step: 1599 (3) | Loss: 0.04605 | Grad: 1.19775 | Lr: 1.778e-05
+Step: 1699 (3) | Loss: 0.04502 | Grad: 0.82371 | Lr: 1.889e-05
+Step: 1799 (3) | Loss: 0.04512 | Grad: 0.55101 | Lr: 2.000e-05
+Step: 1899 (3) | Loss: 0.03787 | Grad: 1.02645 | Lr: 2.111e-05
+Step: 1999 (3) | Loss: 0.05005 | Grad: 0.61623 | Lr: 2.222e-05
+Generating samples at epoch 3
+Step: 2099 (4) | Loss: 0.05094 | Grad: 0.90146 | Lr: 2.333e-05
+Step: 2199 (4) | Loss: 0.02758 | Grad: 0.50731 | Lr: 2.444e-05

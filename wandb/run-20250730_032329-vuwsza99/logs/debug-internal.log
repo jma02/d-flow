@@ -1,0 +1,6 @@
+{"time":"2025-07-30T03:23:30.078377289-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-30T03:23:30.262214223-04:00","level":"INFO","msg":"stream: created new stream","id":"vuwsza99"}
+{"time":"2025-07-30T03:23:30.262260442-04:00","level":"INFO","msg":"stream: started","id":"vuwsza99"}
+{"time":"2025-07-30T03:23:30.262277949-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"vuwsza99"}
+{"time":"2025-07-30T03:23:30.2622855-04:00","level":"INFO","msg":"handler: started","stream_id":"vuwsza99"}
+{"time":"2025-07-30T03:23:30.262303657-04:00","level":"INFO","msg":"sender: started","stream_id":"vuwsza99"}

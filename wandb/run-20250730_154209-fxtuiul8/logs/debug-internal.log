@@ -1,0 +1,13 @@
+{"time":"2025-07-30T15:42:10.108471786-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-30T15:42:10.300406493-04:00","level":"INFO","msg":"stream: created new stream","id":"fxtuiul8"}
+{"time":"2025-07-30T15:42:10.300462357-04:00","level":"INFO","msg":"stream: started","id":"fxtuiul8"}
+{"time":"2025-07-30T15:42:10.300483449-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"fxtuiul8"}
+{"time":"2025-07-30T15:42:10.300496529-04:00","level":"INFO","msg":"sender: started","stream_id":"fxtuiul8"}
+{"time":"2025-07-30T15:42:10.300522288-04:00","level":"INFO","msg":"handler: started","stream_id":"fxtuiul8"}
+{"time":"2025-07-30T15:50:48.010601211-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-07-30T15:50:48.125304014-04:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2025-07-30T15:50:48.128193235-04:00","level":"INFO","msg":"stream: closing","id":"fxtuiul8"}
+{"time":"2025-07-30T15:50:48.128211312-04:00","level":"INFO","msg":"handler: closed","stream_id":"fxtuiul8"}
+{"time":"2025-07-30T15:50:48.128222469-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"fxtuiul8"}
+{"time":"2025-07-30T15:50:48.128230361-04:00","level":"INFO","msg":"sender: closed","stream_id":"fxtuiul8"}
+{"time":"2025-07-30T15:50:48.128353656-04:00","level":"INFO","msg":"stream: closed","id":"fxtuiul8"}

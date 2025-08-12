@@ -1,0 +1,306 @@
+Train set shape: torch.Size([16000, 1, 64, 64])
+Validation set shape: torch.Size([2000, 1, 64, 64])
+Test set shape: torch.Size([2000, 1, 64, 64])
+Epochs:   0%|                                                                                                                        | 0/126 [01:34<?, ?it/s]
+Traceback (most recent call last):
+Step: 99 (0) | Loss: 1.22507 | Grad: 20.14796 | Lr: 1.110e-06
+Step: 199 (0) | Loss: 0.54146 | Grad: 5.28506 | Lr: 2.221e-06
+Step: 299 (0) | Loss: 0.19308 | Grad: 0.69715 | Lr: 3.332e-06
+Step: 399 (0) | Loss: 0.17662 | Grad: 0.81341 | Lr: 4.443e-06
+Step: 499 (0) | Loss: 0.15977 | Grad: 1.02178 | Lr: 5.554e-06
+Generating samples at epoch 0
+  File "/home/johnma/d-flow/train.py", line 164, in <module>
+    gen_x = sample_images(model, shape, num_steps=2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/johnma/d-flow/flow.py", line 30, in sample_images
+    samples = odeint(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/odeint.py", line 80, in odeint
+    solution = solver.integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/solvers.py", line 32, in integrate
+    self._before_integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/rk_common.py", line 213, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/misc.py", line 197, in forward
+    return self.base_func(t, y)
+  File "/home/johnma/d-flow/flow.py", line 31, in <lambda>
+    func = lambda t, x: model(x, t.expand(x.shape[0])),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1432, in __call__
+    return self._torchdynamo_orig_callable(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1213, in __call__
+    result = self._inner_convert(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 598, in __call__
+    return _compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1059, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_utils_internal.py", line 97, in wrapper_function
+    return function(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 761, in compile_inner
+    return _compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 797, in _compile_inner
+    out_code = transform_code_object(code, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/bytecode_transformation.py", line 1422, in transform_code_object
+    transformations(instructions, code_options)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 257, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 715, in transform
+    tracer.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3498, in run
+    super().run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3699, in RETURN_VALUE
+    self._return(inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3684, in _return
+    self.output.compile_subgraph(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1144, in compile_subgraph
+    self.compile_and_call_fx_graph(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1437, in compile_and_call_fx_graph
+    compiled_fn = self.call_user_compiler(gm)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1487, in call_user_compiler
+    return self._call_user_compiler(gm)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1519, in _call_user_compiler
+    compiled_fn = compiler_fn(gm, self.example_inputs())
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/repro/after_dynamo.py", line 150, in __call__
+    compiled_gm = compiler_fn(gm, example_inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/__init__.py", line 2347, in __call__
+    return compile_fx(model_, inputs_, config_patches=self.config)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 2088, in compile_fx
+    return aot_autograd(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/backends/common.py", line 101, in __call__
+    cg = aot_module_simplified(gm, example_inputs, **self.kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 1168, in aot_module_simplified
+    compiled_fn = AOTAutogradCache.load(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/autograd_cache.py", line 775, in load
+    compiled_fn = dispatch_and_compile()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 1153, in dispatch_and_compile
+    compiled_fn, _ = create_aot_dispatcher_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 570, in create_aot_dispatcher_function
+    return _create_aot_dispatcher_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 820, in _create_aot_dispatcher_function
+    compiled_fn, fw_metadata = compiler_fn(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/jit_compile_runtime_wrappers.py", line 219, in aot_dispatch_base
+    compiled_fw = compiler(fw_module, updated_flat_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 479, in __call__
+    return self.compiler_fn(gm, example_inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1943, in fw_compiler_base
+    return inner_compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 628, in compile_fx_inner
+    return wrap_compiler_debug(_compile_fx_inner, compiler_name="inductor")(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/repro/after_aot.py", line 124, in debug_wrapper
+    inner_compiled_fn = compiler_fn(gm, example_inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 745, in _compile_fx_inner
+    mb_compiled_graph = fx_codegen_and_compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1295, in fx_codegen_and_compile
+    return scheme.codegen_and_compile(gm, example_inputs, inputs_to_check, graph_kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1006, in codegen_and_compile
+    _recursive_post_grad_passes(gm, is_inference=is_inference)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 379, in _recursive_post_grad_passes
+    post_grad_passes(gm, is_inference)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/fx_passes/post_grad.py", line 136, in post_grad_passes
+    GraphTransformObserver(gm, f"pass_pattern_{i}").apply_graph_pass(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/passes/graph_transform_observer.py", line 85, in apply_graph_pass
+    return pass_fn(self.gm.graph)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/pattern_matcher.py", line 1870, in apply
+    if is_match(m) and entry.extra_check(m):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/pattern_matcher.py", line 1347, in check_fn
+    if isinstance(v, torch.SymInt) and all(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/pattern_matcher.py", line 1348, in <genexpr>
+    statically_known_true(v != a) for a in sym_args
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 1240, in statically_known_true
+    simplified = shape_env._maybe_evaluate_static(expr)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 2200, in wrapper
+    return fn_cache(self, *args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 5789, in _maybe_evaluate_static
+    r = _maybe_evaluate_static_worker(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 2068, in _maybe_evaluate_static_worker
+    new_expr = expr.xreplace(new_shape_env)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1361, in xreplace
+    value, _ = self._xreplace(rule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1376, in _xreplace
+    a_xr = _xreplace(rule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1376, in _xreplace
+    a_xr = _xreplace(rule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1383, in _xreplace
+    return self.func(*args), True
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/cache.py", line 72, in wrapper
+    retval = cfunc(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/operations.py", line 108, in __new__
+    c_part, nc_part, order_symbols = cls.flatten(args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/mul.py", line 722, in flatten
+    _mulsort(c_part)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/mul.py", line 36, in _mulsort
+    args.sort(key=_args_sortkey)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 413, in compare
+    c = l.compare(r)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 413, in compare
+    c = l.compare(r)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 400, in compare
+    c = _cmp_name(n1, n2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 122, in _cmp_name
+    i1 = ordering_of_classes.index(n1)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/johnma/d-flow/train.py", line 164, in <module>
+    gen_x = sample_images(model, shape, num_steps=2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/johnma/d-flow/flow.py", line 30, in sample_images
+    samples = odeint(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/odeint.py", line 80, in odeint
+    solution = solver.integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/solvers.py", line 32, in integrate
+    self._before_integrate(t)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/rk_common.py", line 213, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torchdiffeq/_impl/misc.py", line 197, in forward
+    return self.base_func(t, y)
+  File "/home/johnma/d-flow/flow.py", line 31, in <lambda>
+    func = lambda t, x: model(x, t.expand(x.shape[0])),
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1432, in __call__
+    return self._torchdynamo_orig_callable(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1213, in __call__
+    result = self._inner_convert(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 598, in __call__
+    return _compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 1059, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_utils_internal.py", line 97, in wrapper_function
+    return function(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 761, in compile_inner
+    return _compile_inner(code, one_graph, hooks, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 797, in _compile_inner
+    out_code = transform_code_object(code, transform)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/bytecode_transformation.py", line 1422, in transform_code_object
+    transformations(instructions, code_options)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 257, in _fn
+    return fn(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/convert_frame.py", line 715, in transform
+    tracer.run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3498, in run
+    super().run()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1337, in run
+    while self.step():
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 1246, in step
+    self.dispatch_table[inst.opcode](self, inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3699, in RETURN_VALUE
+    self._return(inst)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/symbolic_convert.py", line 3684, in _return
+    self.output.compile_subgraph(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1144, in compile_subgraph
+    self.compile_and_call_fx_graph(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1437, in compile_and_call_fx_graph
+    compiled_fn = self.call_user_compiler(gm)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1487, in call_user_compiler
+    return self._call_user_compiler(gm)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/output_graph.py", line 1519, in _call_user_compiler
+    compiled_fn = compiler_fn(gm, self.example_inputs())
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/repro/after_dynamo.py", line 150, in __call__
+    compiled_gm = compiler_fn(gm, example_inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/__init__.py", line 2347, in __call__
+    return compile_fx(model_, inputs_, config_patches=self.config)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 2088, in compile_fx
+    return aot_autograd(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/backends/common.py", line 101, in __call__
+    cg = aot_module_simplified(gm, example_inputs, **self.kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 1168, in aot_module_simplified
+    compiled_fn = AOTAutogradCache.load(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/autograd_cache.py", line 775, in load
+    compiled_fn = dispatch_and_compile()
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 1153, in dispatch_and_compile
+    compiled_fn, _ = create_aot_dispatcher_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 570, in create_aot_dispatcher_function
+    return _create_aot_dispatcher_function(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 820, in _create_aot_dispatcher_function
+    compiled_fn, fw_metadata = compiler_fn(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/_aot_autograd/jit_compile_runtime_wrappers.py", line 219, in aot_dispatch_base
+    compiled_fw = compiler(fw_module, updated_flat_args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_functorch/aot_autograd.py", line 479, in __call__
+    return self.compiler_fn(gm, example_inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1943, in fw_compiler_base
+    return inner_compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 628, in compile_fx_inner
+    return wrap_compiler_debug(_compile_fx_inner, compiler_name="inductor")(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_dynamo/repro/after_aot.py", line 124, in debug_wrapper
+    inner_compiled_fn = compiler_fn(gm, example_inputs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 745, in _compile_fx_inner
+    mb_compiled_graph = fx_codegen_and_compile(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1295, in fx_codegen_and_compile
+    return scheme.codegen_and_compile(gm, example_inputs, inputs_to_check, graph_kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 1006, in codegen_and_compile
+    _recursive_post_grad_passes(gm, is_inference=is_inference)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/compile_fx.py", line 379, in _recursive_post_grad_passes
+    post_grad_passes(gm, is_inference)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/fx_passes/post_grad.py", line 136, in post_grad_passes
+    GraphTransformObserver(gm, f"pass_pattern_{i}").apply_graph_pass(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/passes/graph_transform_observer.py", line 85, in apply_graph_pass
+    return pass_fn(self.gm.graph)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/pattern_matcher.py", line 1870, in apply
+    if is_match(m) and entry.extra_check(m):
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/pattern_matcher.py", line 1347, in check_fn
+    if isinstance(v, torch.SymInt) and all(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/_inductor/pattern_matcher.py", line 1348, in <genexpr>
+    statically_known_true(v != a) for a in sym_args
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 1240, in statically_known_true
+    simplified = shape_env._maybe_evaluate_static(expr)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 2200, in wrapper
+    return fn_cache(self, *args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 5789, in _maybe_evaluate_static
+    r = _maybe_evaluate_static_worker(
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/torch/fx/experimental/symbolic_shapes.py", line 2068, in _maybe_evaluate_static_worker
+    new_expr = expr.xreplace(new_shape_env)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1361, in xreplace
+    value, _ = self._xreplace(rule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1376, in _xreplace
+    a_xr = _xreplace(rule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1376, in _xreplace
+    a_xr = _xreplace(rule)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 1383, in _xreplace
+    return self.func(*args), True
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/cache.py", line 72, in wrapper
+    retval = cfunc(*args, **kwargs)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/operations.py", line 108, in __new__
+    c_part, nc_part, order_symbols = cls.flatten(args)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/mul.py", line 722, in flatten
+    _mulsort(c_part)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/mul.py", line 36, in _mulsort
+    args.sort(key=_args_sortkey)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 413, in compare
+    c = l.compare(r)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 413, in compare
+    c = l.compare(r)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 400, in compare
+    c = _cmp_name(n1, n2)
+  File "/home/johnma/d-flow/venv/lib64/python3.9/site-packages/sympy/core/basic.py", line 122, in _cmp_name
+    i1 = ordering_of_classes.index(n1)
+KeyboardInterrupt

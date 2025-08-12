@@ -1,0 +1,9 @@
+nohup: ignoring input
+/home/johnma/d-flow/venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))
+usage: train.py [-h] [--device DEVICE] [--ckpt CKPT] [--ckpt-path CKPT_PATH]
+                [--samples-path SAMPLES_PATH] [--image-size IMAGE_SIZE]
+                [--batch-size BATCH_SIZE] [--num-epochs NUM_EPOCHS]
+train.py: error: unrecognized arguments: --num_epochs 225
+/home/johnma/d-flow/venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))

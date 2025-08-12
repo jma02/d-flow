@@ -1,0 +1,148 @@
+Train set shape: torch.Size([16000, 1, 32, 32])
+Validation set shape: torch.Size([2000, 1, 32, 32])
+Test set shape: torch.Size([2000, 1, 32, 32])
+Epochs:  21%|██▏       | 27/126 [02:36<05:41,  3.45s/it] 
+                                 
+Generating samples at epoch 0
+Checkpoint saved at step 31, epoch 0
+Generating samples at epoch 1
+Generating samples at epoch 2
+Generating samples at epoch 3
+Generating samples at epoch 4
+Generating samples at epoch 5
+Generating samples at epoch 6
+Generating samples at epoch 7
+Generating samples at epoch 8
+Generating samples at epoch 9
+Generating samples at epoch 10
+Checkpoint saved at step 341, epoch 10
+Generating samples at epoch 11
+Generating samples at epoch 12
+Generating samples at epoch 13
+Generating samples at epoch 14
+Generating samples at epoch 15
+Generating samples at epoch 16
+Generating samples at epoch 17
+Generating samples at epoch 18
+Generating samples at epoch 19
+Generating samples at epoch 20
+Checkpoint saved at step 651, epoch 20
+Generating samples at epoch 21
+Generating samples at epoch 22
+Generating samples at epoch 23
+Generating samples at epoch 24
+Generating samples at epoch 25
+Generating samples at epoch 26
+Generating samples at epoch 27
+Generating samples at epoch 28
+Generating samples at epoch 29
+Generating samples at epoch 30
+Checkpoint saved at step 961, epoch 30
+Generating samples at epoch 31
+Step: 999 (32) | Loss: 0.23254 | Grad: 0.28723 | Lr: 1.111e-05
+Generating samples at epoch 32
+Generating samples at epoch 33
+Generating samples at epoch 34
+Generating samples at epoch 35
+Generating samples at epoch 36
+Generating samples at epoch 37
+Generating samples at epoch 38
+Generating samples at epoch 39
+Generating samples at epoch 40
+Checkpoint saved at step 1271, epoch 40
+Generating samples at epoch 41
+Generating samples at epoch 42
+Generating samples at epoch 43
+Generating samples at epoch 44
+Generating samples at epoch 45
+Generating samples at epoch 46
+Generating samples at epoch 47
+Generating samples at epoch 48
+Generating samples at epoch 49
+Generating samples at epoch 50
+Checkpoint saved at step 1581, epoch 50
+Generating samples at epoch 51
+Generating samples at epoch 52
+Generating samples at epoch 53
+Generating samples at epoch 54
+Generating samples at epoch 55
+Generating samples at epoch 56
+Generating samples at epoch 57
+Generating samples at epoch 58
+Generating samples at epoch 59
+Generating samples at epoch 60
+Checkpoint saved at step 1891, epoch 60
+Generating samples at epoch 61
+Generating samples at epoch 62
+Generating samples at epoch 63
+Step: 1999 (64) | Loss: 0.13055 | Grad: 0.19540 | Lr: 2.222e-05
+Generating samples at epoch 64
+Generating samples at epoch 65
+Generating samples at epoch 66
+Generating samples at epoch 67
+Generating samples at epoch 68
+Generating samples at epoch 69
+Generating samples at epoch 70
+Checkpoint saved at step 2201, epoch 70
+Generating samples at epoch 71
+Generating samples at epoch 72
+Generating samples at epoch 73
+Generating samples at epoch 74
+Generating samples at epoch 75
+Generating samples at epoch 76
+Generating samples at epoch 77
+Generating samples at epoch 78
+Generating samples at epoch 79
+Generating samples at epoch 80
+Checkpoint saved at step 2511, epoch 80
+Generating samples at epoch 81
+Generating samples at epoch 82
+Generating samples at epoch 83
+Generating samples at epoch 84
+Generating samples at epoch 85
+Generating samples at epoch 86
+Generating samples at epoch 87
+Generating samples at epoch 88
+Generating samples at epoch 89
+Generating samples at epoch 90
+Checkpoint saved at step 2821, epoch 90
+Generating samples at epoch 91
+Generating samples at epoch 92
+Generating samples at epoch 93
+Generating samples at epoch 94
+Generating samples at epoch 95
+Step: 2999 (96) | Loss: 0.10727 | Grad: 0.21695 | Lr: 3.333e-05
+Generating samples at epoch 96
+Generating samples at epoch 97
+Generating samples at epoch 98
+Generating samples at epoch 99
+Generating samples at epoch 100
+Checkpoint saved at step 3131, epoch 100
+Generating samples at epoch 101
+Generating samples at epoch 102
+Generating samples at epoch 103
+Generating samples at epoch 104
+Generating samples at epoch 105
+Generating samples at epoch 106
+Generating samples at epoch 107
+Generating samples at epoch 108
+Generating samples at epoch 109
+Generating samples at epoch 110
+Checkpoint saved at step 3441, epoch 110
+Generating samples at epoch 111
+Generating samples at epoch 112
+Generating samples at epoch 113
+Generating samples at epoch 114
+Generating samples at epoch 115
+Generating samples at epoch 116
+Generating samples at epoch 117
+Generating samples at epoch 118
+Generating samples at epoch 119
+Generating samples at epoch 120
+Checkpoint saved at step 3751, epoch 120
+Generating samples at epoch 121
+Generating samples at epoch 122
+Generating samples at epoch 123
+Generating samples at epoch 124
+Generating samples at epoch 125
+Checkpoint saved at step 3906, epoch 125

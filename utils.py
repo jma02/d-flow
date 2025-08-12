@@ -53,7 +53,7 @@ def get_loaders(config):
     #                              v2.ToDtype(torch.float32, scale=True),
     #                              v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
 
-    dataset = torch.load('data/dataset.pt')
+    dataset = torch.load(f'data/dataset-{config["image_size"]}.pt')
     print(f"Train set shape: {dataset['train'].shape}")
     print(f"Validation set shape: {dataset['val'].shape}")
     print(f"Test set shape: {dataset['test'].shape}")
@@ -105,11 +105,20 @@ def load_checkpoint(path, model, optim=None, scaler=None, ema_model=None):
     step = int(checkpoint['step'])
     epoch = int(checkpoint['epoch'])
 
+    # Remove _orig_mod. prefix from all state dicts
+    state_dict_keys = ['model_state_dict', 'optim_state_dict', 'ema_model_state_dict', 'scaler_state_dict']
+    
+    for key in state_dict_keys:
+        if key in checkpoint:
+            state_dict = checkpoint[key]
+            if any(k.startswith('_orig_mod.') for k in state_dict.keys()):
+                checkpoint[key] = {k.replace('_orig_mod.', ''): v for k, v in state_dict.items()}
+
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
 
     if optim is not None:
-        optim.load_state_dict(checkpoint['optim_state_dict'])
+        optim.load_state_dict(checkpoint.get('optim_state_dict', {}))
 
     if ema_model is not None:
         ema_model.load_state_dict(checkpoint['ema_model_state_dict'])
@@ -118,6 +127,4 @@ def load_checkpoint(path, model, optim=None, scaler=None, ema_model=None):
     if scaler is not None:
         scaler.load_state_dict(checkpoint['scaler_state_dict'])
 
-    model.eval()
-
-    return step, epoch, model, optim, scaler, ema_model  
+    return step, epoch, model, optim, scaler, ema_model

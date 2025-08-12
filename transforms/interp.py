@@ -105,36 +105,41 @@ def _spline_kernel(x, order):
 
 
 def _kaiser_bessel_kernel(x, beta):
+    eps = 1e-12
     if isinstance(x, torch.Tensor):
-        xx = beta * (1. - x ** 2) ** 0.5
+        xx = beta * (1. - x ** 2).clamp(min=0).sqrt()
         t = xx / 3.75
+        xx_safe = torch.where(xx == 0, torch.tensor(eps, device=xx.device), xx)
+        t_safe = torch.where(t == 0, torch.tensor(eps, device=t.device), t)
         return torch.where(torch.abs(x) > 1., 0.,
-                         torch.where(xx < 3.75,
-                                   1 + 3.5156229 * t ** 2 + 3.0899424 * t ** 4 +
-                                   1.2067492 * t ** 6 + 0.2659732 * t ** 8 +
-                                   0.0360768 * t ** 10 + 0.0045813 * t ** 12,
-                                   xx ** -0.5 * torch.exp(xx) * (
-                                       0.39894228 + 0.01328592 * t ** -1 +
-                                       0.00225319 * t ** -2 - 0.00157565 * t ** -3 +
-                                       0.00916281 * t ** -4 - 0.02057706 * t ** -5 +
-                                       0.02635537 * t ** -6 - 0.01647633 * t ** -7 +
-                                       0.00392377 * t ** -8)
-                                   ))
+            torch.where(xx < 3.75,
+                1 + 3.5156229 * t_safe ** 2 + 3.0899424 * t_safe ** 4 +
+                1.2067492 * t_safe ** 6 + 0.2659732 * t_safe ** 8 +
+                0.0360768 * t_safe ** 10 + 0.0045813 * t_safe ** 12,
+                xx_safe ** -0.5 * torch.exp(xx_safe) * (
+                    0.39894228 + 0.01328592 * t_safe ** -1 +
+                    0.00225319 * t_safe ** -2 - 0.00157565 * t_safe ** -3 +
+                    0.00916281 * t_safe ** -4 - 0.02057706 * t_safe ** -5 +
+                    0.02635537 * t_safe ** -6 - 0.01647633 * t_safe ** -7 +
+                    0.00392377 * t_safe ** -8)
+            ))
     else:
-        xx = beta * (1. - x ** 2) ** 0.5
+        xx = beta * np.sqrt(np.maximum(1. - x ** 2, 0))
         t = xx / 3.75
+        xx_safe = np.where(xx == 0, eps, xx)
+        t_safe = np.where(t == 0, eps, t)
         return np.where(np.abs(x) > 1., 0.,
-                       np.where(xx < 3.75,
-                               1 + 3.5156229 * t ** 2 + 3.0899424 * t ** 4 +
-                               1.2067492 * t ** 6 + 0.2659732 * t ** 8 +
-                               0.0360768 * t ** 10 + 0.0045813 * t ** 12,
-                               xx ** -0.5 * np.exp(xx) * (
-                                   0.39894228 + 0.01328592 * t ** -1 +
-                                   0.00225319 * t ** -2 - 0.00157565 * t ** -3 +
-                                   0.00916281 * t ** -4 - 0.02057706 * t ** -5 +
-                                   0.02635537 * t ** -6 - 0.01647633 * t ** -7 +
-                                   0.00392377 * t ** -8)
-                               ))
+            np.where(xx < 3.75,
+                1 + 3.5156229 * t_safe ** 2 + 3.0899424 * t_safe ** 4 +
+                1.2067492 * t_safe ** 6 + 0.2659732 * t_safe ** 8 +
+                0.0360768 * t_safe ** 10 + 0.0045813 * t_safe ** 12,
+                xx_safe ** -0.5 * np.exp(xx_safe) * (
+                    0.39894228 + 0.01328592 * t_safe ** -1 +
+                    0.00225319 * t_safe ** -2 - 0.00157565 * t_safe ** -3 +
+                    0.00916281 * t_safe ** -4 - 0.02057706 * t_safe ** -5 +
+                    0.02635537 * t_safe ** -6 - 0.01647633 * t_safe ** -7 +
+                    0.00392377 * t_safe ** -8)
+            ))
 
 
 def _get_interpolate(kernel):

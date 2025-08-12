@@ -1,0 +1,158 @@
+Train set shape: torch.Size([16000, 1, 128, 128])
+Validation set shape: torch.Size([2000, 1, 128, 128])
+Test set shape: torch.Size([2000, 1, 128, 128])
+Epochs:   4%|▍         | 5/126 [24:53<9:58:03, 296.56s/it] 
+Epoch 5: 399it [01:56,  3.76it/s] 
+Step: 99 (0) | Loss: 1.19885 | Grad: 19.20743 | Lr: 1.110e-06
+Step: 199 (0) | Loss: 0.52085 | Grad: 5.31596 | Lr: 2.221e-06
+Step: 299 (0) | Loss: 0.19550 | Grad: 1.59363 | Lr: 3.332e-06
+Step: 399 (0) | Loss: 0.14557 | Grad: 0.67782 | Lr: 4.443e-06
+Step: 499 (0) | Loss: 0.09702 | Grad: 1.05773 | Lr: 5.554e-06
+Generating samples at epoch 0
+Step: 599 (1) | Loss: 0.12150 | Grad: 1.87551 | Lr: 6.665e-06
+Step: 699 (1) | Loss: 0.06651 | Grad: 0.66976 | Lr: 7.777e-06
+Step: 799 (1) | Loss: 0.09190 | Grad: 1.41336 | Lr: 8.888e-06
+Step: 899 (1) | Loss: 0.05559 | Grad: 0.59585 | Lr: 9.999e-06
+Step: 999 (1) | Loss: 0.08342 | Grad: 1.00855 | Lr: 1.111e-05
+Generating samples at epoch 1
+Step: 1099 (2) | Loss: 0.04514 | Grad: 0.65829 | Lr: 1.222e-05
+Step: 1199 (2) | Loss: 0.06753 | Grad: 2.25027 | Lr: 1.333e-05
+Step: 1299 (2) | Loss: 0.07225 | Grad: 1.56592 | Lr: 1.444e-05
+Step: 1399 (2) | Loss: 0.08138 | Grad: 1.37782 | Lr: 1.555e-05
+Step: 1499 (2) | Loss: 0.09597 | Grad: 0.78075 | Lr: 1.667e-05
+Generating samples at epoch 2
+Step: 1599 (3) | Loss: 0.03541 | Grad: 0.82788 | Lr: 1.778e-05
+Step: 1699 (3) | Loss: 0.08898 | Grad: 0.82224 | Lr: 1.889e-05
+Step: 1799 (3) | Loss: 0.04026 | Grad: 0.66157 | Lr: 2.000e-05
+Step: 1899 (3) | Loss: 0.02961 | Grad: 0.45377 | Lr: 2.111e-05
+Step: 1999 (3) | Loss: 0.05003 | Grad: 0.57393 | Lr: 2.222e-05
+Generating samples at epoch 3
+Step: 2099 (4) | Loss: 0.06074 | Grad: 2.06119 | Lr: 2.333e-05
+Step: 2199 (4) | Loss: 0.03301 | Grad: 0.66833 | Lr: 2.444e-05
+Step: 2299 (4) | Loss: 0.06513 | Grad: 0.98937 | Lr: 2.555e-05
+Step: 2399 (4) | Loss: 0.05044 | Grad: 0.73678 | Lr: 2.667e-05
+Step: 2499 (4) | Loss: 0.02500 | Grad: 0.73997 | Lr: 2.778e-05
+Generating samples at epoch 4
+Step: 2599 (5) | Loss: 0.02311 | Grad: 0.39245 | Lr: 2.889e-05
+Step: 2699 (5) | Loss: 0.03041 | Grad: 0.80467 | Lr: 3.000e-05
+Step: 2799 (5) | Loss: 0.04900 | Grad: 1.15275 | Lr: 3.111e-05
+Step: 2899 (5) | Loss: 0.03715 | Grad: 0.51172 | Lr: 3.222e-05
+Step: 2999 (5) | Loss: 0.04510 | Grad: 0.55042 | Lr: 3.333e-05
+Generating samples at epoch 5
+Step: 3099 (6) | Loss: 0.04656 | Grad: 0.37275 | Lr: 3.444e-05
+Step: 3199 (6) | Loss: 0.05503 | Grad: 0.48231 | Lr: 3.555e-05
+Step: 3299 (6) | Loss: 0.03083 | Grad: 0.55129 | Lr: 3.666e-05
+Step: 3399 (6) | Loss: 0.02917 | Grad: 0.26091 | Lr: 3.778e-05
+Step: 3499 (6) | Loss: 0.04010 | Grad: 1.02685 | Lr: 3.889e-05
+Generating samples at epoch 6
+Step: 3599 (7) | Loss: 0.06544 | Grad: 0.45751 | Lr: 4.000e-05
+Step: 3699 (7) | Loss: 0.03732 | Grad: 0.31748 | Lr: 4.111e-05
+Step: 3799 (7) | Loss: 0.02031 | Grad: 0.76626 | Lr: 4.222e-05
+Step: 3899 (7) | Loss: 0.03214 | Grad: 1.01423 | Lr: 4.333e-05
+Step: 3999 (7) | Loss: 0.04437 | Grad: 0.46068 | Lr: 4.444e-05
+Generating samples at epoch 7
+Step: 4099 (8) | Loss: 0.03780 | Grad: 0.32710 | Lr: 4.555e-05
+Step: 4199 (8) | Loss: 0.03781 | Grad: 0.56375 | Lr: 4.666e-05
+Step: 4299 (8) | Loss: 0.04704 | Grad: 0.40455 | Lr: 4.778e-05
+Step: 4399 (8) | Loss: 0.05437 | Grad: 0.55843 | Lr: 4.889e-05
+Step: 4499 (8) | Loss: 0.01498 | Grad: 0.27937 | Lr: 5.000e-05
+Generating samples at epoch 8
+Step: 4599 (9) | Loss: 0.04347 | Grad: 0.36518 | Lr: 5.111e-05
+Step: 4699 (9) | Loss: 0.03799 | Grad: 0.21661 | Lr: 5.222e-05
+Step: 4799 (9) | Loss: 0.06413 | Grad: 0.90253 | Lr: 5.333e-05
+Step: 4899 (9) | Loss: 0.02237 | Grad: 0.36925 | Lr: 5.444e-05
+Step: 4999 (9) | Loss: 0.02790 | Grad: 0.55716 | Lr: 5.555e-05
+Generating samples at epoch 9
+Step: 5099 (10) | Loss: 0.03059 | Grad: 0.56531 | Lr: 5.666e-05
+Step: 5199 (10) | Loss: 0.04061 | Grad: 0.52132 | Lr: 5.778e-05
+Step: 5299 (10) | Loss: 0.02051 | Grad: 0.12745 | Lr: 5.889e-05
+Step: 5399 (10) | Loss: 0.01215 | Grad: 0.19232 | Lr: 6.000e-05
+Step: 5499 (10) | Loss: 0.04320 | Grad: 0.36701 | Lr: 6.111e-05
+Generating samples at epoch 10
+Step: 5599 (11) | Loss: 0.01468 | Grad: 0.39319 | Lr: 6.222e-05
+Step: 5699 (11) | Loss: 0.03100 | Grad: 0.19014 | Lr: 6.333e-05
+Step: 5799 (11) | Loss: 0.02856 | Grad: 0.69553 | Lr: 6.444e-05
+Step: 5899 (11) | Loss: 0.04557 | Grad: 0.63255 | Lr: 6.555e-05
+Step: 5999 (11) | Loss: 0.02990 | Grad: 0.42328 | Lr: 6.666e-05
+Generating samples at epoch 11
+Step: 6099 (12) | Loss: 0.02835 | Grad: 0.36808 | Lr: 6.778e-05
+Step: 6199 (12) | Loss: 0.02518 | Grad: 1.11944 | Lr: 6.889e-05
+Step: 6299 (12) | Loss: 0.02413 | Grad: 0.25609 | Lr: 7.000e-05
+Step: 6399 (12) | Loss: 0.02501 | Grad: 0.35901 | Lr: 7.111e-05
+Step: 6499 (12) | Loss: 0.02985 | Grad: 0.28002 | Lr: 7.222e-05
+Generating samples at epoch 12
+Step: 6599 (13) | Loss: 0.01765 | Grad: 0.18859 | Lr: 7.333e-05
+Step: 6699 (13) | Loss: 0.00752 | Grad: 1.17523 | Lr: 7.444e-05
+Step: 6799 (13) | Loss: 0.02546 | Grad: 0.73978 | Lr: 7.555e-05
+Step: 6899 (13) | Loss: 0.01686 | Grad: 0.46620 | Lr: 7.666e-05
+Step: 6999 (13) | Loss: 0.03344 | Grad: 0.80270 | Lr: 7.778e-05
+Generating samples at epoch 13
+Step: 7099 (14) | Loss: 0.05729 | Grad: 0.96570 | Lr: 7.889e-05
+Step: 7199 (14) | Loss: 0.02168 | Grad: 0.29191 | Lr: 8.000e-05
+Step: 7299 (14) | Loss: 0.02821 | Grad: 0.18565 | Lr: 8.111e-05
+Step: 7399 (14) | Loss: 0.02718 | Grad: 0.33423 | Lr: 8.222e-05
+Step: 7499 (14) | Loss: 0.04400 | Grad: 0.20719 | Lr: 8.333e-05
+Generating samples at epoch 14
+Step: 7599 (15) | Loss: 0.03181 | Grad: 0.30560 | Lr: 8.444e-05
+Step: 7699 (15) | Loss: 0.03366 | Grad: 0.40012 | Lr: 8.555e-05
+Step: 7799 (15) | Loss: 0.01695 | Grad: 0.75688 | Lr: 8.666e-05
+Step: 7899 (15) | Loss: 0.03041 | Grad: 0.44432 | Lr: 8.777e-05
+Step: 7999 (15) | Loss: 0.03792 | Grad: 0.24977 | Lr: 8.889e-05
+Generating samples at epoch 15
+Step: 8099 (16) | Loss: 0.01858 | Grad: 0.35117 | Lr: 9.000e-05
+Step: 8199 (16) | Loss: 0.02703 | Grad: 0.61482 | Lr: 9.111e-05
+Step: 8299 (16) | Loss: 0.01498 | Grad: 0.37719 | Lr: 9.222e-05
+Step: 8399 (16) | Loss: 0.04775 | Grad: 0.47195 | Lr: 9.333e-05
+Step: 8499 (16) | Loss: 0.04051 | Grad: 0.59885 | Lr: 9.444e-05
+Generating samples at epoch 16
+Step: 8599 (17) | Loss: 0.05212 | Grad: 0.86221 | Lr: 9.555e-05
+Step: 8699 (17) | Loss: 0.01217 | Grad: 1.07924 | Lr: 9.666e-05
+Step: 8799 (17) | Loss: 0.01829 | Grad: 0.68848 | Lr: 9.777e-05
+Step: 8899 (17) | Loss: 0.02575 | Grad: 0.85679 | Lr: 9.889e-05
+Step: 8999 (17) | Loss: 0.04748 | Grad: 0.81150 | Lr: 1.000e-04
+Generating samples at epoch 17
+Step: 9099 (18) | Loss: 0.03142 | Grad: 0.39627 | Lr: 1.011e-04
+Step: 9199 (18) | Loss: 0.01691 | Grad: 0.20869 | Lr: 1.022e-04
+Step: 9299 (18) | Loss: 0.05375 | Grad: 0.41887 | Lr: 1.033e-04
+Step: 9399 (18) | Loss: 0.03358 | Grad: 0.20668 | Lr: 1.044e-04
+Step: 9499 (18) | Loss: 0.01347 | Grad: 0.15092 | Lr: 1.056e-04
+Generating samples at epoch 18
+Step: 9599 (19) | Loss: 0.01657 | Grad: 0.42107 | Lr: 1.067e-04
+Step: 9699 (19) | Loss: 0.02461 | Grad: 0.45122 | Lr: 1.078e-04
+Step: 9799 (19) | Loss: 0.08490 | Grad: 0.41193 | Lr: 1.089e-04
+Step: 9899 (19) | Loss: 0.04911 | Grad: 0.44545 | Lr: 1.100e-04
+Step: 9999 (19) | Loss: 0.07164 | Grad: 1.36988 | Lr: 1.111e-04
+Generating samples at epoch 19
+Step: 10099 (20) | Loss: 0.03170 | Grad: 0.18124 | Lr: 1.122e-04
+Step: 10199 (20) | Loss: 0.01473 | Grad: 0.33587 | Lr: 1.133e-04
+Step: 10299 (20) | Loss: 0.06466 | Grad: 0.27957 | Lr: 1.144e-04
+Step: 10399 (20) | Loss: 0.02347 | Grad: 0.43354 | Lr: 1.156e-04
+Step: 10499 (20) | Loss: 0.03161 | Grad: 0.98061 | Lr: 1.167e-04
+Generating samples at epoch 20
+Step: 10599 (21) | Loss: 0.00830 | Grad: 0.94299 | Lr: 1.178e-04
+Step: 10699 (21) | Loss: 0.01907 | Grad: 0.63297 | Lr: 1.189e-04
+Step: 10799 (21) | Loss: 0.02417 | Grad: 0.36283 | Lr: 1.200e-04
+Step: 10899 (21) | Loss: 0.02912 | Grad: 0.73463 | Lr: 1.211e-04
+Step: 10999 (21) | Loss: 0.04664 | Grad: 0.30931 | Lr: 1.222e-04
+Generating samples at epoch 21
+Step: 11099 (22) | Loss: 0.03151 | Grad: 0.20607 | Lr: 1.233e-04
+Step: 11199 (22) | Loss: 0.01254 | Grad: 0.39143 | Lr: 1.244e-04
+Step: 11299 (22) | Loss: 0.02473 | Grad: 0.22156 | Lr: 1.256e-04
+Step: 11399 (22) | Loss: 0.01410 | Grad: 0.29121 | Lr: 1.267e-04
+Step: 11499 (22) | Loss: 0.01454 | Grad: 0.22304 | Lr: 1.278e-04
+Generating samples at epoch 22
+Step: 11599 (23) | Loss: 0.01356 | Grad: 0.26155 | Lr: 1.289e-04
+Step: 11699 (23) | Loss: 0.03446 | Grad: 0.43728 | Lr: 1.300e-04
+Step: 11799 (23) | Loss: 0.04166 | Grad: 0.21672 | Lr: 1.311e-04
+Step: 11899 (23) | Loss: 0.04397 | Grad: 0.45676 | Lr: 1.322e-04
+Step: 11999 (23) | Loss: 0.02053 | Grad: 0.61133 | Lr: 1.333e-04
+Generating samples at epoch 23
+Step: 12099 (24) | Loss: 0.03444 | Grad: 0.47274 | Lr: 1.344e-04
+Step: 12199 (24) | Loss: 0.05420 | Grad: 0.12637 | Lr: 1.356e-04
+Step: 12299 (24) | Loss: 0.02100 | Grad: 0.58283 | Lr: 1.367e-04
+Step: 12399 (24) | Loss: 0.03560 | Grad: 0.76218 | Lr: 1.378e-04
+Step: 12499 (24) | Loss: 0.03927 | Grad: 0.58673 | Lr: 1.389e-04
+Generating samples at epoch 24
+Step: 12599 (25) | Loss: 0.03961 | Grad: 0.38436 | Lr: 1.400e-04
+Step: 12699 (25) | Loss: 0.00619 | Grad: 0.37981 | Lr: 1.411e-04
+Step: 12799 (25) | Loss: 0.00891 | Grad: 0.91789 | Lr: 1.422e-04

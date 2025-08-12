@@ -1,0 +1,8 @@
+{"time":"2025-07-25T15:09:23.582918203-04:00","level":"INFO","msg":"stream: starting","core version":"0.21.0"}
+{"time":"2025-07-25T15:09:23.766310812-04:00","level":"INFO","msg":"stream: created new stream","id":"eyd6h9bj"}
+{"time":"2025-07-25T15:09:23.76636265-04:00","level":"INFO","msg":"stream: started","id":"eyd6h9bj"}
+{"time":"2025-07-25T15:09:23.766391163-04:00","level":"INFO","msg":"sender: started","stream_id":"eyd6h9bj"}
+{"time":"2025-07-25T15:09:23.766387728-04:00","level":"INFO","msg":"handler: started","stream_id":"eyd6h9bj"}
+{"time":"2025-07-25T15:09:23.766420427-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"eyd6h9bj"}
+{"time":"2025-07-25T15:24:24.269557378-04:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/ma-jonathan02-sciml/dflow/eyd6h9bj/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
+{"time":"2025-07-25T15:28:09.290455993-04:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
