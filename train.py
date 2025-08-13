@@ -84,7 +84,7 @@ if __name__ == '__main__':
     wandb.init(project="dflow", config=config)
     device = args.device
 
-    model = Unet(ch=32).to(device)
+    model = Unet(ch=64).to(device)
     # if torch.cuda.device_count() > 1:
     #     print(f"Using {torch.cuda.device_count()} GPUs!")
     #     model = torch.nn.DataParallel(model)
