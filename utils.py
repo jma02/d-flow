@@ -101,30 +101,50 @@ def make_checkpoint(path, step, epoch, model, optim=None, scaler=None, ema_model
 
 
 def load_checkpoint(path, model, optim=None, scaler=None, ema_model=None):
-    checkpoint = torch.load(path, weights_only=True)
+    # Load checkpoint to CPU first to avoid device mismatches
+    checkpoint = torch.load(path, map_location='cpu')
+    
+    state_dict = checkpoint['model_state_dict']
+    
+    # Create a new state dict to handle the 'module.' prefix
+    from collections import OrderedDict
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items():
+        name = k[7:] if k.startswith('module.') else k  # remove `module.`
+        name = name[10:] if name.startswith('_orig_mod.') else name  # remove `orig_mod.`
+        new_state_dict[name] = v
+        
+    # Load the cleaned state dict
+    model.load_state_dict(new_state_dict)
+    # model.load_state_dict(state_dict, strict=False)
+    
     step = int(checkpoint['step'])
     epoch = int(checkpoint['epoch'])
 
-    # Remove _orig_mod. prefix from all state dicts
-    state_dict_keys = ['model_state_dict', 'optim_state_dict', 'ema_model_state_dict', 'scaler_state_dict']
-    
-    for key in state_dict_keys:
-        if key in checkpoint:
-            state_dict = checkpoint[key]
-            if any(k.startswith('_orig_mod.') for k in state_dict.keys()):
-                checkpoint[key] = {k.replace('_orig_mod.', ''): v for k, v in state_dict.items()}
+    # It's better practice for the calling script to handle model.eval()
+    # model.eval() 
 
-    model.load_state_dict(checkpoint['model_state_dict'])
-    model.eval()
+    if optim and 'optim_state_dict' in checkpoint:
+        # Create a new state dict here too 
+        new_optim_state_dict = OrderedDict()
+        for k, v in optim.state_dict().items():
+            name = k[7:] if k.startswith('module.') else k
+            name = name[10:] if name.startswith('_orig_mod.') else name  # remove `orig_mod.`
+            new_optim_state_dict[name] = v
+        optim.load_state_dict(new_optim_state_dict)
 
-    if optim is not None:
-        optim.load_state_dict(checkpoint.get('optim_state_dict', {}))
 
-    if ema_model is not None:
+    # I don't think we'll use this
+    if ema_model and 'ema_model_state_dict' in checkpoint:
         ema_model.load_state_dict(checkpoint['ema_model_state_dict'])
-        ema_model.eval()
 
-    if scaler is not None:
-        scaler.load_state_dict(checkpoint['scaler_state_dict'])
+    if scaler and 'scaler_state_dict' in checkpoint:
+        # Create a new state dict here too
+        new_scaler_state_dict = OrderedDict()
+        for k, v in scaler.state_dict().items():
+            name = k[7:] if k.startswith('module.') else k
+            name = name[10:] if name.startswith('_orig_mod.') else name  # remove `orig_mod.`
+            new_scaler_state_dict[name] = v
+        scaler.load_state_dict(new_scaler_state_dict)
 
     return step, epoch, model, optim, scaler, ema_model
