@@ -7,3 +7,5 @@ unet.pt
 ema_sd.pt
 
 ckp*
+
+wandb/

@@ -56,7 +56,7 @@ if __name__ == '__main__':
     # initialize wandb
 
     # command line arguments
-    parser = argparse.ArgumentParser(description="Train a diffusion model with optimal transport flow.")
+    parser = argparse.ArgumentParser(description="Train a flow matching model.")
     parser.add_argument('--device', type=str, default='cuda:0', help='Device to use for training')
     parser.add_argument('--ckpt', type=str, default=None, help='Path to a checkpoint to resume training from')
     parser.add_argument('--ckpt-path', type=str, default="checkpoints", help='Path to save checkpoints')
@@ -65,9 +65,9 @@ if __name__ == '__main__':
     parser.add_argument('--image-size', type=int, default=64, help='Size of the input images')
     parser.add_argument('--batch-size', type=int, default=16, help='Batch size for training')
     parser.add_argument('--num-epochs', type=int, default=125, help='Number of training epochs')
+    parser.add_argument('--problem', type=str, default='circles', help='Dataset to use')
 
     args = parser.parse_args()
-    os.makedirs(args.samples_path, exist_ok=True)
     config = {
         'sigma_min': 1e-2,
         'min_lr': 1e-8,
@@ -79,12 +79,13 @@ if __name__ == '__main__':
         'log_freq': 1000, # sparsely log since we are training offline
         'num_workers': 32,
         'image_size': args.image_size,
+        'problem': args.problem,
     }
 
     wandb.init(project="dflow", config=config)
     device = args.device
 
-    model = Unet(ch=64).to(device)
+    model = Unet(ch=32).to(device)
     # if torch.cuda.device_count() > 1:
     #     print(f"Using {torch.cuda.device_count()} GPUs!")
     #     model = torch.nn.DataParallel(model)
@@ -101,7 +102,11 @@ if __name__ == '__main__':
     loss_fn = get_loss_fn(model, flow)
     
     optim = torch.optim.Adam(model.parameters(), lr=config['min_lr'])
+    # after loading the data we change working directory
     train_loader, _ = get_loaders(config)
+    os.chdir(f"problems/{config['problem']}")
+    os.makedirs(args.samples_path, exist_ok=True)
+    os.makedirs(args.ckpt_path, exist_ok=True)
     scaler = torch.amp.GradScaler()
 
     ckpt = args.ckpt

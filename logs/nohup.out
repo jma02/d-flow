@@ -1,481 +1,0 @@
-/home/johnma/d-flow/venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
-  backends.update(_get_backends("networkx.backends"))
-wandb: Currently logged in as: ma-jonathan02 (ma-jonathan02-sciml) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-/home/johnma/d-flow/venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
-  backends.update(_get_backends("networkx.backends"))
-wandb: Tracking run with wandb version 0.21.0
-wandb: Run data is saved locally in /home/johnma/d-flow/wandb/run-20250730_031012-nka3ib1x
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run earthy-sun-63
-wandb: ⭐️ View project at https://wandb.ai/ma-jonathan02-sciml/dflow
-wandb: 🚀 View run at https://wandb.ai/ma-jonathan02-sciml/dflow/runs/nka3ib1x
-Train set shape: torch.Size([16000, 1, 64, 64])
-Validation set shape: torch.Size([2000, 1, 64, 64])
-Test set shape: torch.Size([2000, 1, 64, 64])
-Epochs:   0%|          | 0/126 [00:00<?, ?it/s]
-Epoch 0: 0it [00:00, ?it/s][A
-Epoch 0: 1it [00:13, 13.11s/it][A
-Epoch 0: 2it [00:13,  5.48s/it][A
-Epoch 0: 4it [00:13,  2.09s/it][A
-Epoch 0: 7it [00:13,  1.10it/s][A
-Epoch 0: 10it [00:13,  1.92it/s][A
-Epoch 0: 13it [00:13,  3.03it/s][A
-Epoch 0: 16it [00:13,  4.39it/s][A
-Epoch 0: 19it [00:13,  6.17it/s][A
-Epoch 0: 22it [00:14,  8.07it/s][A
-Epoch 0: 25it [00:14, 10.49it/s][A
-Epoch 0: 28it [00:14, 12.54it/s][A
-Epoch 0: 31it [00:14, 15.25it/s][A
-Epoch 0: 34it [00:14, 16.83it/s][A
-Epoch 0: 37it [00:14, 19.36it/s][A
-Epoch 0: 40it [00:14, 20.10it/s][A
-Epoch 0: 43it [00:14, 22.26it/s][A
-Epoch 0: 46it [00:15, 22.18it/s][A
-Epoch 0: 49it [00:15, 23.99it/s][A
-Epoch 0: 52it [00:15, 23.38it/s][A
-Epoch 0: 55it [00:15, 24.95it/s][A
-Epoch 0: 58it [00:15, 24.02it/s][A
-Epoch 0: 61it [00:15, 25.47it/s][A
-Epoch 0: 64it [00:15, 24.40it/s][A
-Epoch 0: 67it [00:15, 25.76it/s][A
-Epoch 0: 70it [00:15, 24.54it/s][A
-Epoch 0: 73it [00:16, 25.84it/s][A
-Epoch 0: 76it [00:16, 24.58it/s][A
-Epoch 0: 79it [00:16, 25.99it/s][A
-Epoch 0: 82it [00:16, 24.71it/s][A
-Epoch 0: 86it [00:16, 24.98it/s][A
-Epoch 0: 89it [00:16, 26.20it/s][A
-Epoch 0: 92it [00:16, 24.91it/s][A
-Epoch 0: 96it [00:17, 25.13it/s][A
-Epoch 0: 99it [00:17, 26.25it/s][A
-Epoch 0: 102it [00:17, 24.91it/s][A
-Epoch 0: 105it [00:17, 26.07it/s][A
-Epoch 0: 108it [00:17, 24.75it/s][A
-Epoch 0: 111it [00:17, 26.01it/s][A
-Epoch 0: 114it [00:17, 24.68it/s][A
-Epoch 0: 117it [00:17, 25.96it/s][A
-Epoch 0: 120it [00:17, 24.65it/s][A
-Epoch 0: 123it [00:18, 25.92it/s][A
-Epoch 0: 126it [00:18, 24.61it/s][A
-Epoch 0: 129it [00:18, 25.96it/s][A
-Epoch 0: 132it [00:18, 24.66it/s][A
-Epoch 0: 135it [00:18, 25.95it/s][A
-Epoch 0: 138it [00:18, 24.67it/s][A
-Epoch 0: 141it [00:18, 25.87it/s][A
-Epoch 0: 144it [00:18, 24.75it/s][A
-Epoch 0: 147it [00:19, 26.06it/s][A
-Epoch 0: 150it [00:19, 24.73it/s][A
-Epoch 0: 153it [00:19, 26.01it/s][A
-Epoch 0: 156it [00:19, 24.67it/s][A
-Epoch 0: 159it [00:19, 26.00it/s][A
-Epoch 0: 162it [00:19, 24.71it/s][A
-Epoch 0: 165it [00:19, 26.02it/s][A
-Epoch 0: 168it [00:19, 24.67it/s][A
-Epoch 0: 171it [00:19, 25.95it/s][A
-Epoch 0: 174it [00:20, 24.66it/s][A
-Epoch 0: 177it [00:20, 26.00it/s][A
-Epoch 0: 180it [00:20, 24.64it/s][A
-Epoch 0: 183it [00:20, 25.98it/s][A
-Epoch 0: 186it [00:20, 24.68it/s][A
-Epoch 0: 189it [00:20, 25.98it/s][A
-Epoch 0: 192it [00:20, 24.69it/s][A
-Epoch 0: 195it [00:20, 26.02it/s][A
-Epoch 0: 198it [00:21, 24.68it/s][A
-Epoch 0: 201it [00:21, 25.90it/s][A
-Epoch 0: 204it [00:21, 24.61it/s][A
-Epoch 0: 207it [00:21, 25.94it/s][A
-Epoch 0: 210it [00:21, 24.66it/s][A
-Epoch 0: 213it [00:21, 25.99it/s][A
-Epoch 0: 216it [00:21, 24.66it/s][A
-Epoch 0: 219it [00:21, 25.73it/s][A
-Epoch 0: 222it [00:22, 24.50it/s][A
-Epoch 0: 225it [00:22, 25.88it/s][A
-Epoch 0: 228it [00:22, 24.65it/s][A
-Epoch 0: 231it [00:22, 25.95it/s][A
-Epoch 0: 234it [00:22, 24.63it/s][A
-Epoch 0: 237it [00:22, 25.93it/s][A
-Epoch 0: 240it [00:22, 24.64it/s][A
-Epoch 0: 243it [00:22, 25.96it/s][A
-Epoch 0: 246it [00:22, 24.65it/s][A
-Epoch 0: 249it [00:23, 25.94it/s][A
-Epoch 0: 252it [00:23, 24.60it/s][A
-Epoch 0: 255it [00:23, 25.90it/s][A
-Epoch 0: 258it [00:23, 24.63it/s][A
-Epoch 0: 261it [00:23, 25.93it/s][A
-Epoch 0: 264it [00:23, 24.62it/s][A
-Epoch 0: 267it [00:23, 25.91it/s][A
-Epoch 0: 270it [00:23, 24.63it/s][A
-Epoch 0: 273it [00:24, 25.97it/s][A
-Epoch 0: 276it [00:24, 24.67it/s][A
-Epoch 0: 279it [00:24, 26.02it/s][A
-Epoch 0: 282it [00:24, 24.68it/s][A
-Epoch 0: 285it [00:24, 25.96it/s][A
-Epoch 0: 288it [00:24, 24.67it/s][A
-Epoch 0: 291it [00:24, 26.01it/s][A
-Epoch 0: 294it [00:24, 24.66it/s][A
-Epoch 0: 297it [00:24, 25.95it/s][A
-Epoch 0: 300it [00:25, 24.62it/s][A
-Epoch 0: 303it [00:25, 25.95it/s][A
-Epoch 0: 306it [00:25, 24.65it/s][A
-Epoch 0: 309it [00:25, 25.98it/s][A
-Epoch 0: 312it [00:25, 24.65it/s][A
-Epoch 0: 315it [00:25, 25.95it/s][A
-Epoch 0: 318it [00:25, 24.66it/s][A
-Epoch 0: 321it [00:25, 26.01it/s][A
-Epoch 0: 324it [00:26, 24.68it/s][A
-Epoch 0: 327it [00:26, 25.96it/s][A
-Epoch 0: 330it [00:26, 24.64it/s][A
-Epoch 0: 333it [00:26, 25.94it/s][A
-Epoch 0: 336it [00:26, 24.52it/s][A
-Epoch 0: 339it [00:26, 25.74it/s][A
-Epoch 0: 342it [00:26, 24.52it/s][A
-Epoch 0: 345it [00:26, 25.83it/s][A
-Epoch 0: 348it [00:26, 24.54it/s][A
-Epoch 0: 351it [00:27, 25.87it/s][A
-Epoch 0: 354it [00:27, 24.62it/s][A
-Epoch 0: 357it [00:27, 25.93it/s][A
-Epoch 0: 360it [00:27, 24.62it/s][A
-Epoch 0: 363it [00:27, 25.92it/s][A
-Epoch 0: 366it [00:27, 24.63it/s][A
-Epoch 0: 369it [00:27, 25.97it/s][A
-Epoch 0: 372it [00:27, 24.66it/s][A
-Epoch 0: 375it [00:28, 26.00it/s][A
-Epoch 0: 378it [00:28, 24.68it/s][A
-Epoch 0: 381it [00:28, 25.99it/s][A
-Epoch 0: 384it [00:28, 24.69it/s][A
-Epoch 0: 387it [00:28, 26.03it/s][A
-Epoch 0: 390it [00:28, 24.66it/s][A
-Epoch 0: 393it [00:28, 25.95it/s][A
-Epoch 0: 396it [00:28, 24.63it/s][A
-Epoch 0: 399it [00:28, 25.96it/s][A
-Epoch 0: 402it [00:29, 24.63it/s][A
-Epoch 0: 405it [00:29, 25.96it/s][A
-Epoch 0: 408it [00:29, 24.62it/s][A
-Epoch 0: 411it [00:29, 25.92it/s][A
-Epoch 0: 414it [00:29, 24.60it/s][A
-Epoch 0: 417it [00:29, 25.97it/s][A
-Epoch 0: 420it [00:29, 24.68it/s][A
-Epoch 0: 423it [00:29, 25.97it/s][A
-Epoch 0: 426it [00:30, 24.67it/s][A
-Epoch 0: 429it [00:30, 25.97it/s][A
-Epoch 0: 432it [00:30, 24.64it/s][A
-Epoch 0: 435it [00:30, 25.95it/s][A
-Epoch 0: 438it [00:30, 24.64it/s][A
-Epoch 0: 441it [00:30, 25.94it/s][A
-Epoch 0: 444it [00:30, 24.62it/s][A
-Epoch 0: 447it [00:30, 25.95it/s][A
-Epoch 0: 450it [00:31, 24.64it/s][A
-Epoch 0: 453it [00:31, 25.95it/s][A
-Epoch 0: 456it [00:31, 24.61it/s][A
-Epoch 0: 459it [00:31, 25.90it/s][A
-Epoch 0: 462it [00:31, 24.62it/s][A
-Epoch 0: 465it [00:31, 25.98it/s][A
-Epoch 0: 468it [00:31, 24.67it/s][A
-Epoch 0: 471it [00:31, 26.01it/s][A
-Epoch 0: 474it [00:31, 24.66it/s][A
-Epoch 0: 477it [00:32, 25.96it/s][A
-Epoch 0: 480it [00:32, 24.64it/s][A
-Epoch 0: 483it [00:32, 25.99it/s][A
-Epoch 0: 486it [00:32, 24.63it/s][A
-Epoch 0: 489it [00:32, 25.92it/s][A
-Epoch 0: 492it [00:32, 24.59it/s][A
-Epoch 0: 495it [00:32, 25.91it/s][A
-Epoch 0: 498it [00:32, 24.62it/s][A
-Epoch 0: 501it [00:33, 25.95it/s][A
-Epoch 0: 504it [00:33, 24.63it/s][A
-Epoch 0: 507it [00:33, 25.93it/s][A
-Epoch 0: 510it [00:33, 24.61it/s][A
-Epoch 0: 513it [00:33, 25.99it/s][A
-Epoch 0: 516it [00:33, 24.68it/s][A
-Epoch 0: 519it [00:33, 25.98it/s][A
-Epoch 0: 522it [00:33, 24.64it/s][A
-Epoch 0: 525it [00:33, 25.95it/s][A
-Epoch 0: 528it [00:34, 24.61it/s][A
-Epoch 0: 531it [00:34, 25.92it/s][A
-Epoch 0: 534it [00:34, 24.62it/s][A
-Epoch 0: 537it [00:34, 25.93it/s][A
-Epoch 0: 540it [00:34, 24.61it/s][A
-Epoch 0: 543it [00:34, 25.93it/s][A
-Epoch 0: 546it [00:34, 24.63it/s][A
-Epoch 0: 549it [00:34, 25.95it/s][A
-Epoch 0: 552it [00:35, 24.61it/s][A
-Epoch 0: 555it [00:35, 25.92it/s][A
-Epoch 0: 558it [00:35, 24.62it/s][A
-Epoch 0: 561it [00:35, 25.97it/s][A
-Epoch 0: 564it [00:35, 24.66it/s][A
-Epoch 0: 567it [00:35, 25.99it/s][A
-Epoch 0: 570it [00:35, 24.65it/s][A
-Epoch 0: 573it [00:35, 25.95it/s][A
-Epoch 0: 576it [00:36, 24.62it/s][A
-Epoch 0: 579it [00:36, 25.96it/s][A
-Epoch 0: 582it [00:36, 24.60it/s][A
-Epoch 0: 585it [00:36, 25.88it/s][A
-Epoch 0: 588it [00:36, 24.56it/s][A
-Epoch 0: 591it [00:36, 25.87it/s][A
-Epoch 0: 594it [00:36, 24.60it/s][A
-Epoch 0: 597it [00:36, 25.93it/s][A
-Epoch 0: 600it [00:36, 24.58it/s][A
-Epoch 0: 603it [00:37, 25.89it/s][A
-Epoch 0: 606it [00:37, 24.57it/s][A
-Epoch 0: 609it [00:37, 25.94it/s][A
-Epoch 0: 612it [00:37, 24.65it/s][A
-Epoch 0: 615it [00:37, 25.95it/s][A
-Epoch 0: 618it [00:37, 24.61it/s][A
-Epoch 0: 621it [00:37, 25.92it/s][A
-Epoch 0: 624it [00:37, 24.62it/s][A
-Epoch 0: 627it [00:38, 25.94it/s][A
-Epoch 0: 630it [00:38, 24.61it/s][A
-Epoch 0: 633it [00:38, 25.90it/s][A
-Epoch 0: 636it [00:38, 24.57it/s][A
-Epoch 0: 639it [00:38, 25.93it/s][A
-Epoch 0: 642it [00:38, 24.62it/s][A
-Epoch 0: 645it [00:38, 25.92it/s][A
-Epoch 0: 648it [00:38, 24.58it/s][A
-Epoch 0: 651it [00:38, 25.88it/s][A
-Epoch 0: 654it [00:39, 24.58it/s][A
-Epoch 0: 657it [00:39, 25.89it/s][A
-Epoch 0: 660it [00:39, 24.59it/s][A
-Epoch 0: 663it [00:39, 25.93it/s][A
-Epoch 0: 666it [00:39, 24.62it/s][A
-Epoch 0: 669it [00:39, 25.96it/s][A
-Epoch 0: 672it [00:39, 24.66it/s][A
-Epoch 0: 675it [00:39, 26.00it/s][A
-Epoch 0: 678it [00:40, 24.63it/s][A
-Epoch 0: 681it [00:40, 25.92it/s][A
-Epoch 0: 684it [00:40, 24.57it/s][A
-Epoch 0: 687it [00:40, 25.89it/s][A
-Epoch 0: 690it [00:40, 24.58it/s][A
-Epoch 0: 693it [00:40, 25.92it/s][A
-Epoch 0: 696it [00:40, 24.57it/s][A
-Epoch 0: 699it [00:40, 25.87it/s][A
-Epoch 0: 702it [00:40, 24.57it/s][A
-Epoch 0: 705it [00:41, 25.89it/s][A
-Epoch 0: 708it [00:41, 24.61it/s][A
-Epoch 0: 711it [00:41, 25.88it/s][A
-Epoch 0: 714it [00:41, 24.56it/s][A
-Epoch 0: 717it [00:41, 25.84it/s][A
-Epoch 0: 720it [00:41, 24.58it/s][A
-Epoch 0: 723it [00:41, 25.93it/s][A
-Epoch 0: 726it [00:41, 24.64it/s][A
-Epoch 0: 729it [00:42, 25.91it/s][A
-Epoch 0: 732it [00:42, 24.64it/s][A
-Epoch 0: 735it [00:42, 25.62it/s][A
-Epoch 0: 738it [00:42, 24.54it/s][A
-Epoch 0: 741it [00:42, 25.70it/s][A
-Epoch 0: 744it [00:42, 24.50it/s][A
-Epoch 0: 747it [00:42, 25.82it/s][A
-Epoch 0: 750it [00:42, 24.53it/s][A
-Epoch 0: 753it [00:43, 25.84it/s][A
-Epoch 0: 756it [00:43, 24.53it/s][A
-Epoch 0: 759it [00:43, 25.87it/s][A
-Epoch 0: 762it [00:43, 24.52it/s][A
-Epoch 0: 765it [00:43, 25.87it/s][A
-Epoch 0: 768it [00:43, 24.56it/s][A
-Epoch 0: 771it [00:43, 25.91it/s][A
-Epoch 0: 774it [00:43, 24.55it/s][A
-Epoch 0: 777it [00:43, 25.84it/s][A
-Epoch 0: 780it [00:44, 24.52it/s][A
-Epoch 0: 783it [00:44, 25.81it/s][A
-Epoch 0: 786it [00:44, 24.55it/s][A
-Epoch 0: 789it [00:44, 25.86it/s][A
-Epoch 0: 792it [00:44, 24.53it/s][A
-Epoch 0: 795it [00:44, 25.83it/s][A
-Epoch 0: 798it [00:44, 24.59it/s][A
-Epoch 0: 801it [00:44, 25.92it/s][A
-Epoch 0: 804it [00:45, 24.61it/s][A
-Epoch 0: 807it [00:45, 25.89it/s][A
-Epoch 0: 810it [00:45, 24.59it/s][A
-Epoch 0: 813it [00:45, 25.90it/s][A
-Epoch 0: 816it [00:45, 24.56it/s][A
-Epoch 0: 819it [00:45, 25.83it/s][A
-Epoch 0: 822it [00:45, 24.55it/s][A
-Epoch 0: 825it [00:45, 25.85it/s][A
-Epoch 0: 828it [00:46, 24.52it/s][A
-Epoch 0: 831it [00:46, 25.93it/s][A
-Epoch 0: 834it [00:46, 24.53it/s][A
-Epoch 0: 837it [00:46, 25.62it/s][A
-Epoch 0: 840it [00:46, 24.43it/s][A
-Epoch 0: 843it [00:46, 25.73it/s][A
-Epoch 0: 846it [00:46, 24.46it/s][A
-Epoch 0: 849it [00:46, 25.80it/s][A
-Epoch 0: 852it [00:46, 24.49it/s][A
-Epoch 0: 855it [00:47, 25.82it/s][A
-Epoch 0: 858it [00:47, 24.49it/s][A
-Epoch 0: 861it [00:47, 25.84it/s][A
-Epoch 0: 864it [00:47, 24.54it/s][A
-Epoch 0: 867it [00:47, 25.89it/s][A
-Epoch 0: 870it [00:47, 24.54it/s][A
-Epoch 0: 873it [00:47, 25.83it/s][A
-Epoch 0: 876it [00:47, 24.51it/s][A
-Epoch 0: 879it [00:48, 25.81it/s][A
-Epoch 0: 882it [00:48, 24.55it/s][A
-Epoch 0: 885it [00:48, 25.90it/s][A
-Epoch 0: 888it [00:48, 24.58it/s][A
-Epoch 0: 891it [00:48, 25.88it/s][A
-Epoch 0: 894it [00:48, 24.59it/s][A
-Epoch 0: 897it [00:48, 25.94it/s][A
-Epoch 0: 900it [00:48, 24.59it/s][A
-Epoch 0: 903it [00:48, 25.83it/s][A
-Epoch 0: 906it [00:49, 24.52it/s][A
-Epoch 0: 909it [00:49, 25.75it/s][A
-Epoch 0: 912it [00:49, 24.49it/s][A
-Epoch 0: 915it [00:49, 25.80it/s][A
-Epoch 0: 918it [00:49, 24.52it/s][A
-Epoch 0: 921it [00:49, 25.78it/s][A
-Epoch 0: 924it [00:49, 24.50it/s][A
-Epoch 0: 927it [00:49, 25.87it/s][A
-Epoch 0: 930it [00:50, 24.55it/s][A
-Epoch 0: 933it [00:50, 25.85it/s][A
-Epoch 0: 936it [00:50, 24.53it/s][A
-Epoch 0: 940it [00:50, 24.86it/s][A
-Epoch 0: 944it [00:50, 25.10it/s][A
-Epoch 0: 948it [00:50, 25.26it/s][A
-Epoch 0: 952it [00:50, 25.33it/s][A
-Epoch 0: 956it [00:51, 25.37it/s][A
-Epoch 0: 960it [00:51, 25.40it/s][A
-Epoch 0: 964it [00:51, 25.42it/s][A
-Epoch 0: 968it [00:51, 25.45it/s][A
-Epoch 0: 972it [00:51, 25.49it/s][A
-Epoch 0: 976it [00:51, 25.49it/s][A
-Epoch 0: 980it [00:52, 25.48it/s][A
-Epoch 0: 984it [00:52, 25.48it/s][A
-Epoch 0: 988it [00:52, 25.49it/s][A
-Epoch 0: 992it [00:52, 25.49it/s][A
-Epoch 0: 996it [00:52, 25.52it/s][A
-Epoch 0: 1000it [00:52, 25.50it/s][A
-                                  [AEpochs:   1%|          | 1/126 [00:59<2:03:53, 59.47s/it]Step: 99 (0) | Loss: 1.26963 | Grad: 17.41235 | Lr: 1.110e-06
-Step: 199 (0) | Loss: 0.61775 | Grad: 4.85328 | Lr: 2.221e-06
-Step: 299 (0) | Loss: 0.25981 | Grad: 1.02474 | Lr: 3.332e-06
-Step: 399 (0) | Loss: 0.21615 | Grad: 1.07905 | Lr: 4.443e-06
-Step: 499 (0) | Loss: 0.17935 | Grad: 1.15289 | Lr: 5.554e-06
-Generating samples at epoch 0
-Checkpoint saved at step 500, epoch 0
-
-Epoch 1: 0it [00:00, ?it/s][A
-Epoch 1: 2it [00:00, 18.15it/s][A
-Epoch 1: 5it [00:00, 24.73it/s][A
-Epoch 1: 8it [00:00, 23.18it/s][A
-Epoch 1: 11it [00:00, 25.47it/s][A
-Epoch 1: 14it [00:00, 24.03it/s][A
-Epoch 1: 17it [00:00, 25.77it/s][A
-Epoch 1: 20it [00:00, 24.27it/s][A
-Epoch 1: 23it [00:00, 25.71it/s][A
-Epoch 1: 26it [00:01, 24.29it/s][A
-Epoch 1: 29it [00:01, 25.72it/s][A
-Epoch 1: 32it [00:01, 24.34it/s][A
-Epoch 1: 35it [00:01, 25.73it/s][A
-Epoch 1: 38it [00:01, 24.37it/s][A
-Epoch 1: 41it [00:01, 25.72it/s][A
-Epoch 1: 44it [00:01, 24.35it/s][A
-Epoch 1: 47it [00:01, 25.72it/s][A
-Epoch 1: 50it [00:02, 24.37it/s][A
-Epoch 1: 53it [00:02, 25.73it/s][A
-Epoch 1: 56it [00:02, 24.38it/s][A
-Epoch 1: 59it [00:02, 25.74it/s][A
-Epoch 1: 62it [00:02, 24.39it/s][A
-Epoch 1: 65it [00:02, 25.75it/s][A
-Epoch 1: 68it [00:02, 24.39it/s][A
-Epoch 1: 71it [00:02, 25.79it/s][A
-Epoch 1: 74it [00:02, 24.43it/s][A
-Epoch 1: 77it [00:03, 25.79it/s][A
-Epoch 1: 80it [00:03, 24.44it/s][A
-Epoch 1: 83it [00:03, 25.82it/s][A
-Epoch 1: 86it [00:03, 24.44it/s][A
-Epoch 1: 89it [00:03, 25.77it/s][A
-Epoch 1: 92it [00:03, 24.41it/s][A
-Epoch 1: 95it [00:03, 25.74it/s][A
-Epoch 1: 98it [00:03, 24.40it/s][A
-Epoch 1: 101it [00:04, 25.78it/s][A
-Epoch 1: 104it [00:04, 24.43it/s][A
-Epoch 1: 107it [00:04, 25.74it/s][A
-Epoch 1: 110it [00:04, 24.39it/s][A
-Epoch 1: 113it [00:04, 25.75it/s][A
-Epoch 1: 116it [00:04, 24.39it/s][A
-Epoch 1: 119it [00:04, 25.75it/s][A
-Epoch 1: 122it [00:04, 24.40it/s][A
-Epoch 1: 125it [00:04, 25.76it/s][A
-Epoch 1: 128it [00:05, 24.39it/s][A
-Epoch 1: 131it [00:05, 25.75it/s][A
-Epoch 1: 134it [00:05, 24.41it/s][A
-Epoch 1: 137it [00:05, 25.77it/s][A
-Epoch 1: 140it [00:05, 24.43it/s][A
-Epoch 1: 143it [00:05, 25.81it/s][A
-Epoch 1: 146it [00:05, 24.47it/s][A
-Epoch 1: 149it [00:05, 25.82it/s][A
-Epoch 1: 152it [00:06, 24.47it/s][A
-Epoch 1: 155it [00:06, 25.82it/s][A
-Epoch 1: 158it [00:06, 24.47it/s][A
-Epoch 1: 161it [00:06, 25.81it/s][A
-Epoch 1: 164it [00:06, 24.44it/s][A
-Epoch 1: 167it [00:06, 25.84it/s][A
-Epoch 1: 170it [00:06, 24.45it/s][A
-Epoch 1: 173it [00:06, 25.83it/s][A
-Epoch 1: 176it [00:07, 24.46it/s][A
-Epoch 1: 179it [00:07, 25.82it/s][A
-Epoch 1: 182it [00:07, 24.42it/s][A
-Epoch 1: 185it [00:07, 25.78it/s][A
-Epoch 1: 188it [00:07, 24.40it/s][A
-Epoch 1: 191it [00:07, 25.74it/s][A
-Epoch 1: 194it [00:07, 24.37it/s][A
-Epoch 1: 197it [00:07, 25.76it/s][A
-Epoch 1: 200it [00:08, 24.37it/s][A
-Epoch 1: 203it [00:08, 25.73it/s][A
-Epoch 1: 206it [00:08, 24.40it/s][A
-Epoch 1: 209it [00:08, 25.80it/s][A
-Epoch 1: 212it [00:08, 24.40it/s][A
-Epoch 1: 215it [00:08, 25.77it/s][A
-Epoch 1: 218it [00:08, 24.35it/s][A
-Epoch 1: 221it [00:08, 25.69it/s][A
-Epoch 1: 224it [00:08, 24.31it/s][A
-Epoch 1: 227it [00:09, 25.60it/s][A
-Epoch 1: 230it [00:09, 24.36it/s][A
-Epoch 1: 233it [00:09, 25.66it/s][A
-Epoch 1: 236it [00:09, 24.35it/s][A
-Epoch 1: 239it [00:09, 25.75it/s][A
-Epoch 1: 242it [00:09, 24.39it/s][A
-Epoch 1: 245it [00:09, 25.71it/s][A
-Epoch 1: 248it [00:09, 24.37it/s][A
-Epoch 1: 251it [00:10, 25.70it/s][A
-Epoch 1: 254it [00:10, 24.33it/s][A
-Epoch 1: 257it [00:10, 25.67it/s][A
-Epoch 1: 260it [00:10, 24.32it/s][A
-Epoch 1: 263it [00:10, 25.73it/s][A
-Epoch 1: 266it [00:10, 24.34it/s][A
-Epoch 1: 269it [00:10, 25.72it/s][A
-Epoch 1: 272it [00:10, 24.36it/s][A
-Epoch 1: 275it [00:10, 25.73it/s][A
-Epoch 1: 278it [00:11, 24.36it/s][A
-Epoch 1: 281it [00:11, 25.64it/s][A
-Epoch 1: 284it [00:11, 24.30it/s][A
-Epoch 1: 287it [00:11, 25.37it/s][A
-Epoch 1: 290it [00:11, 24.33it/s][A
-Epoch 1: 293it [00:11, 25.72it/s][A
-Epoch 1: 296it [00:11, 24.38it/s][A
-Epoch 1: 299it [00:11, 25.74it/s][A
-Epoch 1: 302it [00:12, 24.41it/s][A
-Epoch 1: 305it [00:12, 25.80it/s][A
-Epoch 1: 308it [00:12, 24.41it/s][A
-Epoch 1: 311it [00:12, 25.77it/s][A
-Epoch 1: 314it [00:12, 24.37it/s][A
-Epoch 1: 317it [00:12, 25.71it/s][A
-Epoch 1: 320it [00:12, 24.34it/s][A
-Epoch 1: 323it [00:12, 25.70it/s][A
-Epoch 1: 326it [00:13, 24.36it/s][A
-Epoch 1: 329it [00:13, 25.72it/s][A
-Epoch 1: 332it [00:13, 24.37it/s][A
-Epoch 1: 335it [00:13, 25.75it/s][A
-Epoch 1: 338it [00:13, 24.39it/s][A
-Epoch 1: 341it [00:13, 25.72it/s][A
-                                 [AEpochs:   1%|          | 1/126 [01:14<2:34:16, 74.05s/it]
-Step: 599 (1) | Loss: 0.21240 | Grad: 1.54090 | Lr: 6.665e-06
-Traceback (most recent call last):
-  File "/home/johnma/d-flow/train.py", line 111, in <module>
-    x = x.to(device)
-KeyboardInterrupt
-Traceback (most recent call last):
-  File "/home/johnma/d-flow/train.py", line 111, in <module>
-    x = x.to(device)
-KeyboardInterrupt
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33mearthy-sun-63[0m at: [34mhttps://wandb.ai/ma-jonathan02-sciml/dflow/runs/nka3ib1x[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250730_031012-nka3ib1x/logs[0m

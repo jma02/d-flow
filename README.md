@@ -41,3 +41,15 @@
       url={https://github.com/rtqichen/torchdiffeq},
 }
 ```
+
+```bibtex
+@misc{benhamu2024dflowdifferentiatingflowscontrolled,
+      title={D-Flow: Differentiating through Flows for Controlled Generation}, 
+      author={Heli Ben-Hamu and Omri Puny and Itai Gat and Brian Karrer and Uriel Singer and Yaron Lipman},
+      year={2024},
+      eprint={2402.14017},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2402.14017}, 
+}
+```

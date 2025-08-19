@@ -53,7 +53,7 @@ def get_loaders(config):
     #                              v2.ToDtype(torch.float32, scale=True),
     #                              v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
 
-    dataset = torch.load(f'data/dataset-{config["image_size"]}.pt')
+    dataset = torch.load(f'data/{config["problem"]}-dataset-{config["image_size"]}.pt')
     print(f"Train set shape: {dataset['train'].shape}")
     print(f"Validation set shape: {dataset['val'].shape}")
     print(f"Test set shape: {dataset['test'].shape}")
