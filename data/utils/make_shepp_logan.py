@@ -136,23 +136,27 @@ def shepp_logan(phantom_type='msl'):
 
 
 def main():
-    n = 512  # Size of the image
+    n = 80 # Size of the image
     pad = 0  # Padding size
-    M = 20000  # Number of images to generate
+    M = 1 # number of randomizations
+    N = 20000 # number of shepp logans
 
-    images = randomSheppLogan(n=n, pad=pad, M=M)
-    images = torch.tensor(images, dtype=torch.float32)
+    phantom_list = [torch.tensor(randomSheppLogan(n=n, pad=pad, M=M)[:, M-1], dtype=torch.float32).view(1, n + 2*pad, n + 2*pad) 
+                    for _ in range(N)]
+    
+    # Stack all phantoms into a single tensor (N, 1, H, W)
+    images = torch.stack(phantom_list, dim=0)
+
 
     # save a sample image 
-    plt.imshow(np.reshape(images[:, 0], (n + 2 * pad, n + 2 * pad)), cmap=cmo.cm.diff)
+    plt.imshow(images[0].squeeze().cpu().numpy(), cmap=cmo.cm.diff)
     plt.colorbar()
     plt.axis('off')
     plt.savefig('sample_shepp_logan.png', bbox_inches='tight', pad_inches=0.1)
-    images = images.unsqueeze(1) # Add channel dimension
 
-    train_size = int(0.8 * M)
-    val_size = int(0.1 * M)
-    test_size = M - train_size - val_size
+    train_size = int(0.8 * N)
+    val_size = int(0.1 * N)
+    test_size = N - train_size - val_size
     dataset = {
         'train': images[:train_size],
         'val': images[train_size:train_size + val_size],

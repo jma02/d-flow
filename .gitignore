@@ -9,3 +9,4 @@ ema_sd.pt
 ckp*
 
 wandb/
+profiling-logs/

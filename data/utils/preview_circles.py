@@ -2,7 +2,7 @@ import cmocean.cm as cmo
 import torch
 import matplotlib.pyplot as plt
 
-data = torch.load('data/dataset-16.pt')
+data = torch.load('data/shepp-logan-dataset-64.pt')
 dataset = data['train']
 
 # Ensure dataset is 4D: (B, C, H, W)
@@ -18,7 +18,7 @@ axes = axes.flatten()
 
 for i in range(num_images):
     img = dataset[i].squeeze()
-    axes[i].imshow(img.cpu().numpy(), cmap=cmo.dense)
+    axes[i].imshow(img.cpu().numpy(), cmap=cmo.diff)
     axes[i].set_xticks([])
     axes[i].set_yticks([])
 # Hide unused axes
