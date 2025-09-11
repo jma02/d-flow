@@ -2,7 +2,6 @@ import torch
 from torch import nn, Tensor
 from torchdiffeq import odeint
 
-
 class OptimalTransportFlow:
     def __init__(self, sigma_min: float = 1e-2):
         super().__init__()

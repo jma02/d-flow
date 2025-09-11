@@ -1,257 +1,197 @@
-# PyTorch-based EIT problem solver with automatic differentiation
-# Converted from scipy/numba implementation to pure PyTorch
+# Code from https://github.com/Forgotten/EIT/
+# Converted from numba to torch
 
 import torch
-import torch.nn as nn
-from typing import Tuple, Optional
+import torch.linalg as torchla
 
-from fem import Mesh, V_h, stiffness_matrix, mass_matrix, partial_deriv_matrix, torch_solve
+from fem import partial_deriv_matrix, mass_matrix
 
-
-class EITSolver(nn.Module):
-    """
-    PyTorch-based EIT (Electrical Impedance Tomography) solver
-    Fully differentiable implementation
-    """
-    
-    def __init__(self, v_h: V_h, device: str = 'cpu'):
-        super().__init__()
+class EIT:
+    def __init__(self, v_h):
         self.v_h = v_h
-        self.device = device
         self.build_matrices()
-    
+
+    def update_matrices(self, sigma_vec):
+
+        vol_idx = self.v_h.mesh.vol_idx
+        bdy_idx = self.v_h.mesh.bdy_idx
+
+        S = stiffness_matrix(self.v_h, sigma_vec)
+        self.S = S
+        # Convert to dense for indexing operations
+        S_dense = S.to_dense()
+        self.S_ii = S_dense[vol_idx,:][:,vol_idx]
+        self.S_ib = S_dense[vol_idx,:][:,bdy_idx]
+
     def build_matrices(self):
-        """Build time-independent matrices"""
-        # Mass matrix
+
         self.Mass = mass_matrix(self.v_h)
-        
-        # Partial derivative matrices
         Kx, Ky, M_w = partial_deriv_matrix(self.v_h)
+
+        # Create diagonal matrix from M_w diagonal - convert to dense for operations
+        M_w_dense = M_w.to_dense()
+        M_w_diag_inv = torch.diag(1.0 / torch.diag(M_w_dense))
         
-        # Create derivative operators Dx = M_w^(-1) * Kx
-        M_w_diag = torch.diag(M_w)
-        M_w_inv = torch.diag(1.0 / M_w_diag)
-        
-        self.Dx = M_w_inv @ Kx
-        self.Dy = M_w_inv @ Ky
-        self.M_w = M_w
-        
-        # Index tensors for boundary/volume separation
-        self.vol_idx = self.v_h.mesh.vol_idx
-        self.bdy_idx = self.v_h.mesh.bdy_idx
-        
-    def update_matrices(self, sigma_vec: torch.Tensor):
-        """Update conductivity-dependent matrices"""
-        # Build stiffness matrix
-        self.S = stiffness_matrix(self.v_h, sigma_vec)
-        
-        # Extract sub-matrices for efficient solving
-        self.S_ii = self.S[self.vol_idx, :][:, self.vol_idx]  # interior-interior
-        self.S_ib = self.S[self.vol_idx, :][:, self.bdy_idx]  # interior-boundary
-    
-    def dtn_map(self, sigma_vec: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-        Compute Dirichlet-to-Neumann map
-        
-        Args:
-            sigma_vec: (n_t,) conductivity per triangle
-            
-        Returns:
-            DtN: (n_bdy, n_bdy) Dirichlet-to-Neumann operator
-            sol: (n_p, n_bdy) solution matrix
-        """
+        self.Dx = M_w_diag_inv @ Kx.to_dense()
+        self.Dy = M_w_diag_inv @ Ky.to_dense()
+        self.M_w = M_w_dense
+
+    def dtn_map(self, sigma_vec):
+        # do this here
+
         self.update_matrices(sigma_vec)
-        
-        n_bdy_pts = len(self.bdy_idx)
-        n_pts = self.v_h.mesh.n_p
-        device = sigma_vec.device
-        
-        # Boundary data: identity matrix (delta functions at each boundary node)
-        bdy_data = torch.eye(n_bdy_pts, device=device, dtype=torch.float32)
-        
-        # Right-hand side for interior problem
-        Fb = -self.S_ib @ bdy_data
-        
-        # Solve interior degrees of freedom
-        U_vol = torch_solve(self.S_ii, Fb)
-        
-        # Assemble full solution
-        sol = torch.zeros((n_pts, n_bdy_pts), device=device, dtype=torch.float32)
-        sol[self.bdy_idx, :] = bdy_data
-        sol[self.vol_idx, :] = U_vol
-        
-        # Compute flux
-        flux = self.S @ sol
-        
-        # Extract boundary flux (DtN map)
-        DtN = flux[self.bdy_idx, :]
-        
-        return DtN, sol
+
+        n_bdy_pts = len(self.v_h.mesh.bdy_idx)
+        n_pts = self.v_h.mesh.p.shape[0]
     
-    def adjoint(self, sigma_vec: torch.Tensor, residual: torch.Tensor) -> torch.Tensor:
-        """
-        Solve adjoint problem
+        vol_idx = self.v_h.mesh.vol_idx
+        bdy_idx = self.v_h.mesh.bdy_idx
+    
+        # the boundary data are just direct deltas at each node - match dtype
+        bdy_data = torch.eye(n_bdy_pts, device=self.v_h.mesh.device, dtype=self.S_ii.dtype)
         
-        Args:
-            sigma_vec: (n_t,) conductivity
-            residual: (n_bdy, n_bdy) residual from data fitting
+        # building the rhs for the linear system
+        Fb = -self.S_ib @ bdy_data
             
-        Returns:
-            sol_adj: (n_p, n_bdy) adjoint solution
-        """
-        n_bdy_pts = len(self.bdy_idx)
-        n_pts = self.v_h.mesh.n_p
-        device = sigma_vec.device
+        # solve interior dof
+        U_vol = torch.linalg.solve(self.S_ii, Fb)
         
-        # Boundary data from residual
+        # allocate the space for the full solution - match dtype
+        sol = torch.zeros((n_pts, n_bdy_pts), device=self.v_h.mesh.device, dtype=self.S_ii.dtype)
+        
+        # write the corresponding values back to the solution
+        sol[bdy_idx,:] = bdy_data
+        sol[vol_idx,:] = U_vol
+
+        # computing the flux
+        flux = self.S.to_dense() @ sol
+
+        # extracting the boundary data of the flux 
+        DtN = flux[bdy_idx, :]
+
+        return DtN, sol
+
+    def adjoint(self, sigma_vec, residual):
+
+        n_bdy_pts = len(self.v_h.mesh.bdy_idx)
+        n_pts = self.v_h.mesh.p.shape[0]
+    
+        vol_idx = self.v_h.mesh.vol_idx
+        bdy_idx = self.v_h.mesh.bdy_idx
+        
+        # the boundary data are just direct deltas at each node
         bdy_data = residual
         
-        # Right-hand side for adjoint problem
+        # building the rhs for the linear system
         Fb = -self.S_ib @ bdy_data
         
-        # Solve interior degrees of freedom
-        U_vol = torch_solve(self.S_ii, Fb)
+        # solve interior dof
+        U_vol = torch.linalg.solve(self.S_ii, Fb)
         
-        # Assemble adjoint solution
-        sol_adj = torch.zeros((n_pts, n_bdy_pts), device=device, dtype=torch.float32)
-        sol_adj[self.bdy_idx, :] = bdy_data
-        sol_adj[self.vol_idx, :] = U_vol
+        # allocate the space for the full solution - match dtype
+        sol_adj = torch.zeros((n_pts, n_bdy_pts), device=self.v_h.mesh.device, dtype=self.S_ii.dtype)
         
-        return sol_adj
-    
-    def misfit(self, Data: torch.Tensor, sigma_vec: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-        Compute misfit and gradient (fully differentiable)
-        
-        Args:
-            Data: (n_bdy, n_bdy) measured data
-            sigma_vec: (n_t,) conductivity parameters
-            
-        Returns:
-            misfit: scalar loss value
-            grad: (n_t,) gradient with respect to sigma_vec
-        """
-        # Ensure sigma_vec requires gradients
-        if not sigma_vec.requires_grad:
-            sigma_vec = sigma_vec.clone().detach().requires_grad_(True)
-        
-        # Forward solve
+        # write the corresponding values back to the solution
+        sol_adj[bdy_idx,:] = bdy_data
+        sol_adj[vol_idx,:] = U_vol
+
+        return sol_adj 
+
+    def misfit(self, Data, sigma_vec):
+        # compute the misfit 
+
+        # compute dtn and sol for given sigma
         dtn, sol = self.dtn_map(sigma_vec)
-        
-        # Compute residual
+
+        # compute the residual
         residual = -(Data - dtn)
-        
-        # Compute misfit using automatic differentiation
-        misfit_val = torch.sqrt(torch.sum(residual ** 2))
-        
-        # Automatic gradient computation
-        grad = torch.autograd.grad(misfit_val, sigma_vec, create_graph=True)[0]
-        
-        return misfit_val, grad
-    
-    def forward(self, sigma_vec: torch.Tensor, data: Optional[torch.Tensor] = None) -> torch.Tensor:
-        """
-        Forward pass for nn.Module interface
-        
-        Args:
-            sigma_vec: (n_t,) conductivity parameters
-            data: Optional measured data for computing misfit
-            
-        Returns:
-            DtN map if data is None, else misfit value
-        """
-        if data is None:
-            dtn, _ = self.dtn_map(sigma_vec)
-            return dtn
-        else:
-            misfit_val, _ = self.misfit(data, sigma_vec)
-            return misfit_val
+
+        # compute the adjoint fields
+        sol_adj = self.adjoint(sigma_vec, residual)
+
+        Sol_adj_x = self.Dx @ sol_adj
+        Sol_adj_y = self.Dy @ sol_adj
+
+        Sol_x = self.Dx @ sol
+        Sol_y = self.Dy @ sol
+
+        grad = self.M_w @ torch.sum(Sol_adj_x*Sol_x + Sol_adj_y*Sol_y, dim=1, keepdim=True)
+
+        return torch.sqrt(torch.sum(torch.square(residual))), grad
+
+
+def stiffness_matrix(v_h, sigma_vec):
+    ''' S = stiffness_matrix_numba(v_h, sigma_vec)
+        function to assemble the stiffness matrix 
+        for the Poisson equation 
+        input: v_h: this contains the information 
+               approximation space. For simplicity
+               we suppose that the space is piece-wise
+               linear polynomials
+               sigma_vec: values of sigma at each 
+               triangle
+    '''
+    # define a local handles 
+    t = v_h.mesh.t
+    p = v_h.mesh.p
+
+    # ensure that sigma_vec is a tensor it it isn't already
+    if not isinstance(sigma_vec, torch.Tensor):
+        sigma_vec = torch.tensor(sigma_vec, dtype=torch.float64, device=v_h.mesh.device)
+    sigma_vec = sigma_vec.reshape((-1,))
+    # we define the arrays for the indicies and the values 
+    idx_i = torch.zeros((v_h.mesh.n_t, 9), dtype=torch.int64, device=v_h.mesh.device)
+    idx_j = torch.zeros((v_h.mesh.n_t, 9), dtype=torch.int64, device=v_h.mesh.device)
+    vals = torch.zeros((v_h.mesh.n_t, 9), dtype=torch.float64, device=v_h.mesh.device)
+
+    # we fill the entries with a jitted function
+    fill_entries_matrix(idx_i, idx_j, vals, t, p, 
+                        sigma_vec, int(t.shape[0]))
+
+    # we add all the indices to make the matrix
+    indices = torch.stack([idx_i.reshape((-1,)), idx_j.reshape((-1,))], dim=0)
+    S_coo = torch.sparse_coo_tensor(
+        indices, 
+        vals.reshape((-1,)), 
+        size=(v_h.dim, v_h.dim),
+        device=v_h.mesh.device
+    )
+
+    return S_coo.coalesce().to_sparse_csr()
 
 
 @torch.jit.script
-def stiffness_matrix_torch_jit(points: torch.Tensor, triangles: torch.Tensor, 
-                               sigma_vec: torch.Tensor, n_p: int, n_t: int) -> torch.Tensor:
-    """
-    JIT-compiled stiffness matrix assembly using PyTorch
-    
-    Args:
-        points: (n_p, 2) node coordinates
-        triangles: (n_t, 3) triangle connectivity
-        sigma_vec: (n_t,) conductivity per triangle
-        n_p: number of points
-        n_t: number of triangles
-        
-    Returns:
-        S: (n_p, n_p) stiffness matrix
-    """
-    device = points.device
-    
-    # Pre-allocate sparse matrix components
-    indices = torch.zeros((2, 9 * n_t), dtype=torch.long, device=device)
-    values = torch.zeros(9 * n_t, device=device)
-    
-    for e in range(n_t):
-        nodes = triangles[e, :]  # (3,)
-        triangle_points = points[nodes, :]  # (3, 2)
-        
-        # Build Pe matrix: [1 x y] for each vertex
-        ones = torch.ones(3, 1, device=device)
-        Pe = torch.cat([ones, triangle_points], dim=1)  # (3, 3)
-        
-        # Area = |det(Pe)| / 2
-        area = torch.abs(torch.det(Pe)) / 2.0
-        
-        # Gradient matrix from inverse of Pe
-        Pe_inv = torch.inverse(Pe)
-        grad = Pe_inv[1:3, :]  # Take rows 1,2 (x,y gradients)
-        
-        # Local stiffness matrix: sigma * area * grad.T @ grad
-        S_local = sigma_vec[e] * area * torch.mm(grad.t(), grad)  # (3, 3)
-        
-        # Global indices for this triangle's contribution
-        start_idx = e * 9
-        
-        # Row indices (repeat each node 3 times)
-        rows = nodes.repeat_interleave(3)
-        # Column indices (repeat the node vector)
-        cols = nodes.repeat(3)
-        
-        indices[0, start_idx:start_idx+9] = rows
-        indices[1, start_idx:start_idx+9] = cols
-        values[start_idx:start_idx+9] = S_local.flatten()
-    
-    # Create sparse tensor and convert to dense
-    S_sparse = torch.sparse_coo_tensor(indices, values, (n_p, n_p), device=device)
-    return S_sparse.coalesce().to_dense()
+def fill_array(idx: torch.Tensor, e: int, matrix: torch.Tensor):
+    for ii in range(3):
+        for jj in range(3):
+            idx[e, 3*ii+jj] = matrix[ii, jj]
 
 
-def stiffness_matrix_torch(v_h: V_h, sigma_vec: torch.Tensor) -> torch.Tensor:
-    """
-    PyTorch wrapper for JIT-compiled stiffness matrix assembly
-    
-    Args:
-        v_h: Finite element space
-        sigma_vec: (n_t,) conductivity values per triangle
-        
-    Returns:
-        S: (n_p, n_p) stiffness matrix
-    """
-    mesh = v_h.mesh
-    return stiffness_matrix_torch_jit(mesh.p, mesh.t, sigma_vec, mesh.n_p, mesh.n_t)
+@torch.jit.script
+def fill_entries_matrix(idx_i: torch.Tensor, idx_j: torch.Tensor, vals: torch.Tensor, 
+                       t: torch.Tensor, p: torch.Tensor, sigma_vec: torch.Tensor, size_t: int):
 
-
-# Utility functions for creating EIT problems
-def create_eit_problem(mesh: Mesh, device: str = 'cpu') -> EITSolver:
-    """
-    Create an EIT solver for a given mesh
-    
-    Args:
-        mesh: Mesh object
-        device: torch device
+    for e in range(size_t):  # integration over one triangular element at a time
+        # row of t = node numbers of the 3 corners of triangle e
+        nodes = t[e,:]
+  
+        # 3 by 3 matrix with rows=[1 xcorner ycorner] 
+        Pe = torch.cat((torch.ones((3,1), dtype=torch.float64, device=p.device), 
+                       p[nodes,:]), dim=-1)
+        # area of triangle e = half of parallelogram area
+        Area = torch.abs(torchla.det(Pe))/2
+        # columns of C are coeffs in a+bx+cy to give phi=1,0,0 at nodes
+        C = torchla.inv(Pe)
+        # now compute 3 by 3 Ke and 3 by 1 Fe for element e
+        grad = C[1:3,:]
+        # element matrix from slopes b,c in grad
+        grad_t_c = grad.T.clone()
+        grad_c = grad.clone()
         
-    Returns:
-        EIT solver instance
-    """
-    v_h = V_h(mesh)
-    return EITSolver(v_h, device)
+        S_local = (sigma_vec[e]*Area)*torch.mm(grad_t_c, grad_c)
+
+        # add S_local  to 9 entries of global K
+        fill_array(idx_i, e, torch.ones((3,1), dtype=torch.int64, device=p.device)*nodes)
+        fill_array(idx_j, e, (torch.ones((3,1), dtype=torch.int64, device=p.device)*nodes).T)
+        vals[e,:] = S_local.reshape((9,))
 

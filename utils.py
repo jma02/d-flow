@@ -2,7 +2,6 @@ import numpy as np
 import wandb
 import torch
 from torchvision import datasets
-from torch.utils.data import DataLoader, TensorDataset
 import torchvision.transforms.v2 as v2
 import cmocean
 
@@ -43,44 +42,6 @@ def make_im_grid(x0: torch.Tensor, xy: tuple=(1, 10)):
     return im
 
 
-def get_loaders(config):
-    # train_transform = v2.Compose([v2.ToImage(),
-    #                               v2.RandomHorizontalFlip(),
-    #                               v2.ToDtype(torch.float32, scale=True),
-    #                               v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
-
-    # test_transform = v2.Compose([v2.ToImage(),
-    #                              v2.ToDtype(torch.float32, scale=True),
-    #                              v2.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),])
-
-    dataset = torch.load(f'data/{config["problem"]}-dataset-{config["image_size"]}.pt')
-    print(f"Train set shape: {dataset['train'].shape}")
-    print(f"Validation set shape: {dataset['val'].shape}")
-    print(f"Test set shape: {dataset['test'].shape}")
-
-    train_min = dataset['train'].min()
-    train_max = dataset['train'].max()
-    # val_min = dataset['val'].min()
-    # val_max = dataset['val'].max()
-
-    dataset_train = dataset['train']
-    dataset_val = dataset['val']
-
-    dataset_train = 2.0 * (dataset_train - train_min) / (train_max - train_min) - 1.0
-    dataset_val = 2.0 * (dataset_val - train_min) / (train_max - train_min) - 1.0
-
-    train = TensorDataset(dataset_train.detach().clone())
-    test = TensorDataset(dataset_val.detach().clone())
-
-    bs = config['batch_size']
-    j = config['num_workers']
-
-    train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=j, pin_memory=True, drop_last=True)
-    test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=j, pin_memory=True, drop_last=True)
-
-    return train_loader, test_loader
-
-
 def make_checkpoint(path, step, epoch, model, optim=None, scaler=None, ema_model=None):
     checkpoint = {
         'epoch': int(epoch),
@@ -99,6 +60,68 @@ def make_checkpoint(path, step, epoch, model, optim=None, scaler=None, ema_model
 
     torch.save(checkpoint, path)
 
+
+def make_checkpoint_multiflow_v1(path, step, epoch, model, linear_map, optim=None, scaler=None):
+    checkpoint = {
+        'epoch': int(epoch),
+        'step': int(step),
+        'model_state_dict': model.state_dict(),
+        'linear_map': linear_map,
+    }
+
+    if optim is not None:
+        checkpoint['optim_state_dict'] = optim.state_dict()
+
+    if scaler is not None:
+        checkpoint['scaler_state_dict'] = scaler.state_dict()
+
+    torch.save(checkpoint, path)
+
+
+
+
+def load_checkpoint_multiflow_v1(path, model, optim=None, scaler=None):
+    # Load checkpoint to CPU first to avoid device mismatches
+    checkpoint = torch.load(path, map_location='cpu')
+    
+    state_dict = checkpoint['model_state_dict']
+    
+    # Create a new state dict to handle the 'module.' prefix
+    from collections import OrderedDict
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items():
+        name = k[7:] if k.startswith('module.') else k  # remove `module.`
+        name = name[10:] if name.startswith('_orig_mod.') else name  # remove `orig_mod.`
+        new_state_dict[name] = v
+        
+    # Load the cleaned state dict
+    model.load_state_dict(new_state_dict)
+    # model.load_state_dict(state_dict, strict=False)
+    
+    step = int(checkpoint['step'])
+    epoch = int(checkpoint['epoch'])
+
+    # It's better practice for the calling script to handle model.eval()
+    # model.eval() 
+
+    if optim and 'optim_state_dict' in checkpoint:
+        # Create a new state dict here too 
+        new_optim_state_dict = OrderedDict()
+        for k, v in optim.state_dict().items():
+            name = k[7:] if k.startswith('module.') else k
+            name = name[10:] if name.startswith('_orig_mod.') else name  # remove `orig_mod.`
+            new_optim_state_dict[name] = v
+        optim.load_state_dict(new_optim_state_dict)
+
+    if scaler and 'scaler_state_dict' in checkpoint:
+        new_scaler_state_dict = OrderedDict()
+        for k, v in scaler.state_dict().items():
+            name = k[7:] if k.startswith('module.') else k
+            name = name[10:] if name.startswith('_orig_mod.') else name  # remove `orig_mod.`
+            new_scaler_state_dict[name] = v
+        scaler.load_state_dict(new_scaler_state_dict)
+
+    return step, epoch, model, optim, scaler, checkpoint['linear_map']
 
 def load_checkpoint(path, model, optim=None, scaler=None, ema_model=None):
     # Load checkpoint to CPU first to avoid device mismatches

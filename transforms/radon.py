@@ -64,10 +64,7 @@ def radon_transform(image, N=50):
     sinogram = fourier.nufft_adjoint(kspace, r_tensor[:, None], oshape=kspace.shape[:-1] + (diameter,),
                                    oversamp=oversamp, width=width) * diameter / expanded_diameter / np.sqrt(diameter)
     
-    if is_torch:
-        return sinogram.real * diameter
-    else:
-        return sinogram.real * diameter
+    return sinogram.real * diameter
 
 
 def fft_radon_transform(image, N=50, expansion=6):

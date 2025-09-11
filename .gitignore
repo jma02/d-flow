@@ -10,3 +10,8 @@ ckp*
 
 wandb/
 profiling-logs/
+
+# ignore all checkpoints folders
+**/checkpoints/
+
+wandb/

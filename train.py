@@ -7,6 +7,7 @@ import wandb
 from torch import Tensor
 from torch.nn import MSELoss
 
+from get_loaders import get_loaders
 from unet import Unet
 from flow import OptimalTransportFlow, sample_images
 from utils import *
