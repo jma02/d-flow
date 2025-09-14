@@ -183,10 +183,10 @@ def train_model():
     ambient_dim = media_flattened_dim
 
     # projecting matrices
-    A_sub = torch.randn(sub_flattened_dim, ambient_dim, device=device)
-    A_full = torch.randn(full_flattened_dim, ambient_dim, device=device)
+    A_sub = torch.randn(sub_flattened_dim, ambient_dim, device=device) / np.sqrt(ambient_dim)
+    A_full = torch.randn(full_flattened_dim, ambient_dim, device=device) / np.sqrt(ambient_dim)
     # let's try not using this
-    A_media = torch.randn(media_flattened_dim, ambient_dim, device=device)
+    A_media = torch.randn(media_flattened_dim, ambient_dim, device=device) / np.sqrt(ambient_dim)
 
     for epoch in tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs"):
         sub_meas_model.train()
