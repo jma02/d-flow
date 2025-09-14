@@ -84,7 +84,10 @@ def get_loaders_multiflow_v1(config):
     n_full = config['n_full']
     problem = config['problem']
     image_size = config['image_size']
-    dataset = torch.load(f'data/{problem}-multiflow-v1-{n_sub}-{n_full}-{image_size}.pt')
+    modal = config['modal']
+    if modal:
+        volume_path = config['volume_path']
+        dataset = torch.load(f'{volume_path}/data/{problem}-multiflow-v1-{n_sub}-{n_full}-{image_size}.pt')
 
     train_data = dataset['train']
     val_data = dataset['val']

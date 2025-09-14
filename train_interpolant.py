@@ -104,7 +104,7 @@ if __name__ == '__main__':
     device = args.device
 
     model = Unet(ch=32, ch_mul=[1, 2], att_channels=[0, 1]).to(device)
-    # model = torch.compile(model)
+    model = torch.compile(model)
 
     ema_model = torch.optim.swa_utils.AveragedModel(
         model, multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.9999)

@@ -91,20 +91,20 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=32, help='Batch size for training')
     parser.add_argument('--num-epochs', type=int, default=150, help='Number of training epochs')
     parser.add_argument('--problem', type=str, default='shepp-logan', help='Dataset to use')
-    parser.add_argument('--n-sub', type=int, default=1, help='number of sparse angles')
+    parser.add_argument('--n-sub', type=int, default=2, help='number of sparse angles')
     parser.add_argument('--n-full', type=int, default=24, help='number of full angles')
     # this approach doesn't require n_full to be divisible by n_sub! 
 
     args = parser.parse_args()
     config = {
         'sigma_min': 1e-2,
-        'min_lr': 1e-8,
-        'max_lr': 5e-4,
-        'warmup_steps': 45000,
+        'min_lr': 1e-7,
+        'max_lr': 5e-3,
+        'warmup_steps': 22500,
         'epochs': args.num_epochs,
         'max_steps': 400000,
         'batch_size': args.batch_size,
-        'log_freq': 1000, # sparsely log since we are training offline
+        'log_freq': 50, # more frequent logging
         'num_workers': 32,
         'image_size': args.image_size,
         'problem': args.problem,
@@ -120,14 +120,14 @@ if __name__ == '__main__':
     device = args.device
 
     # miniature models for smaller image size
-    sub_meas_model = Unet(ch=32, ch_mul=[1], att_channels=[1]).to(device)
+    sub_meas_model = Unet(ch=32, ch_mul=[1, 2], att_channels=[0, 1]).to(device)
     full_meas_model = Unet(ch=32, ch_mul=[1, 2], att_channels=[0, 1]).to(device)
 
     media_model = Unet(ch=32).to(device)
 
-    # media_model = torch.compile(media_model)
-    # sub_meas_model = torch.compile(sub_meas_model)
-    # full_meas_model = torch.compile(full_meas_model)
+    media_model = torch.compile(media_model)
+    sub_meas_model = torch.compile(sub_meas_model)
+    full_meas_model = torch.compile(full_meas_model)
 
     flow = OptimalTransportFlow(config['sigma_min'])
     sub_meas_loss_fn = get_loss_fn(sub_meas_model, flow)
@@ -165,12 +165,13 @@ if __name__ == '__main__':
     full_flattened_dim = config['n_full'] * 182
     media_flattened_dim = config['image_size'] * config['image_size']
 
-    ambient_dim = max(sub_flattened_dim, full_flattened_dim, media_flattened_dim)
-    ambient_dim = int(1.1 * ambient_dim)
+    # in principle having ambient dim > media_flattened_dim should work but let's just try this
+    ambient_dim = media_flattened_dim
 
     # projecting matrices
     A_sub = torch.randn(sub_flattened_dim, ambient_dim, device=device)
     A_full = torch.randn(full_flattened_dim, ambient_dim, device=device)
+    # let's try not using this
     A_media = torch.randn(media_flattened_dim, ambient_dim, device=device)
 
     for epoch in tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs"):
@@ -201,16 +202,16 @@ if __name__ == '__main__':
                 # batchwise matmul 
                 x0_sub = torch.matmul(x0_ambient, A_sub.T)
                 x0_full = torch.matmul(x0_ambient, A_full.T)
-                x0_media = torch.matmul(x0_ambient, A_media.T)
+                # x0_media = torch.matmul(x0_ambient, A_media.T)
 
                 # reshape to image dimensions
                 x0_sub = x0_sub.view(sub.shape[0], 1, config['n_sub'], 182)
                 x0_full = x0_full.view(full.shape[0], 1, config['n_full'], 182)
-                x0_media = x0_media.view(media.shape[0], 1, config['image_size'], config['image_size'])
+                x0_media = x0_ambient.view(media.shape[0], 1, config['image_size'], config['image_size'])
 
-                sub_loss = sub_meas_loss_fn(x0_sub, sub, t)
-                full_loss = full_meas_loss_fn(x0_full, full, t)
-                media_loss = media_loss_fn(x0_media, media, t)
+                sub_loss = sub_meas_loss_fn(x0_sub, sub, t) / accumulation_steps
+                full_loss = full_meas_loss_fn(x0_full, full, t) / accumulation_steps
+                media_loss = media_loss_fn(x0_media, media, t) / accumulation_steps
 
 
             full_meas_scaler.scale(full_loss).backward()
@@ -250,6 +251,15 @@ if __name__ == '__main__':
                 true_full_loss = full_loss.item() * accumulation_steps
                 true_media_loss = media_loss.item() * accumulation_steps
                 if (step + 1) % config['log_freq'] == 0:
+                    print(f'Step {step}: '
+                          f'Sub Loss: {true_sub_loss:.6f}, '
+                          f'Full Loss: {true_full_loss:.6f}, '
+                          f'Media Loss: {true_media_loss:.6f}, '
+                          f'LR: {lr:.2e}, '
+                          f'Sub Grad: {sub_grad:.3f}, '
+                          f'Full Grad: {full_grad:.3f}, '
+                          f'Media Grad: {media_grad:.3f}')
+                    
                     # Log training metrics to wandb
                     wandb.log({
                         "true_sub_loss": true_sub_loss,
@@ -288,7 +298,8 @@ if __name__ == '__main__':
             x0_amb = torch.randn(1, ambient_dim, device=device)
             x0_sub = torch.matmul(x0_amb, A_sub.T).view(1, 1, config['n_sub'], 182)
             x0_full = torch.matmul(x0_amb, A_full.T).view(1, 1, config['n_full'], 182)
-            x0_media = torch.matmul(x0_amb, A_media.T).view(1, 1, config['image_size'], config['image_size'])
+            # x0_media = torch.matmul(x0_amb, A_media.T).view(1, 1, config['image_size'], config['image_size'])
+            x0_media = x0_amb.view(1, 1, config['image_size'], config['image_size'])
 
             t = torch.linspace(0.0, 1.0, 5, device=device)
 
@@ -319,55 +330,71 @@ if __name__ == '__main__':
                 rtol = 1e-5,
             )[-1].squeeze().cpu()
 
-            fig, axs = plt.subplots(4, 3, figsize=(12, 4))
+            fig, axs = plt.subplots(5, 2, figsize=(12, 20))
             plt.suptitle(f'Epoch {epoch}', fontsize=16)
+
             im = axs[0, 0].imshow(x0_sub.squeeze().cpu(), cmap=cmocean.cm.dense)
             fig.colorbar(im, ax=axs[0, 0], shrink=0.3)
             axs[0, 0].set_title('Sub init')
-            im = axs[0, 1].imshow(x0_full.squeeze().cpu(), cmap=cmocean.cm.dense)
-            fig.colorbar(im, ax=axs[0, 1], shrink=0.3)
-            axs[0, 1].set_title('Full init')
-            im = axs[0, 2].imshow(x0_media.squeeze().cpu(), cmap=cmocean.cm.dense)
-            fig.colorbar(im, ax=axs[0, 2], shrink=0.3)
-            axs[0, 2].set_title('Media init')
+            axs[0, 0].axis('off')
 
-            im = axs[1, 0].imshow(sub_samples, cmap=cmocean.cm.dense)
+            im = axs[0, 1].imshow(sub_samples, cmap=cmocean.cm.dense)
+            fig.colorbar(im, ax=axs[0, 1], shrink=0.3)
+            axs[0, 1].set_title('Sub final')
+            axs[0, 1].axis('off')
+
+            im = axs[1, 0].imshow(x0_full.squeeze().cpu(), cmap=cmocean.cm.dense)
             fig.colorbar(im, ax=axs[1, 0], shrink=0.3)
-            axs[1, 0].set_title('Sub final')
+            axs[1, 0].set_title('Full init')
+            axs[1, 0].axis('off')
+
             im = axs[1, 1].imshow(full_samples, cmap=cmocean.cm.dense)
             fig.colorbar(im, ax=axs[1, 1], shrink=0.3)
             axs[1, 1].set_title('Full final')
-            im = axs[1, 2].imshow(media_samples, cmap=cmocean.cm.dense)
-            fig.colorbar(im, ax=axs[1, 2], shrink=0.3)
-            axs[1, 2].set_title('Media final')
+            axs[1, 1].axis('off')
+
+            im = axs[2, 0].imshow(x0_media.squeeze().cpu(), cmap=cmocean.cm.dense)
+            fig.colorbar(im, ax=axs[2, 0])
+            axs[2, 0].set_title('Media init')
+            axs[2, 0].axis('off')
+
+            im = axs[2, 1].imshow(media_samples, cmap=cmocean.cm.dense)
+            fig.colorbar(im, ax=axs[2, 1])
+            axs[2, 1].set_title('Media final')
+            axs[2, 1].axis('off')
 
             # take the media sample and apply radon transform with n_sub and n_full
             from transforms import radon
             sub_radon = radon.radon_transform(media_samples, N=config['n_sub']).cpu()
             full_radon = radon.radon_transform(media_samples, N=config['n_full']).cpu()
-            im = axs[2, 0].imshow(sub_radon, cmap=cmocean.cm.dense)
-            fig.colorbar(im, ax=axs[2, 0], shrink=0.3)
-            axs[2, 0].set_title('Media Radon Sub')
-            im = axs[2, 1].imshow(full_radon, cmap=cmocean.cm.dense)
-            fig.colorbar(im, ax=axs[2, 1], shrink=0.3)
-            axs[2, 1].set_title('Media Radon Full')
-            axs[2, 2].axis('off')
-
-            # calcuate error
-            sub_error = torch.abs(sub_radon - sub_samples).mean().item()
-            full_error = torch.abs(full_radon - full_samples).mean().item()
-            
-            im = axs[3, 0].imshow((sub_radon - sub_samples).abs(), cmap='hot')
+            im = axs[3, 0].imshow(sub_radon, cmap=cmocean.cm.dense)
             fig.colorbar(im, ax=axs[3, 0], shrink=0.3)
-            axs[3, 0].set_title(f'Sub Error {sub_error:.4f}')
-            im = axs[3, 1].imshow((full_radon - full_samples).abs(), cmap='hot')
+            axs[3, 0].set_title('Operator Applied To Media Sub')
+            axs[3, 0].axis('off')
+
+            im = axs[3, 1].imshow(full_radon, cmap=cmocean.cm.dense)
             fig.colorbar(im, ax=axs[3, 1], shrink=0.3)
-            axs[3, 1].set_title(f'Full Error {full_error:.4f}')
-            axs[3, 2].axis('off')
+            axs[3, 1].set_title('Operator Applied To Media Full')
+            axs[3, 1].axis('off')
+
+            # calcuate rel error
+            sub_error = torch.norm(sub_radon - sub_samples) / torch.norm(sub_samples)
+            full_error = torch.norm(full_radon - full_samples) / torch.norm(full_samples)
+
+            im = axs[4, 0].imshow((sub_radon - sub_samples).abs(), cmap='hot')
+            fig.colorbar(im, ax=axs[4, 0], shrink=0.3)
+            axs[4, 0].set_title(f'Full Gen Radon vs. Op, L2 Rel Error {sub_error:.4f}', fontsize=8)
+            axs[4, 0].axis('off')
+
+            im = axs[4, 1].imshow((full_radon - full_samples).abs(), cmap='hot')
+            fig.colorbar(im, ax=axs[4, 1], shrink=0.3)
+            axs[4, 1].set_title(f'Full Gen Radon vs. Op, L2 Rel Error {full_error:.4f}', fontsize=8)
+            axs[4, 1].axis('off')
 
 
             # log the plot locally
             plt.savefig(f'{config["sample_path"]}/sample_epoch_{epoch}.png')
+            plt.close()
 
             # log the plot to wandb
             wandb.log({

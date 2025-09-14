@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser(description="Run the suite of tests for sparse 
 parser.add_argument('--device', type=str, default='cuda:0', help='Device to use')
 parser.add_argument('--problem', type=str, default='shepp-logan', help='Dataset to use')
 parser.add_argument('--noise', type=float, default=0.0, help='amount of multiplicative noise to use')
+parser.add_argument('--n_sub', type=int, default=1, help='number of sparse angles')
 
 args = parser.parse_args()
 
@@ -34,6 +35,7 @@ torch.backends.cuda.enable_math_sdp(True)
 problem = args.problem
 device = args.device
 noise = args.noise
+n_sub = args.n_sub
 
 # i am too lazy to change the variable names
 im_size = 128
@@ -50,9 +52,11 @@ _, _, model, _, _, _= load_checkpoint(model=model, path=checkpoint_path)
 model.eval()
 print("Loaded prior model")
 
+# hacky but for now this is the way we want to do it
+subsample_rates = [n_sub]
+
 # is this a machine learning sin?
 models_dict = {}
-subsample_rates = range(1,5)
 n_full = 24
 for n_sub in subsample_rates:
     interpolant_ckpt_path = f'problems/interpolant/{problem}/{n_sub}-{n_full}-{im_size}x{im_size}/checkpoints/ckp_9513.tar'
@@ -74,25 +78,22 @@ for n_sub in subsample_rates:
     errors[n_sub] = {"l2_rel_errors_interp": [], "l1_rel_errors_interp": [],
     "l2_rel_errors_no_interp": [], "l1_rel_errors_no_interp": []}
 
-# animate every 500
-animate_idx = 500
+# animate every 100
+animate_idx = 10
 
-for i, shepp in enumerate(shepps):
+for i, shepp in enumerate(shepps[0:50]):
     if i % animate_idx == 0:
         os.makedirs(f'idx{i}', exist_ok=True)
     shepp = shepp.to(device)
     shepp = shepp.squeeze(0)
-    for n_sub in range(1,5):
+    for n_sub in subsample_rates:
         radon_shepp = radon.radon_transform(shepp, N=n_sub)
         radon_shepp = (1 + noise * torch.randn_like(radon_shepp)) * radon_shepp
-
+        
         # just used in plotting
         full_meas = radon.radon_transform(shepp, N=n_full)
         full_meas = (1 + noise * torch.randn_like(full_meas)) * full_meas
 
-        # if i % animate_idx == 0:
-        #     plt.imsave(f'idx{i}/idx{i}-shepp-{n_sub}-meas-radon.png', radon_shepp.cpu().numpy(), cmap=cmocean.cm.dense)
-        #     plt.imsave(f'idx{i}/idx{i}-shepp-{n_full}-full-meas-radon.png', full_meas.cpu().numpy(), cmap=cmocean.cm.dense)
         radon_shepp = radon_shepp.to(device)
         t = torch.linspace(0, 1, 5).to(device)
         padded_meas = torch.zeros((1, 1, n_full, radon_shepp.shape[-1]), device=device)
@@ -109,15 +110,13 @@ for i, shepp in enumerate(shepps):
                     atol = 1e-5,
                     rtol = 1e-5,
                 )[-1].squeeze() 
-        # if i % animate_idx == 0:
-        #     plt.imsave(f'idx{i}/idx{i}-shepp-{n_sub}-{n_full}-interp-radon.png', interp_meas.squeeze().cpu().numpy(), cmap=cmocean.cm.dense)
 
         reconstruct_with_interp, metrics_interp, _, x1_traj_interp = dflow(
             max_iter=20,
-            optim_steps=100,
+            optim_steps=50,
             target_cost=0.05,
             init_x=init_x.clone(),
-            patience=30,
+            patience=20,
             model=model,
             lr=0.2,
             y=interp_meas.unsqueeze(0),
@@ -140,10 +139,10 @@ for i, shepp in enumerate(shepps):
 
         reconstruct_no_interp, metrics_no_interp, _, x1_traj_no_interp = dflow(
             max_iter=20,
-            optim_steps=100,
+            optim_steps=50,
             target_cost=0.05,
             init_x=init_x.clone(),
-            patience=30,
+            patience=20,
             model=model,
             lr=0.2,
             y=radon_shepp.unsqueeze(0).unsqueeze(0),
