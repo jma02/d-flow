@@ -34,7 +34,6 @@ def get_loss_fn(model: Unet, flow: OptimalTransportFlow):
         x1 = target
 
         xt = flow.step(t, x0, x1)
-        print(f"xt shape: {xt.shape}")  
         pred_vel = model(xt, t)
         true_vel = flow.target(t, x0, x1)
 
@@ -88,7 +87,7 @@ if __name__ == '__main__':
     parser.add_argument('--samples-path', type=str, default="samples", help='Path to save generated samples')
 
     parser.add_argument('--image-size', type=int, default=128, help='Size of the input images')
-    parser.add_argument('--batch-size', type=int, default=32, help='Batch size for training')
+    parser.add_argument('--batch-size', type=int, default=16, help='Batch size for training')
     parser.add_argument('--num-epochs', type=int, default=150, help='Number of training epochs')
     parser.add_argument('--problem', type=str, default='shepp-logan', help='Dataset to use')
     parser.add_argument('--n-sub', type=int, default=2, help='number of sparse angles')
@@ -112,6 +111,7 @@ if __name__ == '__main__':
         'n_full': args.n_full,
         'sample_path': args.samples_path,
         'ckpt_path': args.ckpt_path,
+        'modal': False
     }
 
     n_sub = args.n_sub
@@ -125,9 +125,9 @@ if __name__ == '__main__':
 
     media_model = Unet(ch=32).to(device)
 
-    media_model = torch.compile(media_model)
-    sub_meas_model = torch.compile(sub_meas_model)
-    full_meas_model = torch.compile(full_meas_model)
+    # media_model = torch.compile(media_model)
+    # sub_meas_model = torch.compile(sub_meas_model)
+    # full_meas_model = torch.compile(full_meas_model)
 
     flow = OptimalTransportFlow(config['sigma_min'])
     sub_meas_loss_fn = get_loss_fn(sub_meas_model, flow)
@@ -140,8 +140,8 @@ if __name__ == '__main__':
 
     # after loading the data we change working directory
     train_loader, test_loader = get_loaders_multiflow_v1(config)
-    os.makedirs(f"problems/multiflow-v1/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}", exist_ok=True)
-    os.chdir(f"problems/multiflow-v1/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}")
+    os.makedirs(f"problems/multiflow-v1-normalized/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}", exist_ok=True)
+    os.chdir(f"problems/multiflow-v1-normalized/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}")
     os.makedirs(args.samples_path, exist_ok=True)
     os.makedirs(args.ckpt_path, exist_ok=True)
     sub_meas_scaler = torch.amp.GradScaler()
@@ -169,10 +169,10 @@ if __name__ == '__main__':
     ambient_dim = media_flattened_dim
 
     # projecting matrices
-    A_sub = torch.randn(sub_flattened_dim, ambient_dim, device=device)
-    A_full = torch.randn(full_flattened_dim, ambient_dim, device=device)
+    A_sub = torch.randn(sub_flattened_dim, ambient_dim, device=device) / np.sqrt(ambient_dim)
+    A_full = torch.randn(full_flattened_dim, ambient_dim, device=device) / np.sqrt(ambient_dim)
     # let's try not using this
-    A_media = torch.randn(media_flattened_dim, ambient_dim, device=device)
+    A_media = torch.randn(media_flattened_dim, ambient_dim, device=device) / np.sqrt(ambient_dim)
 
     for epoch in tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs"):
         sub_meas_model.train()
@@ -405,30 +405,30 @@ if __name__ == '__main__':
         if epoch % 10 == 0 or epoch == config['epochs']:
             make_checkpoint_multiflow_v1(
                 f'{config["ckpt_path"]}/sub_{n_sub}/ckp_{step}.tar', 
-                step, 
-                epoch, 
-                sub_meas_model, 
-                sub_meas_optim, 
-                sub_meas_scaler, 
-                A_sub 
-                )
+                step=step, 
+                epoch=epoch, 
+                model=sub_meas_model, 
+                optim=sub_meas_optim, 
+                scaler=sub_meas_scaler, 
+                linear_map=A_sub
+            )
             make_checkpoint_multiflow_v1(
                 f'{config["ckpt_path"]}/full_{n_full}/ckp_{step}.tar', 
-                step, 
-                epoch, 
-                full_meas_model, 
-                full_meas_optim, 
-                full_meas_scaler, 
-                A_full
-                )
+                step=step, 
+                epoch=epoch, 
+                model=full_meas_model, 
+                optim=full_meas_optim, 
+                scaler=full_meas_scaler, 
+                linear_map=A_full
+            )
             make_checkpoint_multiflow_v1(
                 f'{config["ckpt_path"]}/media/ckp_{step}.tar', 
-                step, 
-                epoch, 
-                media_model, 
-                media_optim, 
-                media_scaler, 
-                A_media
+                step=step, 
+                epoch=epoch, 
+                model=media_model, 
+                optim=media_optim, 
+                scaler=media_scaler, 
+                linear_map=A_media
             )
             print(f"Checkpoints saved at step {step}, epoch {epoch}")
     
