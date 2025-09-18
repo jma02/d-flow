@@ -14,7 +14,7 @@ def is_valid_circle(center, radius, circles, min_distance=16):
     return True
 
 
-def create_circles_dataset(num_samples=5000, im_size=128):
+def create_circles_dataset(num_samples=5000, im_size=128, problem='ct'):
     # Initialize a tensor to store all images
     dataset = torch.zeros((num_samples, im_size, im_size))
 
@@ -23,11 +23,17 @@ def create_circles_dataset(num_samples=5000, im_size=128):
 
     # for EIT I used 2 - 5, with h = 5
     # for CT I used 0.4 - 1.4 with h = 20
-    scattering_indices = torch.linspace(2, 5, 5)
-    for sample_idx in tqdm.tqdm(range(num_samples), desc="Creating circles dataset"):
+    if problem == 'eit':
+        scattering_indices = np.linspace(2, 5, 5)
+    else:
+        scattering_indices = np.linspace(0.4, 1.4, 20)
+    for sample_idx in tqdm.tqdm(range(num_samples), desc=f"Creating {problem} circles dataset"):
         # for EIT the background should be one, achieved by torch.ones
         # for CT the background should be zero, achieved by torch.zeros
-        img = torch.ones((im_size, im_size), dtype=torch.float32)
+        if problem == 'eit':
+            img = torch.ones((im_size, im_size), dtype=torch.float32)
+        else:
+            img = torch.zeros((im_size, im_size), dtype=torch.float32)
         num_circles = random.randint(1, 4)  # Random number of circles per image
         circles = []
 
@@ -49,7 +55,7 @@ def create_circles_dataset(num_samples=5000, im_size=128):
             # Create a mask for the circle
             circle_mask = distance <= radius**2
 
-            img[circle_mask] = torch.random.choice(scattering_indices, replace=True)
+            img[circle_mask] = np.random.choice(scattering_indices, replace=True)
 
         # Store the image in the dataset
         dataset[sample_idx] = img
@@ -62,11 +68,11 @@ parser.add_argument('--problem', type=str, default='ct', help='ct or eit')
 
 args = parser.parse_args()
 problem = args.problem
+assert problem in ['ct', 'eit'], "problem must be either 'ct' or 'eit'"
 
 num_samples=20000
 im_size = args.im_size
-print(f"Creating dataset: {num_samples} {im_size} x {im_size} images")
-dataset = create_circles_dataset(num_samples, im_size=im_size, problem= args.problem)
+dataset = create_circles_dataset(num_samples, im_size=im_size, problem=problem)
 dataset = dataset.unsqueeze(1) # Add channel dimension
 
 train_size = int(0.8 * num_samples)

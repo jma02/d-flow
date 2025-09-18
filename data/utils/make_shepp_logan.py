@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import cmocean as cmo
 import torch
 import argparse
+from tqdm import tqdm
 
 def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     phantom = shepp_logan(phantom_type)
@@ -158,6 +159,11 @@ def main():
     parser = argparse.ArgumentParser(description="Generate Shepp-Logan phantoms.")
     parser.add_argument('--im_size', type=int, default=128)
     parser.add_argument('--problem', type=str, default='eit-hc', help='msl, sl, or eit-hc')
+    # msl is for ct, this here is just for logging
+    pm = {
+        'msl' : 'ct',
+        'eit-hc' : 'eit'
+    }
 
     args = parser.parse_args()
 
@@ -170,17 +176,10 @@ def main():
     problem = args.problem
 
     phantom_list = [torch.tensor(randomSheppLogan(n=n, pad=pad, M=M, phantom_type=problem)[:, M-1], dtype=torch.float32).view(1, n + 2*pad, n + 2*pad) 
-                    for _ in range(N)]
+                    for _ in tqdm(range(N), desc=f"Generating {pm[problem]} phantoms")]
     
     # Stack all phantoms into a single tensor (N, 1, H, W)
     images = torch.stack(phantom_list, dim=0)
-
-
-    # save a sample image 
-    plt.imshow(images[0].squeeze().cpu().numpy(), cmap=cmo.cm.diff)
-    plt.colorbar()
-    plt.axis('off')
-    plt.savefig('sample_shepp_logan.png', bbox_inches='tight', pad_inches=0.1)
 
     train_size = int(0.8 * N)
     val_size = int(0.1 * N)
@@ -190,8 +189,8 @@ def main():
         'test': images[train_size + val_size:]
     }
 
-    torch.save(dataset, f"data/{problem}-shepp-logan-dataset-{n+2*pad}.pt")
-    print(f"Dataset saved as {problem}-shepp-logan-dataset-{n+2*pad}.pt")
+    torch.save(dataset, f"data/{pm[problem]}-shepp-logan-dataset-{n+2*pad}.pt")
+    print(f"Dataset saved as {pm[problem]}-shepp-logan-dataset-{n+2*pad}.pt")
 
 
 

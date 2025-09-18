@@ -1,5 +1,4 @@
 # Assuming access to a dataset of media, we will generate data pairs of sparse CT measurements and "full" CT measurements
-import numpy as np
 import argparse
 
 import torch
@@ -29,7 +28,7 @@ n_full = args.n_full
 # it is not necessary that the angle set of n_sub is a subset of the angle set of n_full
 
 dataset = {}
-
+print(f"Generating multiflow dataset for ct with {n_sub} sparse angles and {n_full} full angles")
 for split in ['train', 'val', 'test']:
     images = dataset_source[split]  # shape (N, 1, H, W)
     N, C, H, W = images.shape
@@ -55,6 +54,6 @@ for split in ['train', 'val', 'test']:
         'sub_meas': sub_meas,
         'media': images
     }
-save_name = f"data/{args.problem}-multiflow-v1-{n_sub}-{n_full}-{args.im_size}-multiflow.pt"
+save_name = f"data/ct-{args.problem}-multiflow-{n_sub}-{n_full}-{args.im_size}.pt"
 torch.save(dataset, save_name)
 print(f"Saved dataset to {save_name}")
