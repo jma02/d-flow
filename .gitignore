@@ -20,3 +20,13 @@ problems/
 dflow-radon-metrics
 
 wandb/
+
+# pycaches
+**/__pycache__/
+**/*.pyc
+# Jupyter Notebook checkpoints
+**/.ipynb_checkpoints/
+# VSCode settings
+.vscode/
+# MacOS files
+.DS_Store
