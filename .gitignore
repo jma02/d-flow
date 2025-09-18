@@ -16,4 +16,6 @@ profiling-logs/
 **/*samples-*/
 **/checkpoints/
 
+problems/
+
 wandb/
