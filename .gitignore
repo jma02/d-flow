@@ -33,5 +33,5 @@ wandb/
 .DS_Store
 
 # ignore .pt in mesh_data except for mesh_data.pt
-forward_solvers/mesh_data/*.pt
-!forward_solvers/mesh_data/mesh_128_h05.mat
+forward_solvers/mesh-data/*.pt
+!forward_solvers/mesh-data/mesh_128_h05.mat
