@@ -1,8 +1,6 @@
 import modal
-from transforms import radon
-import torch
 app = modal.App("upload-files")
-volume = modal.Volume.from_name("train-multiflow-v1")
+volume = modal.Volume.from_name("train-multiflow-v1", create_if_missing=True)
 
 
 @app.local_entrypoint()

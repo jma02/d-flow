@@ -16,6 +16,7 @@ parser.add_argument('--problem', type=str, default='shepp-logan', help='Dataset 
 parser.add_argument('--im_size', type=int, default=128, help='This should correspond to a dataset we actually have')
 parser.add_argument('--n_sub', type=int, default=1, help='number of sparse angles')
 parser.add_argument('--n_full', type=int, default=24, help='number of full angles')
+parser.add_argument('--multiflow', type=bool, default=False, help='whether to use multiflow (default: False)')
 
 args = parser.parse_args()
 
@@ -38,19 +39,25 @@ for split in ['train', 'val', 'test']:
 
     # [0, pi]
 
-    for i in tqdm(range(N)):
-        img = images[i].squeeze(0)  # shape (H, W)
-        full_radon = radon.radon_transform(img, N=n_full)  # shape (n_full, detector_width)
+    batch_size = 1024
+    for i in tqdm(range(0, N, batch_size), desc=f"Generating {split} data"):
+        imgs = images[i:i+batch_size].squeeze(1)  # shape (B, H, W)
+        full_radon = radon.radon_transform(imgs, N=n_full)  # shape (n_full, detector_width)
         full_meas.append(full_radon)
         
-        sub_radon = radon.radon_transform(img, N=n_sub)  # shape (n_sub, detector_width)
+        sub_radon = radon.radon_transform(imgs, N=n_sub)  # shape (n_sub, detector_width)
         sub_meas.append(sub_radon)
     
-    full_meas = torch.stack(full_meas)  # shape (N, n_full, detector_width)
-    sub_meas = torch.stack(sub_meas)      # shape (N, n_sub, detector_width)
+    full_meas = torch.cat(full_meas, dim=0)  # shape (N, n_full, detector_width)
+    sub_meas = torch.cat(sub_meas, dim=0)      # shape (N, n_sub, detector_width)
     
     dataset[split] = {
         'full_meas': full_meas,
         'sub_meas': sub_meas
     }
-torch.save(dataset, f"data/{args.problem}-sparse-and-full-{n_sub}-{n_full}-{args.im_size}.pt")
+    if args.multiflow:
+        dataset[split]['media'] = images 
+    print(dataset[split]['full_meas'].shape, dataset[split]['sub_meas'].shape)
+save_name = f"data/{args.problem}-multiflow-v1-{n_sub}-{n_full}-{args.im_size}-multiflow.pt" if args.multiflow else f"data/{args.problem}-sparse-and-full-{n_sub}-{n_full}-{args.im_size}.pt"
+torch.save(dataset, save_name)
+print(f"Saved dataset to {save_name}")

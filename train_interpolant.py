@@ -10,7 +10,7 @@ from torch.nn import MSELoss
 from get_loaders import get_loaders_interpolant
 from unet import Unet
 from flow import OptimalTransportFlow
-from utils import *
+from utils import make_checkpoint, load_checkpoint
 import matplotlib.pyplot as plt
 import cmocean
 import argparse
@@ -65,8 +65,6 @@ def get_lr(config, step):
 
 
 if __name__ == '__main__':
-    # initialize wandb
-
     # command line arguments
     parser = argparse.ArgumentParser(description="Train a flow matching model.")
     parser.add_argument('--device', type=str, default='cuda:0', help='Device to use for training')
@@ -100,15 +98,11 @@ if __name__ == '__main__':
         'ckpt_path': args.ckpt_path,
     }
 
-    wandb.init(project="dflow", config=config)
     device = args.device
 
     model = Unet(ch=32, ch_mul=[1, 2], att_channels=[0, 1]).to(device)
     model = torch.compile(model)
 
-    ema_model = torch.optim.swa_utils.AveragedModel(
-        model, multi_avg_fn=torch.optim.swa_utils.get_ema_multi_avg_fn(0.9999)
-    )
     flow = OptimalTransportFlow(config['sigma_min'])
     loss_fn = get_loss_fn(model, flow)
     
@@ -123,7 +117,7 @@ if __name__ == '__main__':
 
     ckpt = args.ckpt
     if ckpt is not None:
-        step, curr_epoch, model, optim, scaler, ema_model = load_checkpoint(ckpt, model, optim, scaler, ema_model)
+        step, curr_epoch, model, optim, scaler, _ = load_checkpoint(ckpt, model, optim, scaler, None)
         print(f'Loaded checkpoint [step {step} ({curr_epoch})]')
     else:
         step = 0
@@ -133,7 +127,6 @@ if __name__ == '__main__':
 
     for epoch in tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs"):
         model.train()
-        ema_model.train()
         
         epoch_loss = 0
         num_batches = 0
@@ -157,8 +150,6 @@ if __name__ == '__main__':
                 scaler.step(optim)
                 scaler.update()
 
-                ema_model.update_parameters(model)
-
                 for g in optim.param_groups:
                     lr = get_lr(config, step)
                     g['lr'] = lr
@@ -167,28 +158,14 @@ if __name__ == '__main__':
                 if (step + 1) % config['log_freq'] == 0:
                     print(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr:.3e}')
                     
-                    # Log training metrics to wandb
-                    wandb.log({
-                        "loss": true_loss,
-                        "grad_norm": grad.item(),
-                        "learning_rate": lr,
-                        "step": step,
-                        "epoch": epoch
-                    })
-
                 epoch_loss += true_loss
                 num_batches += 1
                 step += 1
         
         # Log epoch metrics
         avg_epoch_loss = epoch_loss / num_batches
-        wandb.log({
-            "epoch_loss": avg_epoch_loss,
-            "epoch": epoch
-        })
         
         model.eval()
-        ema_model.eval()
         with torch.no_grad():
             print(f'Generating samples at epoch {epoch}')
             x, y = next(iter(test_loader))
@@ -243,14 +220,6 @@ if __name__ == '__main__':
             # log the plot locally
             plt.savefig(f'{config["sample_path"]}/sample_epoch_{epoch}.png')
 
-            # log the plot to wandb
-            wandb.log({
-                "samples": wandb.Image(plt.gcf()),
-                "epoch": epoch,
-            })
-    
         if epoch % 10 == 0 or epoch == config['epochs']:
-            make_checkpoint(f'{config["ckpt_path"]}/ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model)
+            make_checkpoint(f'{config["ckpt_path"]}/ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model=None)
             print(f"Checkpoint saved at step {step}, epoch {epoch}")
-    
-    wandb.finish()

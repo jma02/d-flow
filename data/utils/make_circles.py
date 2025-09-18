@@ -1,11 +1,9 @@
-import math
 import torch
-import matplotlib.pyplot as plt
 import random
 import numpy as np
 import tqdm
-import cmocean as cmo
 from math import floor
+
 def is_valid_circle(center, radius, circles, min_distance=16):
     for existing_circle in circles:
         existing_center, existing_radius = existing_circle
@@ -19,9 +17,16 @@ def create_circles_dataset(num_samples=5000, im_size=128):
     # Initialize a tensor to store all images
     dataset = torch.zeros((num_samples, im_size, im_size))
 
-    scattering_indices = np.linspace(.4, 1.4, 20)
+    # you can edit this manually here to change
+    # the values of the circles
+
+    # for EIT I used 2 - 5, with h = 5
+    # for CT I used 0.4 - 1.4 with h = 20
+    scattering_indices = np.linspace(2, 5, 5)
     for sample_idx in tqdm.tqdm(range(num_samples), desc="Creating circles dataset"):
-        img = torch.zeros((im_size, im_size), dtype=torch.float32)
+        # for EIT the background should be one, achieved by torch.ones
+        # for CT the background should be zero, achieved by torch.zeros
+        img = torch.ones((im_size, im_size), dtype=torch.float32)
         num_circles = random.randint(1, 4)  # Random number of circles per image
         circles = []
 
@@ -50,21 +55,18 @@ def create_circles_dataset(num_samples=5000, im_size=128):
 
     return dataset
 num_samples=20000
-im_size = 16
+im_size = 128
 print(f"Creating dataset: {num_samples} {im_size} x {im_size} images")
 dataset = create_circles_dataset(num_samples, im_size=im_size)
 dataset = dataset.unsqueeze(1) # Add channel dimension
-plt.imshow(dataset[0].squeeze(), cmap=cmo.cm.ice)
-plt.savefig('circle-dataset-sample.png', format='png')
 
 train_size = int(0.8 * num_samples)
 val_size = int(0.1 * num_samples)
-test_size = num_samples - train_size - val_size
 dataset = {
     'train': dataset[:train_size],
     'val': dataset[train_size:train_size + val_size],
     'test': dataset[train_size + val_size:]
 }
 
-torch.save(dataset, "data/dataset.pt")
-print("Dataset saved as dataset.pt")
+torch.save(dataset, f"data/eit-circles-dataset-{im_size}.pt")
+print(f"Dataset saved as eit-circles-dataset-{im_size}.pt")

@@ -40,7 +40,7 @@ def ode_integrate(ode_func: nn.Module,
     ode_opts = {
         "atol": 1e-5, 
         "rtol": 1e-5, 
-        "method": "euler", # "dopri5", "rk4", "euler", "adams", "bdf"
+        "method": "euler",
         **ode_opts
     }
 

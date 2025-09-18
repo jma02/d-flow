@@ -1,7 +1,6 @@
 import torch
-import numpy as np
 
-__all__ = ['prod', 'resize']
+__all__ = ["prod", "resize"]
 
 
 def _normalize_axes(axes, ndim):
@@ -21,8 +20,7 @@ def _normalize_shape(shape):
 def _expand_shapes(*shapes):
     shapes = [list(shape) for shape in shapes]
     max_ndim = max(len(shape) for shape in shapes)
-    shapes_exp = [[1] * (max_ndim - len(shape)) + shape
-                  for shape in shapes]
+    shapes_exp = [[1] * (max_ndim - len(shape)) + shape for shape in shapes]
     return tuple(shapes_exp)
 
 
@@ -33,7 +31,7 @@ def prod(shape):
     Returns:
         Product.
     """
-    return np.prod(shape, dtype=np.int32)
+    return int(torch.prod(torch.tensor(shape, dtype=torch.int32)))
 
 
 def resize(input, oshape, ishift=None, oshift=None):
@@ -46,6 +44,7 @@ def resize(input, oshape, ishift=None, oshift=None):
     Returns:
         array: Zero-padded or cropped result.
     """
+    input = torch.as_tensor(input)
     ishape1, oshape1 = _expand_shapes(input.shape, oshape)
 
     if ishape1 == oshape1:
@@ -57,18 +56,14 @@ def resize(input, oshape, ishift=None, oshift=None):
     if oshift is None:
         oshift = [max(o // 2 - i // 2, 0) for i, o in zip(ishape1, oshape1)]
 
-    copy_shape = [min(i - si, o - so)
-                  for i, si, o, so in zip(ishape1, ishift, oshape1, oshift)]
+    copy_shape = [
+        min(i - si, o - so) for i, si, o, so in zip(ishape1, ishift, oshape1, oshift)
+    ]
     islice = tuple([slice(si, si + c) for si, c in zip(ishift, copy_shape)])
     oslice = tuple([slice(so, so + c) for so, c in zip(oshift, copy_shape)])
 
-    if isinstance(input, torch.Tensor):
-        output = torch.zeros(oshape1, dtype=input.dtype, device=input.device)
-        input = input.reshape(ishape1)
-        output[oslice] = input[islice]
-    else:
-        output = np.zeros(oshape1, dtype=input.dtype)
-        input = input.reshape(ishape1)
-        output[oslice] = input[islice]
+    output = torch.zeros(oshape1, dtype=input.dtype, device=input.device)
+    input = input.reshape(ishape1)
+    output[oslice] = input[islice]
 
     return output.reshape(oshape)

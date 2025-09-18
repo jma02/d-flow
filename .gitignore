@@ -11,7 +11,9 @@ ckp*
 wandb/
 profiling-logs/
 
-# ignore all checkpoints folders
+# ignore all checkpoints & samples folders
+**/samples/
+**/*samples-*/
 **/checkpoints/
 
 wandb/

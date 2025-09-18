@@ -40,7 +40,7 @@ def generate_EIT_sol(num_iters, mesh, v_h, sigma_vec_true, noise):
     opt_tol = 1e-30
 
     bounds_l = [1. for _ in range(len(sigma_vec_0))]
-    bounds_r = [float('inf') for _ in range(len(sigma_vec_0))]
+    bounds_r = [2 for _ in range(len(sigma_vec_0))]
     bounds = Bounds(bounds_l, bounds_r)
 
     # t_i = time.time()
@@ -126,7 +126,7 @@ def main(
     save_path = os.path.join(data_root, save_name)
     
     for i in range(num_samples):
-        sigma_vec_true = generate_shepp_logan_sigma(original_size, pad_size, GCOORD_down, centroids)
+        sigma_vec_true = generate_shepp_logan_sigma(original_size, pad_size, GCOORD_down, centroids) + 1
  
         t_i = time.time()
         sigma_vec_pred = generate_EIT_sol(num_iters, mesh, v_h, sigma_vec_true, noise)
