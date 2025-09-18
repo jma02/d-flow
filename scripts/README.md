@@ -1,1 +1,0 @@
-This folder contains old scripts. Most will require you to move the relevant folders, scripts, notebooks, into the root directory in order to run.

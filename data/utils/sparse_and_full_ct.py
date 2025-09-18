@@ -16,11 +16,10 @@ parser.add_argument('--problem', type=str, default='shepp-logan', help='Dataset 
 parser.add_argument('--im_size', type=int, default=128, help='This should correspond to a dataset we actually have')
 parser.add_argument('--n_sub', type=int, default=1, help='number of sparse angles')
 parser.add_argument('--n_full', type=int, default=24, help='number of full angles')
-parser.add_argument('--multiflow', type=bool, default=False, help='whether to use multiflow (default: False)')
 
 args = parser.parse_args()
 
-dataset_source = torch.load(f"data/{args.problem}-dataset-{args.im_size}.pt")
+dataset_source = torch.load(f"data/ct-{args.problem}-dataset-{args.im_size}.pt")
 
 # let's set a full measurement to be 24 angles
 n_sub = args.n_sub
@@ -53,11 +52,9 @@ for split in ['train', 'val', 'test']:
     
     dataset[split] = {
         'full_meas': full_meas,
-        'sub_meas': sub_meas
+        'sub_meas': sub_meas,
+        'media': images
     }
-    if args.multiflow:
-        dataset[split]['media'] = images 
-    print(dataset[split]['full_meas'].shape, dataset[split]['sub_meas'].shape)
-save_name = f"data/{args.problem}-multiflow-v1-{n_sub}-{n_full}-{args.im_size}-multiflow.pt" if args.multiflow else f"data/{args.problem}-sparse-and-full-{n_sub}-{n_full}-{args.im_size}.pt"
+save_name = f"data/{args.problem}-multiflow-v1-{n_sub}-{n_full}-{args.im_size}-multiflow.pt"
 torch.save(dataset, save_name)
 print(f"Saved dataset to {save_name}")

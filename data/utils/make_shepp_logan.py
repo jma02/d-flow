@@ -4,10 +4,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cmocean as cmo
 import torch
+import argparse
 
 def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     phantom = shepp_logan(phantom_type)
-    if phantom_type == 'eit-high-contrast':
+    if phantom_type == 'eit-hc':
         images = np.ones(((n + 2 * pad)**2, M))
     else:
         images = np.zeros(((n + 2 * pad)**2, M))
@@ -16,7 +17,7 @@ def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     X, Y = np.meshgrid(pix, -pix)
     
     if pad > 0:
-        if phantom_type == 'eit-high-contrast':
+        if phantom_type == 'eit-hc':
             z1 = np.ones((n + 2 * pad, pad))
             z2 = np.ones((pad, n))
         else:
@@ -39,7 +40,7 @@ def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     
 def generateImage(e, n, X, Y, phantom_type='msl'):
     # initialize image
-    if phantom_type == 'eit-high-contrast':
+    if phantom_type == 'eit-hc':
         # for EIT we want the background to be 1
         image = np.ones((n, n))            
     else: 
@@ -83,7 +84,7 @@ def modify(phantom, phantom_type='msl'):
     # random density relative to density
     density = 2 * 0.1 * (np.random.rand(m, 1) - 0.5)
     phantom[:, 0] = density.flatten() * phantom[:, 0] + phantom[:, 0]
-    if phantom_type != 'eit-high-contrast':
+    if phantom_type != 'eit-hc':
         # clip if not doing EIT
         phantom[:, 0] = np.clip(phantom[:, 0], 0, 1)
 
@@ -133,7 +134,7 @@ def shepp_logan(phantom_type='msl'):
             [0.1, 0.023, 0.023, 0, -0.606, 0],
             [0.1, 0.023, 0.046, 0.06, -0.605, 0]
         ])
-    elif  phantom_type== 'eit-high-contrast':
+    elif  phantom_type== 'eit-hc':
         # modified, here we use very high contrast to represent conductivities in the EIT problem 
         phantom = np.array([
             [5, 0.69, 0.92, 0, 0, 0],
@@ -154,12 +155,21 @@ def shepp_logan(phantom_type='msl'):
 
 
 def main():
-    n = 118 # Size of the image
+    parser = argparse.ArgumentParser(description="Generate Shepp-Logan phantoms.")
+    parser.add_argument('--im_size', type=int, default=128)
+    parser.add_argument('--problem', type=str, default='eit-hc', help='msl, sl, or eit-hc')
+
+    args = parser.parse_args()
+
+    im_size = args.im_size
+    n = im_size - 10 # Size of the image
     pad = 5  # Padding size
     M = 1 # number of randomizations
     N = 20000 # number of shepp logans
 
-    phantom_list = [torch.tensor(randomSheppLogan(n=n, pad=pad, M=M, phantom_type='eit-high-contrast')[:, M-1], dtype=torch.float32).view(1, n + 2*pad, n + 2*pad) 
+    problem = args.problem
+
+    phantom_list = [torch.tensor(randomSheppLogan(n=n, pad=pad, M=M, phantom_type=problem)[:, M-1], dtype=torch.float32).view(1, n + 2*pad, n + 2*pad) 
                     for _ in range(N)]
     
     # Stack all phantoms into a single tensor (N, 1, H, W)
@@ -180,8 +190,8 @@ def main():
         'test': images[train_size + val_size:]
     }
 
-    torch.save(dataset, f"data/eit-shepp-logan-dataset-{n+2*pad}.pt")
-    print(f"Dataset saved as eit-shepp-logan-dataset-{n+2*pad}.pt")
+    torch.save(dataset, f"data/{problem}-shepp-logan-dataset-{n+2*pad}.pt")
+    print(f"Dataset saved as {problem}-shepp-logan-dataset-{n+2*pad}.pt")
 
 
 

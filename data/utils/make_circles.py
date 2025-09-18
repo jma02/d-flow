@@ -3,6 +3,7 @@ import random
 import numpy as np
 import tqdm
 from math import floor
+import argparse
 
 def is_valid_circle(center, radius, circles, min_distance=16):
     for existing_circle in circles:
@@ -22,7 +23,7 @@ def create_circles_dataset(num_samples=5000, im_size=128):
 
     # for EIT I used 2 - 5, with h = 5
     # for CT I used 0.4 - 1.4 with h = 20
-    scattering_indices = np.linspace(2, 5, 5)
+    scattering_indices = torch.linspace(2, 5, 5)
     for sample_idx in tqdm.tqdm(range(num_samples), desc="Creating circles dataset"):
         # for EIT the background should be one, achieved by torch.ones
         # for CT the background should be zero, achieved by torch.zeros
@@ -48,16 +49,24 @@ def create_circles_dataset(num_samples=5000, im_size=128):
             # Create a mask for the circle
             circle_mask = distance <= radius**2
 
-            img[circle_mask] = np.random.choice(scattering_indices, replace=True)
+            img[circle_mask] = torch.random.choice(scattering_indices, replace=True)
 
         # Store the image in the dataset
         dataset[sample_idx] = img
 
     return dataset
+
+parser = argparse.ArgumentParser(description="Generate circles.")
+parser.add_argument('--im_size', type=int, default=128)
+parser.add_argument('--problem', type=str, default='ct', help='ct or eit')
+
+args = parser.parse_args()
+problem = args.problem
+
 num_samples=20000
-im_size = 128
+im_size = args.im_size
 print(f"Creating dataset: {num_samples} {im_size} x {im_size} images")
-dataset = create_circles_dataset(num_samples, im_size=im_size)
+dataset = create_circles_dataset(num_samples, im_size=im_size, problem= args.problem)
 dataset = dataset.unsqueeze(1) # Add channel dimension
 
 train_size = int(0.8 * num_samples)
@@ -68,5 +77,5 @@ dataset = {
     'test': dataset[train_size + val_size:]
 }
 
-torch.save(dataset, f"data/eit-circles-dataset-{im_size}.pt")
-print(f"Dataset saved as eit-circles-dataset-{im_size}.pt")
+torch.save(dataset, f"data/{problem}-circles-dataset-{im_size}.pt")
+print(f"Dataset saved as {args.problem}-circles-dataset-{im_size}.pt")
