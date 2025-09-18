@@ -1,15 +1,13 @@
 # A Python implementation of the MATLAB code provided at https://github.com/matthiaschung/Random-Shepp-Logan-Phantom
 
 import numpy as np
-import matplotlib.pyplot as plt
-import cmocean as cmo
 import torch
 import argparse
 from tqdm import tqdm
 
 def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     phantom = shepp_logan(phantom_type)
-    if phantom_type == 'eit-hc':
+    if phantom_type == 'eit-high-contrast':
         images = np.ones(((n + 2 * pad)**2, M))
     else:
         images = np.zeros(((n + 2 * pad)**2, M))
@@ -18,7 +16,7 @@ def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     X, Y = np.meshgrid(pix, -pix)
     
     if pad > 0:
-        if phantom_type == 'eit-hc':
+        if phantom_type == 'eit-high-contrast':
             z1 = np.ones((n + 2 * pad, pad))
             z2 = np.ones((pad, n))
         else:
@@ -41,7 +39,7 @@ def randomSheppLogan(n=512, default = False, phantom_type='msl', pad=4, M=1):
     
 def generateImage(e, n, X, Y, phantom_type='msl'):
     # initialize image
-    if phantom_type == 'eit-hc':
+    if phantom_type == 'eit-high-contrast':
         # for EIT we want the background to be 1
         image = np.ones((n, n))            
     else: 
@@ -85,7 +83,7 @@ def modify(phantom, phantom_type='msl'):
     # random density relative to density
     density = 2 * 0.1 * (np.random.rand(m, 1) - 0.5)
     phantom[:, 0] = density.flatten() * phantom[:, 0] + phantom[:, 0]
-    if phantom_type != 'eit-hc':
+    if phantom_type != 'eit-high-contrast':
         # clip if not doing EIT
         phantom[:, 0] = np.clip(phantom[:, 0], 0, 1)
 
@@ -135,7 +133,7 @@ def shepp_logan(phantom_type='msl'):
             [0.1, 0.023, 0.023, 0, -0.606, 0],
             [0.1, 0.023, 0.046, 0.06, -0.605, 0]
         ])
-    elif  phantom_type== 'eit-hc':
+    elif  phantom_type== 'eit-high-contrast':
         # modified, here we use very high contrast to represent conductivities in the EIT problem 
         phantom = np.array([
             [5, 0.69, 0.92, 0, 0, 0],

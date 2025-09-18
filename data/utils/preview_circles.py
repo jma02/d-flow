@@ -2,9 +2,7 @@ import cmocean.cm as cmo
 import torch
 import matplotlib.pyplot as plt
 
-# choose a dataset
-dataset_name = 'shepp-logan-dataset-128'
-data = torch.load(f'data/{dataset_name}.pt')
+data = torch.load('data/shepp-logan-dataset-64.pt')
 dataset = data['train']
 
 # Ensure dataset is 4D: (B, C, H, W)
@@ -28,5 +26,5 @@ for j in range(num_images, len(axes)):
     axes[j].axis('off')
 
 plt.subplots_adjust(wspace=0.1, hspace=0.1)
-plt.savefig(f'{dataset_name}-mosaic.png', bbox_inches='tight', pad_inches=0.1)
+plt.savefig('circle_mosaic.png', bbox_inches='tight', pad_inches=0.1)
 plt.close()

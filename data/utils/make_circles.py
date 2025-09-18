@@ -83,5 +83,5 @@ dataset = {
     'test': dataset[train_size + val_size:]
 }
 
-torch.save(dataset, f"data/{problem}-circles-dataset-{im_size}.pt")
-print(f"Dataset saved as {args.problem}-circles-dataset-{im_size}.pt")
+torch.save(dataset, f"data/eit-circles-dataset-{im_size}.pt")
+print(f"Dataset saved as eit-circles-dataset-{im_size}.pt")

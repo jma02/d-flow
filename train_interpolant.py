@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 
 import torch
+import wandb
 from torch import Tensor
 from torch.nn import MSELoss
 

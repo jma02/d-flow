@@ -16,7 +16,6 @@ profiling-logs/
 **/*samples-*/
 **/checkpoints/
 
-scripts/
 problems/
 dflow-radon-metrics
 

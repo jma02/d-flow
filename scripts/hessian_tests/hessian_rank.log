@@ -1,0 +1,5 @@
+nohup: ignoring input
+[NbConvertApp] Converting notebook hessian_rank.ipynb to notebook
+/home/johnma/d-flow/venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))
+[NbConvertApp] Writing 548100 bytes to hesian_rank_run.ipynb
