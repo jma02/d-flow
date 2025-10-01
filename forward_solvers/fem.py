@@ -284,22 +284,6 @@ def partial_deriv_matrix(v_h):
     return Kx_coo.coalesce().to_sparse_csr(), Ky_coo.coalesce().to_sparse_csr(), surf.coalesce().to_sparse_csr()
 
 
-def torch_solve(A, b):
-    """
-    We need to convert to dense to use the torch linalg solver, as
-    this enables autodifferentiation :(
-    """
-    if A.is_sparse:
-        # For sparse matrices, convert to dense for solving
-        A_dense = A.to_dense()
-    else:
-        A_dense = A
-    
-    # this is what spsolve does, but this will error out if matrices are singular
-    solution = torch.linalg.lstsq(A_dense, b, rcond=None)
-    return solution.solution
-
-
 def dtn_map(v_h, sigma_vec):
 
     n_bdy_pts = len(v_h.mesh.bdy_idx)
@@ -310,31 +294,32 @@ def dtn_map(v_h, sigma_vec):
 
     # build the stiffness matrix
     S = stiffness_matrix(v_h, sigma_vec)
+    S = S.to_sparse_coo()  
     
-    # Convert to dense for indexing (like scipy lil_matrix behavior)
-    S_dense = S.to_dense()
+    # Extract submatrices using sparse operations
+    Sb = S.index_select(0, vol_idx).index_select(1, vol_idx).to_sparse_csr()
+    S_vb = S.index_select(0, vol_idx).index_select(1, bdy_idx).to_sparse_csr()
+
+    S = S.to_sparse_csr()
     
-    # reduced Stiffness matrix (only volumetric dof)
-    Sb = S_dense[vol_idx,:][:,vol_idx]
+    # the boundary data are just direct deltas at each node
+    bdy_data = torch.eye(n_bdy_pts, device=v_h.mesh.device, dtype=torch.float64)
     
-    # the boundary data are just direct deltas at each node - match dtype
-    bdy_data = torch.eye(n_bdy_pts, device=v_h.mesh.device, dtype=S_dense.dtype)
+    # building the rhs for the linear system using sparse matrix multiplication
+    Fb = -torch.sparse.mm(S_vb, bdy_data)
     
-    # building the rhs for the linear system
-    Fb = -S_dense[vol_idx,:][:,bdy_idx] @ bdy_data
+    # solve interior dof using sparse solver
+    U_vol = torch.sparse.spsolve(Sb, Fb)
     
-    # solve interior dof
-    U_vol = torch_solve(Sb, Fb)
-    
-    # allocate the space for the full solution - match dtype
-    sol = torch.zeros((n_pts, n_bdy_pts), device=v_h.mesh.device, dtype=S_dense.dtype)
+    # allocate the space for the full solution
+    sol = torch.zeros((n_pts, n_bdy_pts), device=v_h.mesh.device, dtype=torch.float64)
     
     # write the corresponding values back to the solution
     sol[bdy_idx,:] = bdy_data
     sol[vol_idx,:] = U_vol
 
-    # computing the flux
-    flux = S_dense @ sol
+    # computing the flux using sparse matrix multiplication
+    flux = torch.sparse.mm(S, sol)
 
     # extracting the boundary data of the flux 
     DtN = flux[bdy_idx, :]
@@ -353,24 +338,25 @@ def adjoint(v_h, sigma_vec, residual):
     # build the stiffness matrix
     # given that the operator is self-adjoint
     S = stiffness_matrix(v_h, sigma_vec)
-    
-    # Convert to dense for indexing
-    S_dense = S.to_dense()
-    
-    # reduced Stiffness matrix (only volumetric dof)
-    Sb = S_dense[vol_idx,:][:,vol_idx]
+    S = S.to_sparse_coo()
+
+    Sb = S.index_select(0, vol_idx).index_select(1, vol_idx).to_sparse_csr()
+    S_vb = S.index_select(0, vol_idx).index_select(1, bdy_idx).to_sparse_csr()
+
+    # Extract submatrices using sparse operations
+    S = S.to_sparse_csr()
     
     # the boundary data are just direct deltas at each node
     bdy_data = residual
     
-    # building the rhs for the linear system
-    Fb = -S_dense[vol_idx,:][:,bdy_idx] @ bdy_data
+    # building the rhs for the linear system using sparse matrix multiplication
+    Fb = -torch.sparse.mm(S_vb, bdy_data)
     
-    # solve interior dof
-    U_vol = torch_solve(Sb, Fb)
+    # solve interior dof (convert to dense only for the solve)
+    U_vol = torch.sparse.spsolve(Sb, Fb)
     
-    # allocate the space for the full solution - match dtype
-    sol_adj = torch.zeros((n_pts, n_bdy_pts), device=v_h.mesh.device, dtype=S_dense.dtype)
+    # allocate the space for the full solution
+    sol_adj = torch.zeros((n_pts, n_bdy_pts), device=v_h.mesh.device, dtype=torch.float64)
     
     # write the corresponding values back to the solution
     sol_adj[bdy_idx,:] = bdy_data
@@ -393,16 +379,20 @@ def misfit_sigma(v_h, Data, sigma_vec):
 
     # compute the derivative matrices (weakly)
     Kx, Ky, M_w = partial_deriv_matrix(v_h)
-
-    # Convert sparse matrices to dense for solve operations
-    M_w_dense = M_w.to_dense()
     
-    Sol_adj_x = torch_solve(M_w_dense, torch.sparse.mm(Kx, sol_adj))
-    Sol_adj_y = torch_solve(M_w_dense, torch.sparse.mm(Ky, sol_adj))
+    # Compute derivatives using sparse matrix multiplication
+    Kx_sol_adj = torch.sparse.mm(Kx, sol_adj)
+    Ky_sol_adj = torch.sparse.mm(Ky, sol_adj)
+    Kx_sol = torch.sparse.mm(Kx, sol)
+    Ky_sol = torch.sparse.mm(Ky, sol)
+    
+    # Solve systems using sparse solver (equivalent to spsolve in numba version)
+    Sol_adj_x = torch.sparse.spsolve(M_w, Kx_sol_adj)
+    Sol_adj_y = torch.sparse.spsolve(M_w, Ky_sol_adj)
+    Sol_x = torch.sparse.spsolve(M_w, Kx_sol)
+    Sol_y = torch.sparse.spsolve(M_w, Ky_sol)
 
-    Sol_x = torch_solve(M_w_dense, torch.sparse.mm(Kx, sol))
-    Sol_y = torch_solve(M_w_dense, torch.sparse.mm(Ky, sol))
-
-    grad = M_w_dense @ torch.sum(Sol_adj_x*Sol_x + Sol_adj_y*Sol_y, dim=1, keepdim=True)
+    grad_terms = torch.sum(Sol_adj_x*Sol_x + Sol_adj_y*Sol_y, dim=1, keepdim=True)
+    grad = torch.sparse.mm(M_w, grad_terms)
 
     return 0.5*torch.sum(torch.square(residual)), grad

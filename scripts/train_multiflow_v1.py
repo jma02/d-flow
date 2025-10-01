@@ -3,19 +3,18 @@ import numpy as np
 from tqdm import tqdm
 
 import torch
-import wandb
 from torch import Tensor
 from torch.nn import MSELoss
 
 from get_loaders import get_loaders_multiflow_v1
-from unet import Unet
+from unet_v2 import UnetV2
 from flow import OptimalTransportFlow
 from utils import make_checkpoint_multiflow_v1
 import matplotlib.pyplot as plt
 import cmocean
 import argparse
 from torchdiffeq import odeint
-
+from torch.utils.data import DataLoader, TensorDataset
 torch.manual_seed(159753)
 np.random.seed(159753)
 
@@ -27,7 +26,7 @@ torch.backends.cuda.enable_flash_sdp(True)
 torch.backends.cuda.enable_mem_efficient_sdp(True)
 torch.backends.cuda.enable_math_sdp(True)
 
-def get_loss_fn(model: Unet, flow: OptimalTransportFlow):
+def get_loss_fn(model: UnetV2, flow: OptimalTransportFlow):
     def loss_fn(source: Tensor, target: Tensor, t: Tensor) -> Tensor:
         # t = torch.rand(source.shape[0], device=source.device)
         x0 = source
@@ -116,18 +115,17 @@ if __name__ == '__main__':
 
     n_sub = args.n_sub
     n_full = args.n_full
-    wandb.init(project="dflow", config=config)
     device = args.device
 
     # miniature models for smaller image size
-    sub_meas_model = Unet(ch=128, ch_mul=[1, 2], att_channels=[0, 1]).to(device) # 2 x 182
-    full_meas_model = Unet(ch=128, ch_mul=[1, 2], att_channels=[0, 1]).to(device) # 24 x 182
+    sub_meas_model = UnetV2(ch=32, ch_mul=[2,2]).to(device) # 2 x 182
+    full_meas_model = UnetV2(ch=32, ch_mul=[2,2]).to(device) # 24 x 182
 
-    media_model = Unet(ch=64).to(device) # 128 x 128
+    media_model = UnetV2(ch=32).to(device) # 128 x 128
 
-    # media_model = torch.compile(media_model)
-    # sub_meas_model = torch.compile(sub_meas_model)
-    # full_meas_model = torch.compile(full_meas_model)
+    media_model = torch.compile(media_model)
+    sub_meas_model = torch.compile(sub_meas_model)
+    full_meas_model = torch.compile(full_meas_model)
 
     flow = OptimalTransportFlow(config['sigma_min'])
     sub_meas_loss_fn = get_loss_fn(sub_meas_model, flow)
@@ -138,9 +136,68 @@ if __name__ == '__main__':
     full_meas_optim = torch.optim.Adam(full_meas_model.parameters(), lr=config['min_lr'])
     media_optim = torch.optim.Adam(media_model.parameters(), lr=config['min_lr'])
 
-    # after loading the data we change working directory
+    dataset = torch.load(
+        f"data/{config["problem"]}-multiflow-v1-{config["n_sub"]}-{config["n_full"]}-{config["image_size"]}.pt"
+    )
+
+    train_data = dataset["train"]
+    val_data = dataset["val"]
+
+    train_sub = train_data["sub_meas"]
+    train_full = train_data["full_meas"]
+    train_media = train_data["media"]
+
+    val_sub = val_data["sub_meas"]
+    val_full = val_data["full_meas"]
+    val_media = val_data["media"]
+
+    # if channels not already added, add channels
+    if len(train_sub.shape) == 3:
+        train_sub = train_sub.unsqueeze(1)
+    if len(train_full.shape) == 3:
+        train_full = train_full.unsqueeze(1)
+    if len(train_media.shape) == 3:
+        train_media = train_media.unsqueeze(1)
+
+    if len(val_sub.shape) == 3:
+        val_sub = val_sub.unsqueeze(1)
+    if len(val_full.shape) == 3:
+        val_full = val_full.unsqueeze(1)
+    if len(val_media.shape) == 3:
+        val_media = val_media.unsqueeze(1)
+
+    train = TensorDataset(
+        train_sub.detach().clone(),
+        train_full.detach().clone(),
+        train_media.detach().clone(),
+    )
+    test = TensorDataset(
+        val_sub.detach().clone(), val_full.detach().clone(), val_media.detach().clone()
+    )
+
+    bs = config["batch_size"]
+    j = config["num_workers"]
+
+    train_loader = DataLoader(
+        train,
+        batch_size=bs,
+        shuffle=True,
+        num_workers=j,
+        pin_memory=True,
+        drop_last=True,
+    )
+    test_loader = DataLoader(
+        test,
+        batch_size=bs,
+        shuffle=False,
+        num_workers=j,
+        pin_memory=True,
+        drop_last=True,
+    )
+
+
     train_loader, test_loader = get_loaders_multiflow_v1(config)
-    run_suffix = "normalized-large"
+    run_suffix = "new_unet"
     os.makedirs(f"problems/multiflow-v1-{run_suffix}/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}", exist_ok=True)
     os.chdir(f"problems/multiflow-v1-{run_suffix}/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}")
     os.makedirs(args.samples_path, exist_ok=True)
@@ -158,7 +215,7 @@ if __name__ == '__main__':
     #     curr_epoch = 0
     step = 0
     curr_epoch = 0
-    accumulation_steps = 2
+    accumulation_steps = 1
 
     # flattened dimensions
     # yes this is hard coded
@@ -261,19 +318,6 @@ if __name__ == '__main__':
                           f'Full Grad: {full_grad:.3f}, '
                           f'Media Grad: {media_grad:.3f}')
                     
-                    # Log training metrics to wandb
-                    wandb.log({
-                        "true_sub_loss": true_sub_loss,
-                        "sub_grad_norm": sub_grad.item(),
-                        "true_full_loss": true_full_loss,
-                        "full_grad_norm": full_grad.item(),
-                        "true_media_loss": true_media_loss,
-                        "media_grad_norm": media_grad.item(),
-                        "learning_rate": lr,
-                        "step": step,
-                        "epoch": epoch
-                    })
-
                 epoch_sub_loss += true_sub_loss
                 epoch_full_loss += true_full_loss
                 epoch_media_loss += true_media_loss
@@ -284,12 +328,6 @@ if __name__ == '__main__':
         avg_epoch_sub_loss = epoch_sub_loss / num_batches
         avg_epoch_full_loss = epoch_full_loss / num_batches
         avg_epoch_media_loss = epoch_media_loss / num_batches
-        wandb.log({
-            "epoch_sub_loss": avg_epoch_sub_loss,
-            "epoch_full_loss": avg_epoch_full_loss,
-            "epoch_media_loss": avg_epoch_media_loss,
-            "epoch": epoch
-        })
 
         sub_meas_model.eval()
         full_meas_model.eval()
@@ -396,12 +434,6 @@ if __name__ == '__main__':
             # log the plot locally
             plt.savefig(f'{config["sample_path"]}/sample_epoch_{epoch}.png')
             plt.close()
-
-            # log the plot to wandb
-            wandb.log({
-                "samples": wandb.Image(plt.gcf()),
-                "epoch": epoch,
-            })
     
         if epoch % 10 == 0 or epoch == config['epochs']:
             os.makedirs(f'{config["ckpt_path"]}/sub_{n_sub}', exist_ok=True)
@@ -436,4 +468,3 @@ if __name__ == '__main__':
             )
             print(f"Checkpoints saved at step {step}, epoch {epoch}")
     
-    wandb.finish()

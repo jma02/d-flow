@@ -1,0 +1,129 @@
+from typing import List
+
+import torch
+import torch.nn as nn
+
+from unet_v2.modules import (
+    Downsample,
+    Upsample,
+    ResBlockNoTime,
+)
+
+
+class UnetV2NoTime(nn.Module):
+    def __init__(
+            self,
+            ch: int = 128, 
+            ch_mul: List[int] = [1, 2, 2, 2], 
+            groups: int = 32,
+            dropout: float = 0.1,
+            output_shape: tuple = (128, 128)
+        ):
+        super().__init__()
+
+        self.ch = ch
+        self.ch_mul = ch_mul
+        self.dropout = dropout
+        self.groups = groups
+        self.output_shape = output_shape
+
+        self.input_proj = nn.Conv2d(1, self.ch, 3, 1, 1)
+
+        self.down = nn.ModuleList([])
+        self.mid = None
+        self.up = nn.ModuleList([])
+
+        self.make_paths()
+        
+        self.final = nn.Sequential(nn.GroupNorm(num_groups=groups, num_channels=2*self.ch),
+                                   nn.SiLU(),
+                                   nn.Conv2d(2*self.ch, 1, 3, 1, 1))
+    
+
+
+    def forward(self, x: torch.Tensor):
+        x = nn.AdaptiveAvgPool2d(self.output_shape)(x)
+        initial_proj = self.input_proj(x)
+        h = initial_proj
+        
+        down_path = []
+
+        for block_group in self.down:
+            h = block_group[0](h)
+            h = block_group[1](h)
+            down_path.append(h)
+
+            if len(block_group) > 2:
+                h = block_group[2](h)
+
+        h = self.mid[0](h)
+        h = self.mid[1](h)
+
+        for block_group in self.up:
+            h = torch.cat((h, down_path.pop()), dim=1)
+            h = block_group[0](h)
+            h = block_group[1](h)
+
+            if len(block_group) > 2:
+                h = block_group[2](h)
+
+        x = torch.cat((h, initial_proj), dim=1)
+        return self.final(x)
+     
+
+    def make_transition(self, res, down):
+        dim = self.ch * self.ch_mul[res]
+
+        if down:
+            is_last_res = (res == (len(self.ch_mul) - 1))
+            if is_last_res:
+                return Downsample(dim, dim)
+            
+            dim_out = self.ch * self.ch_mul[res + 1]
+            return Downsample(dim, dim_out)
+        
+        is_first_res = (res == 0)
+        if is_first_res:
+            return Upsample(dim, dim)
+        
+        dim_out = self.ch * self.ch_mul[res - 1]
+        return Upsample(dim, dim_out)
+            
+        
+    def make_res(self, res, down):
+        dim = self.ch * self.ch_mul[res]
+        transition = self.make_transition(res, down)
+        
+        if down:
+            block1 = ResBlockNoTime(dim, dim, self.groups, self.dropout)
+            block2 = ResBlockNoTime(dim, dim, self.groups, self.dropout)
+        else:
+            block1 = ResBlockNoTime(2 * dim, dim, self.groups, self.dropout)
+            block2 = ResBlockNoTime(dim, dim, self.groups, self.dropout)
+        
+        return nn.ModuleList([block1, block2, transition])
+ 
+
+
+    def make_paths(self):
+        num_res = len(self.ch_mul)
+
+        for res in range(num_res):
+            is_last_res = (res == (num_res - 1))
+            
+            down_blocks = self.make_res(res, down=True)
+            up_blocks = self.make_res(res, down=False)
+
+            if is_last_res:
+                down_blocks = down_blocks[:-1]
+            if res == 0:
+                up_blocks = up_blocks[:-1]
+
+            self.down.append(down_blocks)
+            self.up.insert(0, up_blocks)
+
+        nch = self.ch * self.ch_mul[-1]
+        self.mid = nn.ModuleList([
+            ResBlockNoTime(nch, nch, self.groups, self.dropout),
+            ResBlockNoTime(nch, nch, self.groups, self.dropout),
+        ])

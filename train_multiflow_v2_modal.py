@@ -39,7 +39,7 @@ torch_image = torch_image.add_local_file(
 
 with torch_image.imports():
     from flow import OptimalTransportFlow
-    from get_loaders import get_loaders_multiflow_v1
+    from get_loaders import get_loaders_multiflow_v2
     from unet_v2 import UnetV2
     from utils import make_checkpoint
     import numpy as np
@@ -57,7 +57,7 @@ with torch_image.imports():
 @app.function(
     image=torch_image,
     volumes={volume_path: volume},
-    gpu="H100",
+    gpu="L40S",
     timeout=72000,  # 20 hours
 )
 def train_model():
@@ -107,12 +107,12 @@ def train_model():
     ckpt_path = "checkpoints"
     samples_path = "samples"
     image_size = 128
-    batch_size = 32
+    batch_size = 64
     num_epochs = 150
-    problem = "shepp-logan"
+    problem = "ct-shepp-logan"
     n_sub = 2
     n_full = 24
-    run_save_prefix = "multiflow_v1_xlarge"
+    run_save_prefix = "multiflow-v2-operator-learning"
 
     config = {
         "sigma_min": 1e-2,
@@ -139,8 +139,8 @@ def train_model():
     device = device
 
     # fewer skips and upsampling for smaller image size
-    sub_meas_model = UnetV2(ch=32, ch_mul=[2, 2]).to(device)
-    full_meas_model = UnetV2(ch=32, ch_mul=[2, 2]).to(device)
+    sub_meas_model = UnetV2(ch=64, ch_mul=[1, 2]).to(device)
+    full_meas_model = UnetV2(ch=64, ch_mul=[1, 2]).to(device)
 
     media_model = UnetV2(ch=32).to(device)
 
@@ -160,7 +160,7 @@ def train_model():
     media_optim = torch.optim.Adam(media_model.parameters(), lr=config["min_lr"])
 
     # after loading the data we change working directory
-    train_loader, test_loader = get_loaders_multiflow_v1(config)
+    train_loader, test_loader = get_loaders_multiflow_v2(config)
     os.makedirs(
         f"{volume_path}/problems/{run_save_prefix}/{config['problem']}/{config['n_sub']}-{config['n_full']}-{config['image_size']}x{config['image_size']}",
         exist_ok=True,
@@ -183,91 +183,86 @@ def train_model():
     #     curr_epoch = 0
     step = 0
     curr_epoch = 0
-    accumulation_steps = 1
 
-    for epoch in tqdm(range(curr_epoch, config["epochs"] + 1), desc="Epochs"):
+    pbar = tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs")
+    for epoch in pbar:
         sub_meas_model.train()
         full_meas_model.train()
         media_model.train()
 
-        for i, (sub, full, media) in tqdm(
-            enumerate(train_loader), desc=f"Epoch {epoch}", leave=False
-        ):
+        for i, (sub, full, media) in tqdm(enumerate(train_loader), desc=f"Epoch {epoch}", leave=False, total=len(train_loader)):
             sub = sub.to(device)
             full = full.to(device)
             media = media.to(device)
-
-            if i % accumulation_steps == 0:
-                sub_meas_optim.zero_grad(set_to_none=True)
-                full_meas_optim.zero_grad(set_to_none=True)
-                media_optim.zero_grad(set_to_none=True)
+                
+            sub_meas_optim.zero_grad(set_to_none=True)
+            full_meas_optim.zero_grad(set_to_none=True)
+            media_optim.zero_grad(set_to_none=True)
 
             with torch.amp.autocast(device_type=device):
-                sub_loss = sub_meas_loss_fn(sub) / accumulation_steps
-                full_loss = full_meas_loss_fn(full) / accumulation_steps
-                media_loss = media_loss_fn(media) / accumulation_steps
+                sub_loss = sub_meas_loss_fn(sub) 
+                full_loss = full_meas_loss_fn(full)
+                media_loss = media_loss_fn(media)
 
             full_meas_scaler.scale(full_loss).backward()
             sub_meas_scaler.scale(sub_loss).backward()
             media_scaler.scale(media_loss).backward()
 
-            if (i + 1) % accumulation_steps == 0 or (i + 1) == len(train_loader):
-                sub_meas_scaler.unscale_(sub_meas_optim)
-                full_meas_scaler.unscale_(full_meas_optim)
-                media_scaler.unscale_(media_optim)
+            sub_meas_scaler.unscale_(sub_meas_optim)
+            full_meas_scaler.unscale_(full_meas_optim)
+            media_scaler.unscale_(media_optim)
 
-                sub_meas_grad = torch.nn.utils.clip_grad_norm_(
-                    sub_meas_model.parameters(), max_norm=1.0
-                )
-                full_meas_grad = torch.nn.utils.clip_grad_norm_(
-                    full_meas_model.parameters(), max_norm=1.0
-                )
-                media_grad = torch.nn.utils.clip_grad_norm_(
-                    media_model.parameters(), max_norm=1.0
-                )
+            sub_grad = torch.nn.utils.clip_grad_norm_(
+                sub_meas_model.parameters(), max_norm=1.0
+            )
+            full_grad = torch.nn.utils.clip_grad_norm_(
+                full_meas_model.parameters(), max_norm=1.0
+            )
+            media_grad = torch.nn.utils.clip_grad_norm_(
+                media_model.parameters(), max_norm=1.0
+            )
 
-                sub_meas_scaler.step(sub_meas_optim)
-                full_meas_scaler.step(full_meas_optim)
-                media_scaler.step(media_optim)
+            sub_meas_scaler.step(sub_meas_optim)
+            full_meas_scaler.step(full_meas_optim)
+            media_scaler.step(media_optim)
 
-                sub_meas_scaler.update()
-                full_meas_scaler.update()
-                media_scaler.update()
+            sub_meas_scaler.update()
+            full_meas_scaler.update()
+            media_scaler.update()
 
-                for g in sub_meas_optim.param_groups:
-                    lr = get_lr(config, step)
-                    g["lr"] = lr
+            for g in sub_meas_optim.param_groups:
+                lr = get_lr(config, step)
+                g["lr"] = lr
 
-                for g in full_meas_optim.param_groups:
-                    lr = get_lr(config, step)
-                    g["lr"] = lr
+            for g in full_meas_optim.param_groups:
+                lr = get_lr(config, step)
+                g["lr"] = lr
 
-                for g in media_optim.param_groups:
-                    lr = get_lr(config, step)
-                    g["lr"] = lr
+            for g in media_optim.param_groups:
+                lr = get_lr(config, step)
+                g["lr"] = lr
 
-                true_sub_loss = sub_loss.item() * accumulation_steps
-                true_full_loss = full_loss.item() * accumulation_steps
-                true_media_loss = media_loss.item() * accumulation_steps
-                if (step + 1) % config["log_freq"] == 0:
-                    print(
-                        f"Step {step}: "
-                        f"Sub Loss: {true_sub_loss:.6f}, "
-                        f"Full Loss: {true_full_loss:.6f}, "
-                        f"Media Loss: {true_media_loss:.6f}, "
-                        f"LR: {lr:.2e}, "
-                        f"Sub Grad: {sub_meas_grad:.3f}, "
-                        f"Full Grad: {full_meas_grad:.3f}, "
-                        f"Media Grad: {media_grad:.3f}"
-                    )
+            true_sub_loss = sub_loss.item() 
+            true_full_loss = full_loss.item() 
+            true_media_loss = media_loss.item() 
+            if (step + 1) % config["log_freq"] == 0:
+                pbar.set_postfix({
+                    'Step': step,
+                    'Sub': f'{true_sub_loss:.3f}',
+                    'Full': f'{true_full_loss:.3f}', 
+                    'Media': f'{true_media_loss:.3f}',
+                    'LR': f'{lr:.1e}',
+                    'SubGrad': f'{sub_grad:.2f}',
+                    'FullGrad': f'{full_grad:.2f}',
+                    'MediaGrad': f'{media_grad:.2f}'
+                }) 
 
-                step += 1
+            step += 1
 
         sub_meas_model.eval()
         full_meas_model.eval()
         media_model.eval()
         with torch.no_grad():
-            print(f"Generating samples at epoch {epoch}")
             x0_sub = torch.randn(1, 1, config["n_sub"], 182, device=device)
             x0_full = torch.randn(1, 1, config["n_full"], 182, device=device)
             x0_media = torch.randn(1, 1, config["image_size"], config["image_size"], device=device)
@@ -378,4 +373,3 @@ def train_model():
                 optim=media_optim,
                 scaler=media_scaler,
             )
-            print(f"Checkpoints saved at step {step}, epoch {epoch}")

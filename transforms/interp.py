@@ -60,9 +60,9 @@ def interpolate(input, coord, kernel="spline", width=2, param=1):
         https://en.wikipedia.org/wiki/Spline_wavelet#Cardinal_B-splines_of_small_orders
         http://people.math.sfu.ca/~cbm/aands/page_378.htm
     """
-    # Convert numpy inputs to torch tensors
+    # Convert numpy inputs to torch tensors and ensure same device
     input = torch.as_tensor(input)
-    coord = torch.as_tensor(coord)
+    coord = torch.as_tensor(coord, device=input.device)
 
     ndim = coord.shape[-1]
 
@@ -76,14 +76,14 @@ def interpolate(input, coord, kernel="spline", width=2, param=1):
     coord = coord.reshape([npts, ndim])
 
     if np.isscalar(param):
-        param = torch.tensor([param] * ndim, dtype=coord.dtype)
+        param = torch.tensor([param] * ndim, dtype=coord.dtype, device=input.device)
     else:
-        param = torch.tensor(param, dtype=coord.dtype)
+        param = torch.tensor(param, dtype=coord.dtype, device=input.device)
 
     if np.isscalar(width):
-        width = torch.tensor([width] * ndim, dtype=coord.dtype)
+        width = torch.tensor([width] * ndim, dtype=coord.dtype, device=input.device)
     else:
-        width = torch.tensor(width, dtype=coord.dtype)
+        width = torch.tensor(width, dtype=coord.dtype, device=input.device)
 
     output = _interpolate[kernel][ndim - 1](input, coord, width, param)
     return output.reshape(batch_shape + pts_shape)
@@ -147,7 +147,7 @@ def _get_interpolate(kernel):
     def _interpolate1(input, coord, width, param):
         kx = coord[:, -1]
         x0 = torch.ceil(kx - width[-1] / 2).long()
-        x_range = x0[:, None] + torch.arange(0, width[-1], dtype=torch.long)[None, :]
+        x_range = x0[:, None] + torch.arange(0, width[-1], dtype=torch.long, device=input.device)[None, :]
         w = kernel((x_range - kx[:, None]) / (width[-1] / 2), param[-1])
         input = input[:, x_range % input.shape[1]]
         output = torch.sum(w * input, dim=2)
@@ -160,8 +160,8 @@ def _get_interpolate(kernel):
         ky = coord[:, -2]
         x0 = torch.ceil(kx - width[-1] / 2).long()
         y0 = torch.ceil(ky - width[-2] / 2).long()
-        arange_x = torch.arange(0, width[-1], dtype=torch.long)
-        arange_y = torch.arange(0, width[-2], dtype=torch.long)
+        arange_x = torch.arange(0, width[-1], dtype=torch.long, device=input.device)
+        arange_y = torch.arange(0, width[-2], dtype=torch.long, device=input.device)
         x_range = x0[:, None] + arange_x[None, :]
         y_range = y0[:, None] + arange_y[None, :]
 
@@ -188,9 +188,9 @@ def _get_interpolate(kernel):
         y0 = torch.ceil(ky - width[-2] / 2).long()
         z0 = torch.ceil(kz - width[-3] / 2).long()
 
-        arange_x = torch.arange(0, width[-1], dtype=torch.long)
-        arange_y = torch.arange(0, width[-2], dtype=torch.long)
-        arange_z = torch.arange(0, width[-3], dtype=torch.long)
+        arange_x = torch.arange(0, width[-1], dtype=torch.long, device=input.device)
+        arange_y = torch.arange(0, width[-2], dtype=torch.long, device=input.device)
+        arange_z = torch.arange(0, width[-3], dtype=torch.long, device=input.device)
 
         x_range = x0[:, None] + arange_x[None, :]
         y_range = y0[:, None] + arange_y[None, :]
@@ -217,9 +217,9 @@ def _get_interpolate(kernel):
 
 def gridding(input, coord, shape, kernel="spline", width=2, param=1):
     """Gridding of points specified by coordinates to array."""
-    # Convert numpy inputs to torch tensors
+    # Convert numpy inputs to torch tensors and ensure same device
     input = torch.as_tensor(input)
-    coord = torch.as_tensor(coord)
+    coord = torch.as_tensor(coord, device=input.device)
 
     ndim = coord.shape[-1]
 
@@ -231,17 +231,17 @@ def gridding(input, coord, shape, kernel="spline", width=2, param=1):
 
     input = input.reshape([batch_size, npts])
     coord = coord.reshape([npts, ndim])
-    output = torch.zeros([batch_size] + list(shape[-ndim:]), dtype=input.dtype)
+    output = torch.zeros([batch_size] + list(shape[-ndim:]), dtype=input.dtype, device=input.device)
 
     if np.isscalar(param):
-        param = torch.tensor([param] * ndim, dtype=coord.dtype)
+        param = torch.tensor([param] * ndim, dtype=coord.dtype, device=input.device)
     else:
-        param = torch.tensor(param, dtype=coord.dtype)
+        param = torch.tensor(param, dtype=coord.dtype, device=input.device)
 
     if np.isscalar(width):
-        width = torch.tensor([width] * ndim, dtype=coord.dtype)
+        width = torch.tensor([width] * ndim, dtype=coord.dtype, device=input.device)
     else:
-        width = torch.tensor(width, dtype=coord.dtype)
+        width = torch.tensor(width, dtype=coord.dtype, device=input.device)
 
     output = _gridding[kernel][ndim - 1](output, input, coord, width, param)
 

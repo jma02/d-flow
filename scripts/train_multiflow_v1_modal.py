@@ -25,7 +25,7 @@ torch_image = torch_image.add_local_file(
     Path(__file__).parent / "flow.py", remote_path="/root/flow.py"
 )
 torch_image = torch_image.add_local_dir(
-    Path(__file__).parent / "unet/", remote_path="/root/unet/"
+    Path(__file__).parent / "unet_v2/", remote_path="/root/unet_v2/"
 )
 torch_image = torch_image.add_local_dir(
     Path(__file__).parent / "transforms/", remote_path="/root/transforms/"
@@ -40,7 +40,7 @@ torch_image = torch_image.add_local_file(
 with torch_image.imports():
     from flow import OptimalTransportFlow
     from get_loaders import get_loaders_multiflow_v1
-    from unet import Unet
+    from unet_v2 import UnetV2
     from utils import make_checkpoint_multiflow_v1
     import numpy as np
     from tqdm import tqdm
@@ -61,7 +61,7 @@ with torch_image.imports():
     timeout=72000,  # 20 hours
 )
 def train_model():
-    def get_loss_fn(model: Unet, flow: OptimalTransportFlow):
+    def get_loss_fn(model: UnetV2, flow: OptimalTransportFlow):
         def loss_fn(source: Tensor, target: Tensor, t: Tensor) -> Tensor:
             # t = torch.rand(source.shape[0], device=source.device)
             x0 = source
@@ -107,7 +107,7 @@ def train_model():
     problem = "shepp-logan"
     n_sub = 2
     n_full = 24 
-    run_save_prefix = "multiflow_v1_xlarge"
+    run_save_prefix = "multiflow_v1_new_unet"
 
     config = {
         'sigma_min': 1e-2,
@@ -134,14 +134,14 @@ def train_model():
     device = device
 
     # fewer skips and upsampling for smaller image size
-    sub_meas_model = Unet(ch=128, ch_mul=[1, 2], att_channels=[0, 1]).to(device)
-    full_meas_model = Unet(ch=128, ch_mul=[1, 2], att_channels=[0, 1]).to(device)
+    sub_meas_model = UnetV2(ch=32, ch_mul=[2, 2]).to(device)
+    full_meas_model = UnetV2(ch=32, ch_mul=[2, 2]).to(device)
 
-    media_model = Unet(ch=32).to(device)
+    media_model = UnetV2(ch=32).to(device)
 
-    # media_model = torch.compile(media_model)
-    # sub_meas_model = torch.compile(sub_meas_model)
-    # full_meas_model = torch.compile(full_meas_model)
+    media_model = torch.compile(media_model)
+    sub_meas_model = torch.compile(sub_meas_model)
+    full_meas_model = torch.compile(full_meas_model)
 
     flow = OptimalTransportFlow(config['sigma_min'])
     sub_meas_loss_fn = get_loss_fn(sub_meas_model, flow)
@@ -171,7 +171,7 @@ def train_model():
     #     curr_epoch = 0
     step = 0
     curr_epoch = 0
-    accumulation_steps = 2
+    accumulation_steps = 1
 
     # flattened dimensions
     # yes this is hard coded

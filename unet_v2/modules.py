@@ -18,11 +18,11 @@ class Downsample(nn.Module):
 class Upsample(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.up = nn.Upsample(scale_factor=2, mode='nearest')
         self.conv = nn.Conv2d(in_channels, out_channels, 3, padding=1)
 
+
     def forward(self, x):
-        x = self.up(x)
+        x = torch.nn.functional.interpolate(x, scale_factor=2, mode='nearest')
         return self.conv(x)
 
 
@@ -71,6 +71,22 @@ class ResBlock(nn.Module):
         scale, shift = emb.chunk(2, dim=1)
         h = out_norm(h) * (1 + scale) + shift
         h = out_rest(h)
+
+        h = (self.skip_connection(x) + h) / np.sqrt(2.0)
+        return h
+    
+class ResBlockNoTime(nn.Module):
+    def __init__(self, dim_in, dim_out, num_groups=32, dropout=0.1, attn=False):
+        super().__init__()
+
+        self.skip_connection = make_skip_connection(dim_in, dim_out)
+
+        self.block1 = make_block(dim_in, dim_out, num_groups, dropout=0)
+        self.block2 = make_block(dim_out, dim_out, num_groups, dropout=dropout)
+
+    def forward(self, x):
+        h = self.block1(x)
+        h = self.block2(h)
 
         h = (self.skip_connection(x) + h) / np.sqrt(2.0)
         return h

@@ -57,9 +57,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train a flow matching model.")
     parser.add_argument('--device', type=str, default='cuda:0', help='Device to use for training')
     parser.add_argument('--ckpt', type=str, default=None, help='Path to a checkpoint to resume training from')
-    parser.add_argument('--image-size', type=int, default=64, help='Size of the input images')
-    parser.add_argument('--batch-size', type=int, default=16, help='Batch size for training')
-    parser.add_argument('--num-epochs', type=int, default=125, help='Number of training epochs')
+    parser.add_argument('--image-size', type=int, default=128, help='Size of the input images')
+    parser.add_argument('--batch-size', type=int, default=64, help='Batch size for training')
+    parser.add_argument('--num-epochs', type=int, default=150, help='Number of training epochs')
     parser.add_argument('--problem', type=str, default='circles', help='Dataset to use')
 
     args = parser.parse_args()
@@ -101,10 +101,8 @@ if __name__ == '__main__':
         step = 0
         curr_epoch = 0
 
-    # set this higher if your gpu has bad vram and you can't fit big batches
-    accumulation_steps = 1
-
-    for epoch in tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs"):
+    pbar = tqdm(range(curr_epoch, config['epochs'] + 1), desc="Epochs")
+    for epoch in pbar:
         model.train()
         
         epoch_loss = 0
@@ -113,39 +111,36 @@ if __name__ == '__main__':
         for i, (x,) in tqdm(enumerate(train_loader), desc=f"Epoch {epoch}", leave=False):
             x = x.to(device)
 
-            if i % accumulation_steps == 0:
-                optim.zero_grad(set_to_none=True)
+            optim.zero_grad(set_to_none=True)
             
             with torch.amp.autocast(device_type=device):
-                loss = loss_fn(x) / accumulation_steps
+                loss = loss_fn(x)
 
             scaler.scale(loss).backward()
 
-            if (i + 1) % accumulation_steps == 0 or (i + 1) == len(train_loader):
-                scaler.unscale_(optim)
-                grad = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            scaler.unscale_(optim)
+            grad = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
-                scaler.step(optim)
-                scaler.update()
+            scaler.step(optim)
+            scaler.update()
 
-                for g in optim.param_groups:
-                    lr = get_lr(config, step)
-                    g['lr'] = lr
+            for g in optim.param_groups:
+                lr = get_lr(config, step)
+                g['lr'] = lr
 
-                true_loss = loss.item() * accumulation_steps
-                if (step + 1) % config['log_freq'] == 0:
-                    print(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr:.3e}')
-                    
-                epoch_loss += true_loss
-                num_batches += 1
-                step += 1
+            true_loss = loss.item()
+            if (step + 1) % config['log_freq'] == 0:
+                pbar.set_postfix_str(f'Step: {step} ({epoch}) | Loss: {true_loss:.5f} | Grad: {grad.item():.5f} | Lr: {lr:.3e}')
+                
+            epoch_loss += true_loss
+            num_batches += 1
+            step += 1
         
         # Log epoch metrics
         avg_epoch_loss = epoch_loss / num_batches
      
         model.eval()
         with torch.no_grad():
-            print(f'Generating samples at epoch {epoch}')
             shape = (1, 1, args.image_size, args.image_size)
 
             gen_x = sample_images(model, shape, num_steps=2, device=device)
@@ -158,5 +153,4 @@ if __name__ == '__main__':
 
         if epoch % 10 == 0 or epoch == config['epochs']:
             make_checkpoint(f'checkpoints/ckp_{step}.tar', step, epoch, model, optim, scaler, ema_model=None)
-            print(f"Checkpoint saved at step {step}, epoch {epoch}")
     

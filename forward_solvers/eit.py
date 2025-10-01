@@ -4,7 +4,7 @@
 import torch
 import torch.linalg as torchla
 
-from fem import partial_deriv_matrix, mass_matrix
+from forward_solvers.fem import partial_deriv_matrix, mass_matrix
 
 class EIT:
     def __init__(self, v_h):
@@ -18,23 +18,23 @@ class EIT:
 
         S = stiffness_matrix(self.v_h, sigma_vec)
         self.S = S
-        # Convert to dense for indexing operations
-        S_dense = S.to_dense()
-        self.S_ii = S_dense[vol_idx,:][:,vol_idx]
-        self.S_ib = S_dense[vol_idx,:][:,bdy_idx]
+        S = S.to_sparse_coo()   # convert to COO for indexing
+        self.S_ii = S.index_select(0, vol_idx).index_select(1, vol_idx).to_sparse_csr()
+        self.S_ib = S.index_select(0, vol_idx).index_select(1, bdy_idx).to_sparse_csr()
+
 
     def build_matrices(self):
 
         self.Mass = mass_matrix(self.v_h)
         Kx, Ky, M_w = partial_deriv_matrix(self.v_h)
 
-        # Create diagonal matrix from M_w diagonal - convert to dense for operations
-        M_w_dense = M_w.to_dense()
-        M_w_diag_inv = torch.diag(1.0 / torch.diag(M_w_dense))
-        
-        self.Dx = M_w_diag_inv @ Kx.to_dense()
-        self.Dy = M_w_diag_inv @ Ky.to_dense()
-        self.M_w = M_w_dense
+        M_w_diag = M_w.diagonal()
+        M_w_diag_inv = 1.0 / M_w_diag
+
+        # Precompute Dx and Dy (equivalent to spsp.diags(1/M_w.diagonal())@Kx)
+        self.Dx = torch.sparse.mm(M_w_diag_inv, Kx)
+        self.Dy = torch.sparse.mm(M_w_diag_inv, Ky)
+        self.M_w = M_w
 
     def dtn_map(self, sigma_vec):
         # do this here
@@ -47,14 +47,14 @@ class EIT:
         vol_idx = self.v_h.mesh.vol_idx
         bdy_idx = self.v_h.mesh.bdy_idx
     
-        # the boundary data are just direct deltas at each node - match dtype
+        # the boundary data are just dirac deltas at each node - match dtype
         bdy_data = torch.eye(n_bdy_pts, device=self.v_h.mesh.device, dtype=self.S_ii.dtype)
         
         # building the rhs for the linear system
-        Fb = -self.S_ib @ bdy_data
+        Fb = -torch.sparse.mm(self.S_ib, bdy_data)
             
         # solve interior dof
-        U_vol = torch.linalg.solve(self.S_ii, Fb)
+        U_vol = torch.sparse.spsolve(self.S_ii, Fb)
         
         # allocate the space for the full solution - match dtype
         sol = torch.zeros((n_pts, n_bdy_pts), device=self.v_h.mesh.device, dtype=self.S_ii.dtype)
@@ -63,8 +63,8 @@ class EIT:
         sol[bdy_idx,:] = bdy_data
         sol[vol_idx,:] = U_vol
 
-        # computing the flux
-        flux = self.S.to_dense() @ sol
+        # computing the flux using sparse matrix multiplication
+        flux = torch.sparse.mm(self.S, sol)
 
         # extracting the boundary data of the flux 
         DtN = flux[bdy_idx, :]
@@ -79,14 +79,14 @@ class EIT:
         vol_idx = self.v_h.mesh.vol_idx
         bdy_idx = self.v_h.mesh.bdy_idx
         
-        # the boundary data are just direct deltas at each node
+        # the boundary data are just dirac deltas at each node
         bdy_data = residual
         
         # building the rhs for the linear system
-        Fb = -self.S_ib @ bdy_data
+        Fb = -torch.sparse.mm(self.S_ib,bdy_data)
         
         # solve interior dof
-        U_vol = torch.linalg.solve(self.S_ii, Fb)
+        U_vol = torch.sparse.spsolve(self.S_ii, Fb)
         
         # allocate the space for the full solution - match dtype
         sol_adj = torch.zeros((n_pts, n_bdy_pts), device=self.v_h.mesh.device, dtype=self.S_ii.dtype)
@@ -109,15 +109,16 @@ class EIT:
         # compute the adjoint fields
         sol_adj = self.adjoint(sigma_vec, residual)
 
-        Sol_adj_x = self.Dx @ sol_adj
-        Sol_adj_y = self.Dy @ sol_adj
+        # Use precomputed Dx and Dy matrices (like numba version)
+        Sol_adj_x = torch.sparse.mm(self.Dx, sol_adj)
+        Sol_adj_y = torch.sparse.mm(self.Dy, sol_adj)
+        Sol_x = torch.sparse.mm(self.Dx, sol)
+        Sol_y = torch.sparse.mm(self.Dy, sol)
 
-        Sol_x = self.Dx @ sol
-        Sol_y = self.Dy @ sol
+        grad_terms = torch.sum(Sol_adj_x*Sol_x + Sol_adj_y*Sol_y, dim=1, keepdim=True)
+        grad = torch.sparse.mm(self.M_w, grad_terms)
 
-        grad = self.M_w @ torch.sum(Sol_adj_x*Sol_x + Sol_adj_y*Sol_y, dim=1, keepdim=True)
-
-        return torch.sqrt(torch.sum(torch.square(residual))), grad
+        return torch.sqrt(torch.sum(torch.square(residual))), grad.to_dense()
 
 
 def stiffness_matrix(v_h, sigma_vec):

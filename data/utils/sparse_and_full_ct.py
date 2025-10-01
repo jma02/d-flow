@@ -14,14 +14,12 @@ parser.add_argument('--device', type=str, default='cuda:0', help='Device to use 
 parser.add_argument('--problem', type=str, default='shepp-logan', help='Dataset to use')
 parser.add_argument('--im_size', type=int, default=128, help='This should correspond to a dataset we actually have')
 parser.add_argument('--n_sub', type=int, default=1, help='number of sparse angles')
-parser.add_argument('--n_full', type=int, default=24, help='number of full angles')
-parser.add_argument('--multiflow', type=bool, default=False, help='whether to use multiflow (default: False)')
+parser.add_argument('--n_full', type=int, default=180, help='number of full angles')
 
 args = parser.parse_args()
 
-dataset_source = torch.load(f"data/{args.problem}-dataset-{args.im_size}.pt")
+dataset_source = torch.load(f"data/ct-{args.problem}-dataset-{args.im_size}.pt")
 
-# let's set a full measurement to be 24 angles
 n_sub = args.n_sub
 n_full = args.n_full
 # for now we are assuming that n_sub | n_full, but this is not necessarily the case
@@ -52,7 +50,8 @@ for split in ['train', 'val', 'test']:
     
     dataset[split] = {
         'full_meas': full_meas,
-        'sub_meas': sub_meas
+        'sub_meas': sub_meas,
+        'media': images.squeeze(1) 
     }
 save_name = f"data/ct-{args.problem}-multiflow-{n_sub}-{n_full}-{args.im_size}.pt"
 torch.save(dataset, save_name)

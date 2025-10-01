@@ -1,0 +1,2 @@
+nohup: ignoring input
+python: can't open file '/home/johnma/d-flow/forward_solvers_numba/train_interpolant.py': [Errno 2] No such file or directory
